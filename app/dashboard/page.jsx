@@ -1,9 +1,5 @@
-// This file will be moved to (logged-in) group
 
-// Import shadcn UI styles
-import "@/app/globals.css";
-
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/app/_components/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,13 +7,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
+} from "@/app/_components/ui/breadcrumb"
+import { Separator } from "@/app/_components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@/app/_components/ui/sidebar"
 
 export default function Page() {
   return (

@@ -1,35 +1,50 @@
 "use client";
 
-import menu from "@/config/menus.json";
 import siteConfig from "@/config/site.config.json";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getHeader } from "@/redux/actions/headerActions";
 
 import style from "@/styles/modules/Header.module.scss";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const { header, loading } = useSelector((state) => state.header);
   const pathname = usePathname();
 
-  const { logo, logoText, socialLinks } = siteConfig;
-  const { mainMenu } = menu;
-  const mainMenuLength = mainMenu.length;
+  // Fallback için siteConfig'ten gelen değerler
+  const { logo, logoText, socialLinks: defaultSocialLinks } = siteConfig;
+  
+  // Redux store'dan verileri alıyoruz
+  const mainMenu = header?.mainMenu || [];
+  const socialLinks = header?.socialLinks || [];
+  const mainMenuLength = mainMenu.length || 0;
+
+  // Header verilerini API'den çekme
+  useEffect(() => {
+    dispatch(getHeader());
+  }, [dispatch]);
 
   const [indicatorPosition, setIndicatorPosition] = useState(null);
   const navRef = useRef(null);
   const activeLinkRef = useRef(null);
 
   useEffect(() => {
-    const activeLink = navRef.current.querySelector(".active");
-    if (activeLink) {
-      activeLinkRef.current = activeLink;
-      setIndicatorPosition({
-        left: activeLink.offsetLeft,
-        width: activeLink.offsetWidth,
-      });
+    // Menü öğeleri değiştiğinde veya yüklendiğinde
+    if (navRef.current && !loading && mainMenu.length > 0) {
+      const activeLink = navRef.current.querySelector(".active");
+      if (activeLink) {
+        activeLinkRef.current = activeLink;
+        setIndicatorPosition({
+          left: activeLink.offsetLeft,
+          width: activeLink.offsetWidth,
+        });
+      }
     }
-  }, [mainMenu]);
+  }, [mainMenu, loading]);
 
   const handleLinkMouseEnter = (event) => {
     const link = event.currentTarget;
@@ -68,6 +83,7 @@ const Header = () => {
       }
     }
     window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Open-Close Mobile Nav state
@@ -114,6 +130,51 @@ const Header = () => {
     banner && observer.observe(banner);
   }, []);
 
+  // Header yüklenirken fallback göster
+  if (loading && mainMenu.length === 0) {
+    // Default verilerle render et
+    return (
+      <header 
+        className={`fixed top-0 z-[9000] w-full ${style.header} ${isActive ? style.active : ""} ${isInvisible ? "-translate-y-full invisible" : ""}`}>
+        <div className="container">
+          <div className="flex justify-between py-6 items-center relative">
+            {/* Logo */}
+            <div className="w-1/4">
+              <Link href="/" className="inline-block align-middle">
+                <Image
+                  src={logo}
+                  alt={logoText}
+                  width={80}
+                  height={29}
+                  quality={100}
+                  priority
+                />
+              </Link>
+            </div>
+            
+            {/* Yükleniyor animasyonu */}
+            <div className="flex-1 flex justify-center items-center h-12">
+              <div className="w-4 h-4 rounded-full bg-white/30 animate-pulse"></div>
+            </div>
+            
+            {/* Telefon menü toggle butonu */}
+            <button
+              type="button"
+              aria-label="Toggle Mobile Navigation"
+              className={style.navToggler}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 8l16 0"></path>
+                <path d="M4 16l16 0"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header 
       className={`fixed top-0 z-[9000] w-full ${style.header} ${isActive ? style.active : ""} ${isInvisible ? "-translate-y-full invisible" : ""}`}>
@@ -126,8 +187,8 @@ const Header = () => {
               onClick={handleLinkClick}
             >
               <Image
-                src={logo}
-                alt={logoText}
+                src={header?.logoUrl || logo}
+                alt={header?.logoText || logoText}
                 width={80}
                 height={29}
                 quality={100}
@@ -147,22 +208,34 @@ const Header = () => {
               ></span>
             )}
 
-            {mainMenu.map((item, key) => (
-              <Link
-                key={key}
-                href={item.link}
-                className={
-                  pathname == item.link
-                    || pathname.includes("/blog") && item.link == "/blog"
-                    || pathname.includes("/project") && item.link == "/project"
-                    ? "active !text-white/100" : ""}
-                onMouseEnter={handleLinkMouseEnter}
-                onMouseLeave={handleLinkMouseLeave}
-                onClick={handleLinkClick}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {mainMenu.length > 0 ? (
+              // API'den gelen menü öğelerini göster
+              mainMenu.map((item, key) => (
+                <Link
+                  key={key}
+                  href={item.link}
+                  className={
+                    pathname == item.link
+                      || pathname.includes("/blog") && item.link == "/blog"
+                      || pathname.includes("/project") && item.link == "/project"
+                      ? "active !text-white/100" : ""}
+                  onMouseEnter={handleLinkMouseEnter}
+                  onMouseLeave={handleLinkMouseLeave}
+                  onClick={handleLinkClick}
+                >
+                  {item.name}
+                </Link>
+              ))
+            ) : (
+              // API'den veri gelmezse veya hata olursa config'ten varsayılan menüyü göster
+              <>
+                <Link href="/" className={pathname === "/" ? "active !text-white/100" : ""}>Home</Link>
+                <Link href="/about" className={pathname === "/about" ? "active !text-white/100" : ""}>About</Link>
+                <Link href="/project" className={pathname.includes("/project") ? "active !text-white/100" : ""}>Project</Link>
+                <Link href="/blog" className={pathname.includes("/blog") ? "active !text-white/100" : ""}>Blog</Link>
+                <Link href="/contact" className={pathname === "/contact" ? "active !text-white/100" : ""}>Contact</Link>
+              </>
+            )}
           </nav>
 
           <div
@@ -191,11 +264,21 @@ const Header = () => {
           <div className={`w-1/4 transition-all duration-300 text-right text-sm hidden lg:block ${isScrolled ? "lg:opacity-0 lg:translate-x-8" : ""}`}>
             <span className="block text-white/75 mb-1">Social Links:</span>
             <ul className="inline-flex gap-x-4">
-              {socialLinks.map((item, key) => (
-                <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
-                  <a href={item.link} className="link">{item.name}</a>
-                </li>
-              ))}
+              {socialLinks.length > 0 ? (
+                // API'den gelen sosyal bağlantıları göster
+                socialLinks.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.name}</a>
+                  </li>
+                ))
+              ) : (
+                // API'den veri gelmezse default sosyal bağlantıları göster
+                defaultSocialLinks.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.name}</a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </div>
