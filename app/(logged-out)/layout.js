@@ -12,7 +12,7 @@ const outfit = Outfit({
 
 import localFont from "next/font/local";
 const melodrama = localFont({
-  src: "../public/fonts/melodrama/Melodrama-Variable.woff2",
+  src: "../../public/fonts/melodrama/Melodrama-Variable.woff2",
   fontFamily: "Melodrama",
   variable: "--font-melodrama",
 });
