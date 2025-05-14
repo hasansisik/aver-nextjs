@@ -21,7 +21,7 @@ const initialState: userState = {
   notes: [],
 };
 
-export const courseReducer = createReducer(initialState, (builder) => {
+export const userReducer = createReducer(initialState, (builder) => {
   builder
     // Login
     .addCase(login.pending, (state) => {
@@ -38,4 +38,4 @@ export const courseReducer = createReducer(initialState, (builder) => {
     })
 });
 
-export default courseReducer;
+export default userReducer;

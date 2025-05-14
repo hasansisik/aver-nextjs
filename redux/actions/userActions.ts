@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { server } from "../../config";
+import { server } from "@/config";
 
 export interface LoginPayload {
   email: string;

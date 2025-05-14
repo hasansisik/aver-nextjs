@@ -1,5 +1,6 @@
 import { AOSInit } from "@/app/_components/AosInit";
 import DeviceSizeIndicator from "@/app/_components/DeviceSizeIndicator";
+import { ReduxProvider } from "@/app/_components/ReduxProvider";
 import config from "@/config/site.config.json";
 import { outfit, melodrama } from "@/app/fonts";
 import StyleWrapper from "./style-wrapper";
@@ -38,9 +39,11 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <AOSInit />
         <DeviceSizeIndicator enable={deviceIndicator} />
-        <StyleWrapper>
-          {children}
-        </StyleWrapper>
+        <ReduxProvider>
+          <StyleWrapper>
+            {children}
+          </StyleWrapper>
+        </ReduxProvider>
       </body>
     </html>
   );
