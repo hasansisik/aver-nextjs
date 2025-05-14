@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${outfit.variable} ${melodrama.variable} font-primary`}
     >
-      <body>
+      <body className="antialiased">
         <AOSInit />
         <DeviceSizeIndicator enable={deviceIndicator} />
         <StyleWrapper>
