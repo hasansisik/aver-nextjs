@@ -1,4 +1,6 @@
-// This file will be moved to (logged-in) group
+// Import shadcn UI styles
+import "@/app/globals.css";
+
 import { LoginForm } from "../_components/login-form";
 
 export default function LoginPage() {

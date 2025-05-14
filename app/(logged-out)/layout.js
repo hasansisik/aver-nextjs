@@ -1,24 +1,11 @@
 import { AOSInit } from "@/app/_components/AosInit";
 import DeviceSizeIndicator from "@/app/_components/DeviceSizeIndicator";
 import config from "@/config/site.config.json";
-
-import { Outfit } from "next/font/google";
-const outfit = Outfit({
-  weight: ["200", "300", "400", "500"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
-
-import localFont from "next/font/local";
-const melodrama = localFont({
-  src: "../../public/fonts/melodrama/Melodrama-Variable.woff2",
-  fontFamily: "Melodrama",
-  variable: "--font-melodrama",
-});
+import { outfit, melodrama } from "@/app/fonts";
 
 import Footer from "@/app/_components/Footer";
 import Header from "@/app/_components/Header";
+// Import styles directly here for logged-out pages
 import "@/styles/styles.scss";
 
 export const metadata = {

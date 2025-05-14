@@ -1,23 +1,11 @@
 import { AOSInit } from "@/app/_components/AosInit";
 import DeviceSizeIndicator from "@/app/_components/DeviceSizeIndicator";
 import config from "@/config/site.config.json";
+import { outfit, melodrama } from "@/app/fonts";
+import StyleWrapper from "./style-wrapper";
 
-import { Outfit } from "next/font/google";
-const outfit = Outfit({
-  weight: ["200", "300", "400", "500"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
-
-import localFont from "next/font/local";
-const melodrama = localFont({
-  src: "../public/fonts/melodrama/Melodrama-Variable.woff2",
-  fontFamily: "Melodrama",
-  variable: "--font-melodrama",
-});
-
-import "@/styles/styles.scss";
+// We'll handle styles in the individual page components
+// import "@/styles/styles.scss";
 
 export const metadata = {
   title: config.metaData.title,
@@ -50,9 +38,9 @@ export default function RootLayout({ children }) {
       <body>
         <AOSInit />
         <DeviceSizeIndicator enable={deviceIndicator} />
-        
-        {children}
-        
+        <StyleWrapper>
+          {children}
+        </StyleWrapper>
       </body>
     </html>
   );
