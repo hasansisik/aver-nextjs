@@ -1,0 +1,30 @@
+// work process
+.work-process {
+  &-item {
+    @apply border-t pt-8 border-white/10;
+  }
+
+  > div {
+    &:nth-child(1),
+    &:nth-child(2) {
+      .work-process-item {
+        @apply relative;
+        &::after {
+          @apply h-px w-[2.15rem] top-[9px] -right-[1.95rem] bg-white/10 rotate-[36deg] content-[''] absolute;
+          @media screen and (max-width: 767px) {
+            @apply hidden;
+          }
+        }
+      }
+    }
+    &:nth-child(2) {
+      @media screen and (max-width: 1023px) {
+        .work-process-item {
+          &::after {
+            @apply hidden;
+          }
+        }
+      }
+    }
+  }
+}

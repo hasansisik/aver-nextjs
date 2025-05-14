@@ -1,0 +1,77 @@
+// Footer style
+.footer-cta {
+  @apply relative w-[1920px] max-w-full mx-auto overflow-hidden;
+  .cta-text {
+    transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+  .cta-icon {
+    opacity: .75;
+    transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+    height: 1px;
+    object-fit: cover;
+  }
+  .animated-line {
+    @apply relative flex whitespace-nowrap;
+    .line-block,
+    .line-block-copy {
+      @apply pb-[6px] flex;
+    }
+    .line-block-copy {
+      backface-visibility: hidden;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translateX(100%) translateZ(0);
+      will-change: transform;
+    }
+    &-one {
+      .line-block {
+        animation: move-horizontal-forward 20s linear infinite;
+      }
+      .line-block-copy {
+        animation: move-horizontal-forward-copy 20s linear infinite;
+      }
+    }
+    &-two {
+      .line-block {
+        animation: move-horizontal-backward 20s linear infinite;
+      }
+      .line-block-copy {
+        animation: move-horizontal-backward-copy 20s linear infinite;
+      }
+    }
+  }
+  &:hover {
+    .cta-text {
+      @apply opacity-75;
+    }
+    .cta-icon {
+      opacity: 1;
+      transform: rotateZ(-45deg);
+      height: auto;
+    }
+    .animated-line {
+      .line-block,
+      .line-block-copy {
+        animation-play-state: paused;
+      }
+    }
+  }
+}
+
+@keyframes move-horizontal-forward {
+  0% {transform: translateX(0)}
+  to {transform: translateX(100%)}
+}
+@keyframes move-horizontal-forward-copy {
+  0% {transform: translateX(-100%)}
+  to {transform: translateX(0)}
+}
+@keyframes move-horizontal-backward {
+  0% {transform: translateX(0)}
+  to {transform: translateX(-100%)}
+}
+@keyframes move-horizontal-backward-copy {
+  0% {transform: translateX(100%)}
+  to {transform: translateX(0)}
+}

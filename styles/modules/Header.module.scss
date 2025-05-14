@@ -1,0 +1,38 @@
+.header {
+  transition: .3s ease;
+  &.active .navbar {
+    @apply bg-dark/80;
+  }
+}
+.navbar {
+  @apply lg:flex bg-dark/30 backdrop-blur-[10px] lg:rounded-full rounded-3xl px-2 lg:py-2 py-5 border border-white/10 duration-500 lg:static lg:w-auto absolute right-0 top-6 z-30 max-w-full overflow-hidden;
+  a {
+    @apply py-3 px-[22px] leading-none relative z-20 block text-white/50 lg:text-white/100 hover:text-white/100 opacity-0 lg:opacity-100;
+    transition: .3s color 0s, .3s opacity 0s;
+  }
+  &.navbarOpen {
+    a {
+      @apply opacity-100;
+      transition: .3s color 0s, .3s opacity .3s;
+    }
+  }
+  .indicator {
+    @apply absolute h-full w-full left-0 top-0 hidden lg:block;
+    transition: 0.45s cubic-bezier(0.075, 0.82, 0.165, 1);
+    &::before {
+      @apply rounded-full content-[""] h-[calc(100%_-_1rem)] top-2 w-full absolute left-0 bg-white/10;
+    }
+  }
+}
+.navToggler {
+  @apply block lg:hidden w-12 h-12 border border-white/10 rounded-full p-1 relative z-40 overflow-hidden origin-bottom-left transition-transform duration-300;
+  svg {
+    @apply absolute top-[calc(50%_-_12px)] left-[calc(50%_-_12px)] transition-transform duration-300;
+  }
+}
+.navOverlay {
+  @apply fixed inset-0 bg-black/80 z-20 transition-all duration-500 opacity-0 invisible;
+  &.navOverlayVisible {
+    @apply opacity-100 visible;
+  }
+}

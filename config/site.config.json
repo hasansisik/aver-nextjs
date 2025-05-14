@@ -1,0 +1,41 @@
+{
+  "metaData": {
+    "title" : "Aver - Personal Portfolio React NextJS Template",
+    "description" : "Personal Portfolio React NextJS Template",
+    "ogImage" : "/images/ogimage.jpg"
+  },
+  "logo" : "/images/logo.svg",
+  "logoText" : "Aver",
+  "favicon" : "/images/favicon.png",
+  "baseURL" : "https://aver-nextjs.vercel.app/",
+
+  "settings" : {
+    "bannerBgText" : true,
+    "deviceIndicator" : false
+  },
+
+  "copyright" : "© 2024 Aver. All rights reserved.",
+
+  "socialLinks" : [
+    {
+      "name": "FB",
+      "fullName": "Facebook",
+      "link": "https://facebook.com/"
+    },
+    {
+      "name": "TW",
+      "fullName": "Twitter",
+      "link": "https://twitter.com/"
+    },
+    {
+      "name": "IN",
+      "fullName": "Linkedin",
+      "link": "https://linkedin.com/"
+    },
+    {
+      "name": "GITHUB",
+      "fullName": "Github",
+      "link": "https://github.com/"
+    }
+  ]
+}
