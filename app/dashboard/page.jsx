@@ -1,3 +1,5 @@
+// This file will be moved to (logged-in) group
+
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
