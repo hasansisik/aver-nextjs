@@ -2,16 +2,17 @@
 
 import * as React from "react"
 import {
-  BookOpen,
   Bot,
   Command,
-  Frame,
-  LifeBuoy,
-  Map,
+  FileText,
+  FolderKanban,
+  GanttChart,
+  Layout,
+  Layers,
   PieChart,
-  Send,
-  Settings2,
+  Settings,
   SquareTerminal,
+  Wrench
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -36,118 +37,72 @@ const data = {
   },
   navMain: [
     {
-      title: "Playground",
+      title: "Post & Projects",
       url: "#",
-      icon: SquareTerminal,
+      icon: FolderKanban,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "All Posts",
           url: "#",
+          icon: FileText,
         },
         {
-          title: "Starred",
+          title: "All Projects",
           url: "#",
+          icon: GanttChart,
         },
         {
-          title: "Settings",
+          title: "Services",
           url: "#",
+          icon: Wrench,
         },
       ],
     },
     {
-      title: "Models",
+      title: "Site",
       url: "#",
-      icon: Bot,
+      icon: Layout,
+      isActive: true,
       items: [
         {
-          title: "Genesis",
+          title: "Header",
           url: "#",
+          icon: Layers,
         },
         {
-          title: "Explorer",
+          title: "Footer",
           url: "#",
+          icon: Layers,
         },
         {
-          title: "Quantum",
+          title: "Services",
           url: "#",
+          icon: Wrench,
+        },
+        {
+          title: "Pages",
+          url: "#",
+          icon: FileText,
         },
       ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Post",
       url: "#",
-      icon: Frame,
+      icon: FileText,
     },
     {
-      name: "Sales & Marketing",
+      name: "Projects",
       url: "#",
-      icon: PieChart,
+      icon: GanttChart,
     },
     {
-      name: "Travel",
+      name: "Services",
       url: "#",
-      icon: Map,
+      icon: Wrench,
     },
   ],
 }
@@ -167,8 +122,8 @@ export function AppSidebar({
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-semibold">Aver</span>
+                  <span className="truncate text-xs">Admin</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -177,12 +132,8 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+        <NavProjects projects={data.projects} />      
+        </SidebarContent>
     </Sidebar>)
   );
 }

@@ -31,7 +31,7 @@ export function NavMain({
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <a href={item.url}>
-                  <item.icon />
+                  <item.icon className="size-4" />
                   <span>{item.title}</span>
                 </a>
               </SidebarMenuButton>
@@ -49,6 +49,7 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             <a href={subItem.url}>
+                              {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                               <span>{subItem.title}</span>
                             </a>
                           </SidebarMenuSubButton>
