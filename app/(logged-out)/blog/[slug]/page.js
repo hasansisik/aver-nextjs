@@ -1,5 +1,6 @@
-import Markdown from "@/components/ReactMarkdown";
-import SharePost from "@/components/SharePost";
+import Markdown from "@/app/_components/ReactMarkdown";
+import SharePost from "@/app/_components/SharePost";
+import TableOfContents from "@/app/_components/TableOfContents";
 import siteConfig from "@/config/site.config.json";
 import { getDirectoryPages } from "@/libs/getDirectoryPages";
 import { getSinglePage } from "@/libs/getSinglePage";
@@ -94,17 +95,21 @@ const BlogPage = async props => {
             )}
 
             <div className="xl:col-9 lg:col-10 mx-auto" data-aos="fade-in">
-              <div className={`sm:flex flex-wrap sm:flex-nowrap w-full ${image !== null ? "pt-20" : ""}`}>
-                <div className="sm:order-2 sm:pl-12 xl:pl-24">
+              <div className={`flex flex-wrap lg:flex-nowrap w-full ${image !== null ? "pt-20" : ""}`}>
+                <div className="w-[60px] order-1 mr-6">
+                  <div className="sticky top-8">
+                    <SharePost title={title} pageUrl={pageUrl} />
+                  </div>
+                </div>
+
+                <div className="flex-1 order-2">
                   <article className="content content-light">
                     <Markdown content={currentPost.content} />
                   </article>
                 </div>
 
-                <div className="sm:order-1 w-full sm:w-auto">
-                  <div className="sticky top-8">
-                    <SharePost title={title} pageUrl={pageUrl} />
-                  </div>
+                <div className="w-[250px] order-3 ml-8 hidden xl:block">
+                  <TableOfContents content={currentPost.content} />
                 </div>
               </div>
             </div>
