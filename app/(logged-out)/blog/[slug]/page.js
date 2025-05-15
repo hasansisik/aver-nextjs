@@ -114,22 +114,73 @@ export default function BlogPage() {
     // If markdownContent exists, use it directly
     content = currentBlog.markdownContent;
   } else if (currentBlog.contentBlocks && currentBlog.contentBlocks.length > 0) {
+    // Add heading at the beginning for table of contents
+    content = `## ${title}\n\n${description || ''}\n\n`;
+    
+    // Create section headings for each block type
+    const blockTypeHeadings = {
+      code: '## Code Example',
+      list: '## List Items',
+      quote: '## Quote',
+      table: '## Table Data'
+    };
+    
+    // Track which headings we've already used
+    const usedHeadings = {};
+    
     // Otherwise convert content blocks to markdown
-    content = currentBlog.contentBlocks.map(block => {
-      if (block.type === 'text') {
-        return block.content;
-      } else if (block.type === 'image') {
-        return `![${block.metadata?.alt || 'Image'}](${block.content})`;
-      } else if (block.type === 'code') {
-        return `\`\`\`\n${block.content}\n\`\`\``;
-      } else if (block.type === 'quote') {
-        return `> ${block.content}`;
+    content += currentBlog.contentBlocks.map(block => {
+      let blockContent = '';
+      
+      // Add heading for this block type if we haven't used it yet
+      if (blockTypeHeadings[block.type] && !usedHeadings[block.type]) {
+        blockContent += blockTypeHeadings[block.type] + '\n\n';
+        usedHeadings[block.type] = true;
       }
-      return block.content;
+      
+      // Add the content based on block type
+      switch(block.type) {
+        case 'text':
+          blockContent += block.content;
+          break;
+        case 'heading':
+          blockContent += block.content;
+          break;
+        case 'image':
+          blockContent += `![${block.metadata?.alt || 'Image'}](${block.content})`;
+          break;
+        case 'code':
+          blockContent += `\`\`\`\n${block.content}\n\`\`\``;
+          break;
+        case 'quote':
+          blockContent += `> ${block.content}`;
+          break;
+        case 'list':
+          // Convert to unordered list
+          const listItems = block.content.split('\n');
+          blockContent += listItems.map(item => `* ${item}`).join('\n');
+          break;
+        case 'unordered-list':
+          // Already in correct format
+          blockContent += block.content;
+          break;
+        case 'ordered-list':
+          // Already in correct format
+          blockContent += block.content;
+          break;
+        case 'table':
+          // Already in correct format
+          blockContent += block.content;
+          break;
+        default:
+          blockContent += block.content;
+      }
+      
+      return blockContent;
     }).join('\n\n');
   } else {
     // Default content if no content blocks or markdown exists
-    content = `# ${title}\n\n${description || 'No content available for this blog post yet.'}`;
+    content = `## ${title}\n\n${description || 'No content available for this blog post yet.'}`;
   }
 
   // Get Page Url
@@ -138,6 +189,9 @@ export default function BlogPage() {
   // Get Next and Previous Post from related posts
   const previousPost = relatedPosts[0] || null;
   const nextPost = relatedPosts[1] || null;
+  
+  // Log the final content for debugging
+  console.log("Final markdown content:", content);
 
   return (
     <>
@@ -192,7 +246,7 @@ export default function BlogPage() {
                 </div>
 
                 <div className="w-[250px] order-3 ml-8 hidden xl:block">
-                  <TableOfContents content={content} />
+                  {content && <TableOfContents content={content} />}
                 </div>
               </div>
             </div>
