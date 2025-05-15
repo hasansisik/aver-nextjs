@@ -72,7 +72,7 @@ const data = {
         },
         {
           title: "Footer",
-          url: "#",
+          url: "/dashboard/footer",
           icon: Layers,
         },
         {

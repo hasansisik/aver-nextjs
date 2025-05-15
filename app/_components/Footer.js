@@ -4,15 +4,35 @@ import menu from "@/config/menus.json";
 import siteConfig from "@/config/site.config.json";
 import Image from "next/image";
 import Link from "next/link";
-
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getFooter } from "@/redux/actions/footerActions";
 
 import style from "@/styles/modules/Footer.module.scss";
 
 const Footer = () => {
-  const { copyright, socialLinks } = siteConfig;
-  const { footerMenu } = menu;
+  const dispatch = useDispatch();
+  const { footer, loading } = useSelector((state) => state.footer);
+  const pathname = usePathname();
+  
+  // Fallback için siteConfig'ten gelen değerler
+  const { copyright: defaultCopyright, socialLinks: defaultSocialLinks } = siteConfig;
+  const { footerMenu: defaultFooterMenu } = menu;
+  
+  // Redux store'dan verileri alıyoruz
+  const footerMenu = footer?.footerMenu || [];
+  const socialLinks = footer?.socialLinks || [];
+  const copyright = footer?.copyright || defaultCopyright;
+  const ctaText = footer?.ctaText || "Let's make something";
+  const ctaLink = footer?.ctaLink || "/contact";
+  const developerInfo = footer?.developerInfo || "Developed by Platol";
+  const developerLink = footer?.developerLink || "https://themeforest.net/user/platol/portfolio";
+
+  // Footer verilerini API'den çekme
+  useEffect(() => {
+    dispatch(getFooter());
+  }, [dispatch]);
 
   // get the page slug from the url
   const slug = usePathname();
@@ -26,13 +46,13 @@ const Footer = () => {
       {!contactPage && (
         <div className="mb-16 overflow-hidden">
           <Link
-            href="/contact"
+            href={ctaLink}
             className={`${style["footer-cta"]} block text-5xl font-secondary font-medium mb-8`}
           >
             <div className={`${style["animated-line"]} ${style["animated-line-one"]} mb-5`}>
               <div className={style["line-block"]}>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -42,7 +62,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -52,7 +72,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -62,7 +82,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -72,7 +92,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -84,7 +104,7 @@ const Footer = () => {
               </div>
               <div className={style["line-block-copy"]}>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -94,7 +114,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -104,7 +124,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -114,7 +134,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -124,7 +144,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -139,7 +159,7 @@ const Footer = () => {
             <div className={`${style["animated-line"]} ${style["animated-line-two"]}`}>
               <div className={style["line-block"]}>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -149,7 +169,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -159,7 +179,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -169,7 +189,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -179,7 +199,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -191,7 +211,7 @@ const Footer = () => {
               </div>
               <div className={style["line-block-copy"]}>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -201,7 +221,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -211,7 +231,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -221,7 +241,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -231,7 +251,7 @@ const Footer = () => {
                   />
                 </span>
                 <span className="mr-24">
-                  <span className={style["cta-text"]}>Let’s make something</span>
+                  <span className={style["cta-text"]}>{ctaText}</span>
                   <Image
                     className={`inline-block ml-16 ${style["cta-icon"]}`}
                     src="/images/arrow-right.svg"
@@ -249,27 +269,51 @@ const Footer = () => {
         <div className="row">
           <div className="md:col-6 text-center md:text-left mb-4">
             <ul className="inline-flex flex-wrap justify-center md:justify-start gap-x-6">
-              {socialLinks.map((item, key) => (
-                <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
-                  <a href={item.link} className="link">{item.fullName}</a>
-                </li>
-              ))}
+              {socialLinks.length > 0 ? (
+                // API'den gelen sosyal bağlantıları göster
+                socialLinks.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.name}</a>
+                  </li>
+                ))
+              ) : (
+                // API'den veri gelmezse varsayılan sosyal bağlantıları göster
+                defaultSocialLinks.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.fullName || item.name}</a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
           <div className="md:col-6 text-center md:text-right mb-4">
             <ul className="inline-flex flex-wrap justify-center md:justify-end gap-x-6">
-              {footerMenu.map((item, key) => (
-                <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
-                  <a href={item.link} className="link">{item.name}</a>
-                </li>
-              ))}
+              {footerMenu.length > 0 ? (
+                // API'den gelen footer menü öğelerini göster
+                footerMenu.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.name}</a>
+                  </li>
+                ))
+              ) : (
+                // API'den veri gelmezse varsayılan footer menü öğelerini göster
+                defaultFooterMenu.map((item, key) => (
+                  <li key={key} className="inline-block hover:opacity-75 transition-op duration-300">
+                    <a href={item.link} className="link">{item.name}</a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
           <div className="md:col-6 text-center md:text-left mb-4 md:mb-0">
             <p className="text-white/75">{copyright}</p>
           </div>
           <div className="md:col-6 text-center md:text-right">
-            <p className="text-white/75">Developed by <a className="link text-white" href="https://themeforest.net/user/platol/portfolio" target="_blank" rel="noopener noreferrer">Platol</a></p>
+            <p className="text-white/75">
+              <a className="link text-white" href={developerLink} target="_blank" rel="noopener noreferrer">
+                {developerInfo}
+              </a>
+            </p>
           </div>
         </div>
       </div>
