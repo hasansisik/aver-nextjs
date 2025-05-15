@@ -3,6 +3,7 @@ import Testimonials from "@/blocks/Testimonials";
 import PageHeader from "@/components/PageHeader";
 import Markdown from "@/components/ReactMarkdown";
 import { getSinglePage } from "@/libs/getSinglePage";
+import { generateMetadata as generatePageMetadata } from "@/libs/metadataUtils";
 import Image from "next/image";
 import React from "react";
 
@@ -12,10 +13,12 @@ const getAboutPageData = async () => {
 
 export const generateMetadata = async () => {
   const aboutPage = await getAboutPageData();
-  return {
+  
+  // Generate metadata with base values from content plus SEO overrides
+  return generatePageMetadata('/about', {
     title: aboutPage.frontMatter.title,
     description: aboutPage.frontMatter.subtitle,
-  };
+  });
 };
 
 const About = async () => {

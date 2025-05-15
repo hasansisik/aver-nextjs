@@ -8,6 +8,8 @@ import Header from "@/app/_components/Header";
 // Import styles directly here for logged-out pages
 import "@/styles/styles.scss";
 
+// The metadata in this file will be the default - can be overridden by page metadata
+// via generateMetadata function
 export const metadata = {
   title: config.metaData.title,
   description: config.metaData.description,

@@ -6,6 +6,11 @@ import { getDirectoryPages } from "@/libs/getDirectoryPages";
 import { getSinglePage } from "@/libs/getSinglePage";
 import Image from "next/image";
 import Link from "next/link";
+import { generateMetadata as generatePageMetadata } from "@/libs/metadataUtils";
+
+export async function generateMetadata() {
+  return generatePageMetadata('/');
+}
 
 const Home = () => {
   const home = getSinglePage("content/_index.md");

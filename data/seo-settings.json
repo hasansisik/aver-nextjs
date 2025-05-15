@@ -1,0 +1,50 @@
+[
+  {
+    "id": "home",
+    "name": "Home",
+    "path": "/",
+    "title": "Anasayfa",
+    "description": "Meta desc",
+    "keywords": ""
+  },
+  {
+    "id": "about",
+    "name": "About",
+    "path": "/about",
+    "title": "",
+    "description": "",
+    "keywords": ""
+  },
+  {
+    "id": "blog",
+    "name": "Blog",
+    "path": "/blog",
+    "title": "",
+    "description": "",
+    "keywords": ""
+  },
+  {
+    "id": "contact",
+    "name": "Contact",
+    "path": "/contact",
+    "title": "",
+    "description": "",
+    "keywords": ""
+  },
+  {
+    "id": "privacy",
+    "name": "Privacy",
+    "path": "/privacy",
+    "title": "",
+    "description": "",
+    "keywords": ""
+  },
+  {
+    "id": "project",
+    "name": "Project",
+    "path": "/project",
+    "title": "",
+    "description": "",
+    "keywords": ""
+  }
+]
