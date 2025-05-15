@@ -31,10 +31,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const deviceIndicator = config.settings.deviceIndicator;
 
+  // Using a static language attribute to avoid hydration mismatch
+  // This ensures the server and client render the same language
   return (
     <html
       lang="en"
       className={`${outfit.variable} ${melodrama.variable} font-primary`}
+      suppressHydrationWarning
     >
       <body className="antialiased">
         <AOSInit />

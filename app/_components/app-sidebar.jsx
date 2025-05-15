@@ -81,8 +81,8 @@ const data = {
           icon: Wrench,
         },
         {
-          title: "Pages",
-          url: "#",
+          title: "SEO",
+          url: "/dashboard/seo",
           icon: FileText,
         },
       ],

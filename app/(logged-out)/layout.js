@@ -37,6 +37,7 @@ const AverApp = ({ children }) => {
     <html
       lang="en"
       className={`${outfit.variable} ${melodrama.variable} font-primary`}
+      suppressHydrationWarning
     >
       <body>
         <AOSInit />

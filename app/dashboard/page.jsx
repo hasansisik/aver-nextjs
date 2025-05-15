@@ -53,26 +53,7 @@ export default function Page() {
                   Manage SEO <ArrowRight className="h-4 w-4 ml-1" />
                 </Link>
               </CardFooter>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Client Example</CardTitle>
-                <CardDescription>SEO with client components</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>View an example of a client component page with SEO settings integration.</p>
-              </CardContent>
-              <CardFooter>
-                <Link 
-                  href="/client-example" 
-                  className="flex items-center text-blue-500 hover:underline"
-                >
-                  View Example <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
-              </CardFooter>
-            </Card>
-            
+            </Card>         
             <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
           <div className="min-h-[60vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
