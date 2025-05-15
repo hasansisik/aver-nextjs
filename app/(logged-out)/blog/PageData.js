@@ -1,6 +1,6 @@
 "use client";
 
-import BlogCard from "@/blocks/BlogCard";
+import BlogCard from "@/app/_blocks/BlogCard";
 import PageHeader from "@/components/PageHeader";
 import { useState } from "react";
 

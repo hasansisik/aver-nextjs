@@ -44,7 +44,7 @@ const data = {
       items: [
         {
           title: "All Posts",
-          url: "#",
+          url: "/dashboard/blog",
           icon: FileText,
         },
         {

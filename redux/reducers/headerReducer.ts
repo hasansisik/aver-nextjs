@@ -1,4 +1,4 @@
-import { createReducer } from "@reduxjs/toolkit";
+import { createReducer, createAction } from "@reduxjs/toolkit";
 import {
   getHeader,
   updateHeader,
@@ -39,10 +39,13 @@ const initialState: HeaderState = {
   error: null,
 };
 
+// Define action creator with payload type
+export const optimisticUpdateHeader = createAction<HeaderState['header']>('header/optimisticUpdate');
+
 export const headerReducer = createReducer(initialState, (builder) => {
   builder
     // Optimistik UI güncellemesi
-    .addCase('header/optimisticUpdate', (state, action) => {
+    .addCase(optimisticUpdateHeader, (state, action) => {
       state.header = action.payload;
       state.lastOptimisticUpdate = Date.now();
     })
