@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dev.manan-vyas.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
   },
 };

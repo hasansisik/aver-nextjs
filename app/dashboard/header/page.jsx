@@ -10,7 +10,7 @@ import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
-import { AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Check, Upload } from "lucide-react";
 import { SortableList } from "@/app/_components/ui/sortable-list";
 import { 
   Dialog, 
@@ -21,6 +21,7 @@ import {
   DialogTrigger 
 } from "@/app/_components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
+import { uploadImageToCloudinary } from "../../../utils/cloudinary";
 
 export default function HeaderPage() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ export default function HeaderPage() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+  const [logoUploading, setLogoUploading] = useState(false);
   
   useEffect(() => {
     dispatch(getHeader());
@@ -83,6 +85,31 @@ export default function HeaderPage() {
   const handleLogoUpdate = (e) => {
     e.preventDefault();
     dispatch(updateHeader(formState));
+  };
+  
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    try {
+      setLogoUploading(true);
+      const uploadedUrl = await uploadImageToCloudinary(file);
+      
+      setFormState({
+        ...formState,
+        logoUrl: uploadedUrl
+      });
+      
+      setAlertType("success");
+      setAlertMessage("Logo başarıyla yüklendi");
+      setShowAlert(true);
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage(`Logo yüklenirken hata oluştu: ${error.message}`);
+      setShowAlert(true);
+    } finally {
+      setLogoUploading(false);
+    }
   };
   
   const handleMenuItemAdd = (e) => {
@@ -348,26 +375,56 @@ export default function HeaderPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="logoUrl">Logo URL</Label>
-                    <Input 
-                      id="logoUrl" 
-                      value={formState.logoUrl}
-                      onChange={(e) => setFormState({...formState, logoUrl: e.target.value})}
-                      placeholder="/images/logo.png" 
-                    />
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        id="logoUrl" 
+                        value={formState.logoUrl}
+                        onChange={(e) => setFormState({...formState, logoUrl: e.target.value})}
+                        placeholder="/images/logo.png" 
+                        className="flex-1"
+                      />
+                      <div className="relative">
+                        <Input
+                          type="file"
+                          id="logoFile"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                        />
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          disabled={logoUploading}
+                          className="relative"
+                        >
+                          {logoUploading ? (
+                            "Yükleniyor..."
+                          ) : (
+                            <>
+                              <Upload className="w-4 h-4 mr-2" />
+                              Yükle
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      URL girin veya dosya yükleyin. Dosya yüklediğinizde URL otomatik olarak güncellenecektir.
+                    </p>
                   </div>
                 </div>
                 <div className="mt-6">
-                  {header?.logoUrl && (
+                  {formState.logoUrl && (
                     <div className="mb-4">
-                      <p className="mb-2 text-sm text-gray-500">Mevcut Logo:</p>
+                      <p className="mb-2 text-sm text-gray-500">Önizleme:</p>
                       <img 
-                        src={header.logoUrl} 
-                        alt={header.logoText || "Logo"} 
+                        src={formState.logoUrl} 
+                        alt={formState.logoText || "Logo"} 
                         className="h-12 object-contain border rounded p-2" 
                       />
                     </div>
                   )}
-                  <Button type="submit" disabled={loading}>
+                  <Button type="submit" disabled={loading || logoUploading}>
                     {loading ? "Güncelleniyor..." : "Güncelle"}
                   </Button>
                 </div>
