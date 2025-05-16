@@ -5,6 +5,7 @@ import headerReducer from "./reducers/headerReducer";
 import footerReducer from "./reducers/footerReducer";
 import blogReducer from "./reducers/blogReducer";
 import projectReducer from "./reducers/projectReducer";
+import glossaryReducer from './reducers/glossaryReducer';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     footer: footerReducer,
     blog: blogReducer,
     project: projectReducer,
+    glossary: glossaryReducer,
   },
 });
 

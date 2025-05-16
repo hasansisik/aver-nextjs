@@ -1,10 +1,9 @@
 import { getSinglePage } from "@/libs/getSinglePage";
 import { generateMetadata as generatePageMetadata } from "@/libs/metadataUtils";
 import PageHeader from "@/components/PageHeader";
-import Link from "next/link";
 import ClientSideGlossary from "./ClientSideGlossary";
 
-// Fetch glossary data
+// Fetch page metadata from content file
 const getGlossaryData = async () => {
   return getSinglePage("content/glossary.md");
 }
@@ -20,7 +19,7 @@ export const generateMetadata = async () => {
 
 const GlossaryPage = async () => {
   const glossaryPage = await getGlossaryData();
-  const { title, subtitle, terms } = glossaryPage.frontMatter;
+  const { title, subtitle } = glossaryPage.frontMatter;
   
   return (
     <>
@@ -29,7 +28,7 @@ const GlossaryPage = async () => {
         subtitle={subtitle}
         className="text-center" 
       />
-      <ClientSideGlossary terms={terms} />
+      <ClientSideGlossary />
     </>
   );
 };

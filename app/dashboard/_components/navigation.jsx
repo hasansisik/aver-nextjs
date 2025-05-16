@@ -19,6 +19,7 @@ import {
   FileStack,
   Briefcase,
   PanelTop,
+  BookOpen,
 } from "lucide-react";
 
 export function Navigation({ className, children }) {
@@ -72,6 +73,18 @@ export function Navigation({ className, children }) {
         >
           <Briefcase className="h-5 w-5" />
           <span className="group-[[data-collapsed=true]]:hidden">Projeler</span>
+        </Link>
+
+        <Link
+          href="/dashboard/glossary"
+          className={cn(
+            "flex items-center gap-x-2 rounded-lg py-3 px-3 text-sm font-medium hover:bg-primary/10 dark:hover:bg-primary/90 text-white hover:text-white",
+            pathname.includes("/dashboard/glossary") ? "bg-primary" : "transparent",
+            "group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:rounded-lg group-[[data-collapsed=true]]:p-2"
+          )}
+        >
+          <BookOpen className="h-5 w-5" />
+          <span className="group-[[data-collapsed=true]]:hidden">Sözlük</span>
         </Link>
 
         <Link

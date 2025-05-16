@@ -1,19 +1,37 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getGlossaryTerms } from '@/redux/actions/glossaryActions';
 import Link from 'next/link';
 
 // Generate an array of letters for alphabetical navigation
 const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
-const ClientSideGlossary = ({ terms }) => {
+const ClientSideGlossary = () => {
+  const dispatch = useDispatch();
+  const { glossaryTerms, loading, error } = useSelector((state) => state.glossary);
+  
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredTerms, setFilteredTerms] = useState(terms || []);
+  const [filteredTerms, setFilteredTerms] = useState([]);
   const [groupedTerms, setGroupedTerms] = useState({});
+
+  // Fetch glossary terms from API
+  useEffect(() => {
+    dispatch(getGlossaryTerms());
+  }, [dispatch]);
 
   // Group terms by first letter
   useEffect(() => {
-    if (!terms) return;
+    if (!glossaryTerms || glossaryTerms.length === 0) return;
+
+    // Prepare terms in the right format
+    const terms = glossaryTerms.map(term => ({
+      title: term.title,
+      description: term.description,
+      slug: term.slug,
+      category: term.category
+    }));
 
     // Filter terms based on search query
     const filtered = searchQuery
@@ -37,11 +55,38 @@ const ClientSideGlossary = ({ terms }) => {
     });
     
     setGroupedTerms(grouped);
-  }, [terms, searchQuery]);
+  }, [glossaryTerms, searchQuery]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  if (loading) {
+    return (
+      <section className="py-28 bg-white text-dark rounded-b-2xl">
+        <div className="container">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+            </div>
+            <p className="mt-4 text-lg">Sözlük terimleri yükleniyor...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-28 bg-white text-dark rounded-b-2xl">
+        <div className="container">
+          <div className="text-center">
+            <p className="text-red-500 text-lg">Sözlük terimleri yüklenirken bir hata oluştu: {error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-28 bg-white text-dark rounded-b-2xl">
