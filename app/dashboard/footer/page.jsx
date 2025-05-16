@@ -43,6 +43,8 @@ export default function FooterPage() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+  const [menuDialogOpen, setMenuDialogOpen] = useState(false);
+  const [socialDialogOpen, setSocialDialogOpen] = useState(false);
   
   useEffect(() => {
     dispatch(getFooter());
@@ -106,6 +108,10 @@ export default function FooterPage() {
       link: "",
       type: "footerMenu"
     });
+    
+    // Dialog'ları kapat
+    setMenuDialogOpen(false);
+    setSocialDialogOpen(false);
   };
   
   const handleMenuItemDelete = (itemId, type) => {
@@ -188,7 +194,7 @@ export default function FooterPage() {
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <Dialog>
+                <Dialog open={menuDialogOpen} onOpenChange={setMenuDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>Yeni Menü Öğesi Ekle</Button>
                   </DialogTrigger>
@@ -272,7 +278,7 @@ export default function FooterPage() {
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <Dialog>
+                <Dialog open={socialDialogOpen} onOpenChange={setSocialDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>Yeni Sosyal Bağlantı Ekle</Button>
                   </DialogTrigger>

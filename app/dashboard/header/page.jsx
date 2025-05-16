@@ -42,6 +42,8 @@ export default function HeaderPage() {
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
   const [logoUploading, setLogoUploading] = useState(false);
+  const [menuDialogOpen, setMenuDialogOpen] = useState(false);
+  const [socialDialogOpen, setSocialDialogOpen] = useState(false);
   
   useEffect(() => {
     dispatch(getHeader());
@@ -127,6 +129,10 @@ export default function HeaderPage() {
       link: "",
       type: "mainMenu"
     });
+    
+    // Dialog'ları kapat
+    setMenuDialogOpen(false);
+    setSocialDialogOpen(false);
   };
   
   const handleMenuItemDelete = (itemId, type) => {
@@ -209,7 +215,7 @@ export default function HeaderPage() {
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <Dialog>
+                <Dialog open={menuDialogOpen} onOpenChange={setMenuDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>Yeni Menü Öğesi Ekle</Button>
                   </DialogTrigger>
@@ -293,7 +299,7 @@ export default function HeaderPage() {
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <Dialog>
+                <Dialog open={socialDialogOpen} onOpenChange={setSocialDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>Yeni Sosyal Bağlantı Ekle</Button>
                   </DialogTrigger>

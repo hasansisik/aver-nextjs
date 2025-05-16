@@ -26,7 +26,8 @@ const initSeoFile = async () => {
       { id: "blog", name: "Blog", path: "/blog", title: "", description: "", keywords: "" },
       { id: "contact", name: "Contact", path: "/contact", title: "", description: "", keywords: "" },
       { id: "privacy", name: "Privacy", path: "/privacy", title: "", description: "", keywords: "" },
-      { id: "project", name: "Project", path: "/project", title: "", description: "", keywords: "" }
+      { id: "project", name: "Project", path: "/project", title: "", description: "", keywords: "" },
+      { id: "glossary", name: "Glossary", path: "/glossary", title: "", description: "", keywords: "" }
     ]
     
     await fsPromises.writeFile(seoDataPath, JSON.stringify(defaultPages, null, 2))

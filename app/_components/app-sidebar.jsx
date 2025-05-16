@@ -57,6 +57,11 @@ const data = {
           url: "/dashboard/services",
           icon: Wrench,
         },
+        {
+          title: "Glossary",
+          url: "/dashboard/glossary",
+          icon: FileText,
+        },
       ],
     },
     {

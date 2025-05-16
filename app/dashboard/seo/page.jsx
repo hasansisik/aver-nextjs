@@ -35,7 +35,8 @@ const DEFAULT_PAGES = [
   { id: "blog", name: "Blog", path: "/blog" },
   { id: "contact", name: "Contact", path: "/contact" },
   { id: "privacy", name: "Privacy", path: "/privacy" },
-  { id: "project", name: "Project", path: "/project" }
+  { id: "project", name: "Project", path: "/project" },
+  { id: "glossary", name: "Glossary", path: "/glossary" }
 ]
 
 export default function SEOSettings() {
@@ -200,7 +201,7 @@ export default function SEOSettings() {
                 onValueChange={setActiveTab}
                 className="w-full"
               >
-                <TabsList className="mb-6 grid grid-cols-3 sm:grid-cols-6">
+                <TabsList className="mb-6 grid grid-cols-3 sm:grid-cols-7">
                   {pages.map(page => (
                     <TabsTrigger key={page.id} value={page.id}>
                       {page.name}
