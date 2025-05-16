@@ -49,12 +49,12 @@ const data = {
         },
         {
           title: "All Projects",
-          url: "#",
+          url: "/dashboard/project",
           icon: GanttChart,
         },
         {
           title: "Services",
-          url: "#",
+          url: "/dashboard/services",
           icon: Wrench,
         },
       ],
@@ -90,18 +90,18 @@ const data = {
   ],
   projects: [
     {
-      name: "Post",
-      url: "#",
+      name: "Blogs",
+      url: "/dashboard/blog",
       icon: FileText,
     },
     {
       name: "Projects",
-      url: "#",
+      url: "/dashboard/project",
       icon: GanttChart,
     },
     {
       name: "Services",
-      url: "#",
+      url: "/dashboard/services",
       icon: Wrench,
     },
   ],

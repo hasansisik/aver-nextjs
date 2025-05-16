@@ -4,6 +4,7 @@ import userReducer from "./reducers/userReducer";
 import headerReducer from "./reducers/headerReducer";
 import footerReducer from "./reducers/footerReducer";
 import blogReducer from "./reducers/blogReducer";
+import projectReducer from "./reducers/projectReducer";
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     header: headerReducer,
     footer: footerReducer,
     blog: blogReducer,
+    project: projectReducer,
   },
 });
 
