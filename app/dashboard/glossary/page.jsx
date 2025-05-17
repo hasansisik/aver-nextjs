@@ -36,6 +36,16 @@ import {
   DialogTrigger,
   DialogFooter
 } from "@/app/_components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
 import Link from "next/link";
 
@@ -89,6 +99,8 @@ export default function GlossaryPage() {
   const [alertMessage, setAlertMessage] = useState("");
   const [newTermDialogOpen, setNewTermDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("edit");
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [termToDelete, setTermToDelete] = useState(null);
   
   // New glossary term form state
   const [termForm, setTermForm] = useState({
@@ -164,9 +176,15 @@ export default function GlossaryPage() {
     setActiveTab("edit");
   };
   
-  const handleDeleteTerm = (termId) => {
-    if (window.confirm("Bu sözlük terimini silmek istediğinize emin misiniz?")) {
-      dispatch(deleteGlossaryTerm(termId));
+  const confirmDeleteTerm = (termId) => {
+    setTermToDelete(termId);
+    setDeleteAlertOpen(true);
+  };
+  
+  const handleDeleteTerm = () => {
+    if (termToDelete) {
+      dispatch(deleteGlossaryTerm(termToDelete));
+      setTermToDelete(null);
     }
   };
 
@@ -446,7 +464,7 @@ export default function GlossaryPage() {
                   <Button 
                     variant="destructive" 
                     size="sm"
-                    onClick={() => handleDeleteTerm(term._id)}
+                    onClick={() => confirmDeleteTerm(term._id)}
                   >
                     <Trash size={16} />
                   </Button>
@@ -476,6 +494,24 @@ export default function GlossaryPage() {
           ))}
         </div>
       )}
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bu sözlük terimini silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bu işlem geri alınamaz. Sözlük terimi kalıcı olarak silinecektir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setTermToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteTerm} className="bg-red-600 focus:ring-red-600">
+              Sil
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 } 

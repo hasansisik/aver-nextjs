@@ -48,6 +48,16 @@ import { useDispatch, useSelector } from "react-redux"
 import { getServices, createService, updateService, deleteService } from "@/redux/actions/serviceActions"
 import Link from "next/link"
 import { uploadImageToCloudinary } from "../../../utils/cloudinary"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog"
 
 // Simple markdown preview component
 const MarkdownPreview = ({ content }) => {
@@ -128,6 +138,10 @@ export default function ServicesManager() {
   const [imagePreview, setImagePreview] = useState("")
   const imageUploadRef = useRef(null)
 
+  // Add the state variables for AlertDialog
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false)
+  const [serviceToDelete, setServiceToDelete] = useState(null)
+
   // Load services from API
   useEffect(() => {
     dispatch(getServices())
@@ -202,10 +216,15 @@ export default function ServicesManager() {
     setActiveTab("add")
   }
 
-  const handleDeleteService = async (serviceId) => {
-    if (confirm("Are you sure you want to delete this service?")) {
+  const confirmDeleteService = (serviceId) => {
+    setServiceToDelete(serviceId)
+    setDeleteAlertOpen(true)
+  }
+
+  const handleDeleteService = async () => {
+    if (serviceToDelete) {
       try {
-        await dispatch(deleteService(serviceId))
+        await dispatch(deleteService(serviceToDelete))
         setAlertType("success")
         setAlertMessage("Service deleted successfully")
         setShowAlert(true)
@@ -214,6 +233,7 @@ export default function ServicesManager() {
         setAlertMessage("Failed to delete service. Please try again.")
         setShowAlert(true)
       }
+      setServiceToDelete(null)
     }
   }
 
@@ -453,7 +473,7 @@ export default function ServicesManager() {
                         <Button 
                           variant="ghost" 
                           size="icon"
-                          onClick={() => handleDeleteService(service._id)}
+                          onClick={() => confirmDeleteService(service._id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -882,6 +902,24 @@ export default function ServicesManager() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete this service?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. The service will be permanently deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setServiceToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteService} className="bg-red-600 focus:ring-red-600">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 } 

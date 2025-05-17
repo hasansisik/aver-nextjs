@@ -20,6 +20,16 @@ import {
   DialogTrigger,
   DialogFooter
 } from "@/app/_components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 import { Checkbox } from "@/app/_components/ui/checkbox";
 import { uploadImageToCloudinary } from "../../../utils/cloudinary";
@@ -34,6 +44,8 @@ export default function ProjectPage() {
   const [alertMessage, setAlertMessage] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
   
   // New project form state
   const [projectForm, setProjectForm] = useState({
@@ -160,9 +172,15 @@ export default function ProjectPage() {
     });
   };
   
-  const handleDeleteProject = (projectId) => {
-    if (window.confirm("Bu projeyi silmek istediğinize emin misiniz?")) {
-      dispatch(deleteProject(projectId));
+  const confirmDeleteProject = (projectId) => {
+    setProjectToDelete(projectId);
+    setDeleteAlertOpen(true);
+  };
+  
+  const handleDeleteProject = () => {
+    if (projectToDelete) {
+      dispatch(deleteProject(projectToDelete));
+      setProjectToDelete(null);
     }
   };
   
@@ -516,7 +534,7 @@ export default function ProjectPage() {
                   <Button 
                     variant="destructive" 
                     size="sm"
-                    onClick={() => handleDeleteProject(project._id)}
+                    onClick={() => confirmDeleteProject(project._id)}
                   >
                     <Trash size={16} />
                   </Button>
@@ -546,6 +564,24 @@ export default function ProjectPage() {
           ))}
         </div>
       )}
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bu projeyi silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bu işlem geri alınamaz. Proje kalıcı olarak silinecektir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setProjectToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 focus:ring-red-600">
+              Sil
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 } 

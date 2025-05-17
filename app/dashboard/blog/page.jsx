@@ -20,6 +20,16 @@ import {
   DialogTrigger,
   DialogFooter
 } from "@/app/_components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 import { Checkbox } from "@/app/_components/ui/checkbox";
 import { uploadImageToCloudinary } from "../../../utils/cloudinary";
@@ -34,6 +44,8 @@ export default function BlogPage() {
   const [alertMessage, setAlertMessage] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [newBlogDialogOpen, setNewBlogDialogOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [blogToDelete, setBlogToDelete] = useState(null);
   
   // New blog form state
   const [blogForm, setBlogForm] = useState({
@@ -144,9 +156,15 @@ export default function BlogPage() {
     });
   };
   
-  const handleDeleteBlog = (blogId) => {
-    if (window.confirm("Bu blog yazısını silmek istediğinize emin misiniz?")) {
-      dispatch(deleteBlog(blogId));
+  const confirmDeleteBlog = (blogId) => {
+    setBlogToDelete(blogId);
+    setDeleteAlertOpen(true);
+  };
+  
+  const handleDeleteBlog = () => {
+    if (blogToDelete) {
+      dispatch(deleteBlog(blogToDelete));
+      setBlogToDelete(null);
     }
   };
   
@@ -364,7 +382,7 @@ export default function BlogPage() {
                   <Button 
                     variant="destructive" 
                     size="sm"
-                    onClick={() => handleDeleteBlog(blog._id)}
+                    onClick={() => confirmDeleteBlog(blog._id)}
                   >
                     <Trash size={16} />
                   </Button>
@@ -394,6 +412,24 @@ export default function BlogPage() {
           ))}
         </div>
       )}
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bu blog yazısını silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bu işlem geri alınamaz. Blog yazısı kalıcı olarak silinecektir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteBlog} className="bg-red-600 focus:ring-red-600">
+              Sil
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 } 

@@ -20,6 +20,16 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from "@/app/_components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 
 export default function FooterPage() {
@@ -45,6 +55,9 @@ export default function FooterPage() {
   const [alertMessage, setAlertMessage] = useState("");
   const [menuDialogOpen, setMenuDialogOpen] = useState(false);
   const [socialDialogOpen, setSocialDialogOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemTypeToDelete, setItemTypeToDelete] = useState(null);
   
   useEffect(() => {
     dispatch(getFooter());
@@ -114,8 +127,18 @@ export default function FooterPage() {
     setSocialDialogOpen(false);
   };
   
-  const handleMenuItemDelete = (itemId, type) => {
-    dispatch(removeMenuItem({ itemId, type }));
+  const confirmDeleteMenuItem = (itemId, type) => {
+    setItemToDelete(itemId);
+    setItemTypeToDelete(type);
+    setDeleteAlertOpen(true);
+  };
+  
+  const handleMenuItemDelete = () => {
+    if (itemToDelete && itemTypeToDelete) {
+      dispatch(removeMenuItem({ itemId: itemToDelete, type: itemTypeToDelete }));
+      setItemToDelete(null);
+      setItemTypeToDelete(null);
+    }
   };
   
   const handleMenuItemsReorder = (updatedItems, type) => {
@@ -250,7 +273,7 @@ export default function FooterPage() {
                   <SortableList
                     items={sortedFooterMenu}
                     onChange={(updatedItems) => handleMenuItemsReorder(updatedItems, 'footerMenu')}
-                    onDelete={(itemId) => handleMenuItemDelete(itemId, 'footerMenu')}
+                    onDelete={(itemId) => confirmDeleteMenuItem(itemId, 'footerMenu')}
                     renderItem={(item) => (
                       <div className="flex justify-between items-center w-full px-2">
                         <div className="font-medium">{item.name}</div>
@@ -320,7 +343,7 @@ export default function FooterPage() {
                   <SortableList
                     items={sortedSocialLinks}
                     onChange={(updatedItems) => handleMenuItemsReorder(updatedItems, 'socialLinks')}
-                    onDelete={(itemId) => handleMenuItemDelete(itemId, 'socialLinks')}
+                    onDelete={(itemId) => confirmDeleteMenuItem(itemId, 'socialLinks')}
                     renderItem={(item) => (
                       <div className="flex justify-between items-center w-full px-2">
                         <div className="font-medium">{item.name}</div>
@@ -405,6 +428,31 @@ export default function FooterPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Bu {itemTypeToDelete === 'footerMenu' ? 'menü öğesini' : 'sosyal bağlantıyı'} silmek istediğinize emin misiniz?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Bu işlem geri alınamaz. Öğe kalıcı olarak silinecektir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { 
+              setItemToDelete(null);
+              setItemTypeToDelete(null);
+            }}>
+              İptal
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleMenuItemDelete} className="bg-red-600 focus:ring-red-600">
+              Sil
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 } 
