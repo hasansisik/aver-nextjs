@@ -228,19 +228,7 @@ export default function BlogContentEditor({
   };
 
   return (
-    <>
-      {showAlert && (
-        <Alert className={`mb-4 ${alertType === "success" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-          {alertType === "success" ? (
-            <Check className="h-4 w-4" />
-          ) : (
-            <AlertCircle className="h-4 w-4" />
-          )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
-          <AlertDescription>{alertMessage}</AlertDescription>
-        </Alert>
-      )}
-      
+    <>      
       <Card>
         <CardHeader>
           <CardTitle>{title}</CardTitle>
