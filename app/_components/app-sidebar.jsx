@@ -2,23 +2,20 @@
 
 import * as React from "react"
 import {
-  Bot,
+  LayoutDashboard,
+  BookText,
+  Briefcase,
   Command,
-  FileText,
-  FolderKanban,
-  GanttChart,
+  FolderOpen,
+  Globe,
   Layout,
-  Layers,
-  PieChart,
-  Settings,
-  SquareTerminal,
+  Newspaper,
+  Search,
   Wrench
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -39,18 +36,18 @@ const data = {
     {
       title: "Post & Projects",
       url: "#",
-      icon: FolderKanban,
+      icon: FolderOpen,
       isActive: true,
       items: [
         {
           title: "All Blogs",
           url: "/dashboard/blog",
-          icon: FileText,
+          icon: Newspaper,
         },
         {
           title: "All Projects",
           url: "/dashboard/project",
-          icon: GanttChart,
+          icon: Briefcase,
         },
         {
           title: "Services",
@@ -60,30 +57,30 @@ const data = {
         {
           title: "Glossary",
           url: "/dashboard/glossary",
-          icon: FileText,
+          icon: BookText,
         },
       ],
     },
     {
       title: "Site",
       url: "#",
-      icon: Layout,
+      icon: Globe,
       isActive: true,
       items: [
         {
           title: "Header",
           url: "/dashboard/header",
-          icon: Layers,
+          icon: Layout,
         },
         {
           title: "Footer",
           url: "/dashboard/footer",
-          icon: Layers,
+          icon: Layout,
         },
         {
           title: "SEO",
           url: "/dashboard/seo",
-          icon: FileText,
+          icon: Search,
         },
       ],
     },
@@ -92,12 +89,12 @@ const data = {
     {
       name: "Blogs",
       url: "/dashboard/blog",
-      icon: FileText,
+      icon: Newspaper,
     },
     {
       name: "Projects",
       url: "/dashboard/project",
-      icon: GanttChart,
+      icon: Briefcase,
     },
     {
       name: "Services",
@@ -119,7 +116,7 @@ export function AppSidebar({
               <a href="/dashboard">
                 <div
                   className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+                  <LayoutDashboard className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Aver</span>
