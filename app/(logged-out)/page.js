@@ -1,11 +1,5 @@
-import Banner from "@/app/_blocks/Banner";
-import BlogCard from "@/app/_blocks/BlogCard";
-import ProjectCard from "@/app/_blocks/ProjectCard";
-import WorkProcess from "@/app/_blocks/WorkProcess";
-import { getDirectoryPages } from "@/libs/getDirectoryPages";
+
 import { getSinglePage } from "@/libs/getSinglePage";
-import Image from "next/image";
-import Link from "next/link";
 import { generateMetadata as generatePageMetadata } from "@/libs/metadataUtils";
 import HomeClient from "./HomeClient";
 
@@ -31,8 +25,6 @@ const Home = () => {
 }
 
 export default Home;
-
-// import Layout from "@/components/Layout";
 // import { getDirectoryPages } from "@/libs/getDirectoryPages";
 // import { getSinglePage } from "@/libs/getSinglePage";
 // import Link from "next/link";

@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import { useState, useEffect } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { getServices } from "@/redux/actions/serviceActions";
 
 // Custom CSS for the service card hover effect
 const useCustomStyles = () => {
@@ -107,26 +108,50 @@ const ServiceCard = ({ service }) => {
   );
 };
 
-const PageData = ({ title, subtitle, services, totalServices }) => {
+const PageData = ({ title, subtitle }) => {
   useCustomStyles(); // Apply custom styles
+  const dispatch = useDispatch();
+  
+  // Get services directly from Redux store
+  const { services, pagination } = useSelector((state) => state.service);
+  console.log("services",services);
+  const totalServices = pagination?.totalServices || services?.length || 0;
   
   const servicesToShow = 6;
-  const [displayedServices, setDisplayedServices] = useState(services.slice(0, servicesToShow));
-  const [canLoadMore, setCanLoadMore] = useState(services.length > servicesToShow);
+  const [displayedServices, setDisplayedServices] = useState([]);
+  const [canLoadMore, setCanLoadMore] = useState(false);
+
+  useEffect(() => {
+    // Dispatch getServices action when component mounts
+    dispatch(getServices());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (services && services.length > 0) {
+      // Consider a service published if isPublished is true OR isPublished is undefined but isActive is true
+      const filteredServices = services.filter(service => 
+        service.isPublished === true || (service.isPublished === undefined && service.isActive === true)
+      );
+      console.log("filteredServices", filteredServices);
+      setDisplayedServices(filteredServices.slice(0, servicesToShow));
+      setCanLoadMore(filteredServices.length > servicesToShow);
+    }
+  }, [services]);
 
   const handleLoadMore = () => {
     const currentLength = displayedServices.length;
-    const nextResults = services.slice(currentLength, currentLength + servicesToShow);
+    const filteredServices = services.filter(service => service.isPublished);
+    const nextResults = filteredServices.slice(currentLength, currentLength + servicesToShow);
     setDisplayedServices([...displayedServices, ...nextResults]);
     
-    if (currentLength + servicesToShow >= services.length) {
+    if (currentLength + servicesToShow >= filteredServices.length) {
       setCanLoadMore(false);
     }
   };
 
   return (
     <>
-      <PageHeader title={title} subtitle={subtitle + ` (${totalServices || services.length})`} />
+      <PageHeader title={title} subtitle={subtitle + ` (${totalServices})`} />
 
       <section className="py-28 bg-white text-dark rounded-b-2xl">
         <div className="container">
