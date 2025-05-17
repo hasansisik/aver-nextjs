@@ -740,7 +740,7 @@ ${uploadResults.length > 3 ? `![${uploadResults[3].alt}](${uploadResults[3].url}
                   type="button" 
                   variant="outline" 
                   size="sm"
-                  onClick={() => insertMarkdown('```javascript\n$1\n```', 'console.log("Hello World!");')}
+                  onClick={() => insertMarkdown('```javascript\n$1\n```')}
                   title="Code Block (JavaScript)"
                 >
                   <span className="font-mono text-xs">{"{ }"}</span>

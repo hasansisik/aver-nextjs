@@ -10,9 +10,7 @@ export const getBlogs = createAsyncThunk(
       const { data } = await axios.get(`${server}/blog`, {
         withCredentials: true
       });
-      
-      console.log("API response data:", data);
-      return data;
+            return data;
     } catch (error: any) {
       console.error("getBlogs Error:", error);
       const message = error.response?.data?.message || 'Blog posts alınamadı';
@@ -26,16 +24,12 @@ export const getBlogBySlug = createAsyncThunk(
   "blog/getBlogBySlug",
   async (slug: string, thunkAPI) => {
     try {
-      console.log(`Fetching blog with slug: ${slug}`);
       const requestUrl = `${server}/blog/${slug}`;
-      console.log(`Request URL: ${requestUrl}`);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
-      
-      console.log("getBlogBySlug response:", data);
-      
+            
       if (!data || !data.blog) {
         console.error("No blog data in response");
         return thunkAPI.rejectWithValue('Blog post bulunamadı');
@@ -293,13 +287,11 @@ export const getBlogById = createAsyncThunk(
   async (blogId: string, thunkAPI) => {
     try {
       const requestUrl = `${server}/blog/id/${blogId}`;
-      console.log("Making request to:", requestUrl);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("Blog by ID response:", data);
       return data.blog;
     } catch (error: any) {
       console.error("getBlogById Error:", error);

@@ -63,9 +63,6 @@ export default function ProjectPage() {
     dispatch(getProjects());
   }, [dispatch]);
   
-  useEffect(() => {
-    console.log("Projects in state:", projects);
-  }, [projects]);
 
   useEffect(() => {
     if (success && message) {

@@ -115,10 +115,6 @@ export default function GlossaryPage() {
     dispatch(getGlossaryTerms());
   }, [dispatch]);
   
-  // Debug log to check glossary terms
-  useEffect(() => {
-    console.log("Glossary terms in state:", glossaryTerms);
-  }, [glossaryTerms]);
 
   useEffect(() => {
     if (success && message) {

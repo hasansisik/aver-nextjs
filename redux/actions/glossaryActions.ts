@@ -11,7 +11,6 @@ export const getGlossaryTerms = createAsyncThunk(
         withCredentials: true
       });
       
-      console.log("API response data:", data);
       return data;
     } catch (error: any) {
       console.error("getGlossaryTerms Error:", error);
@@ -26,15 +25,11 @@ export const getGlossaryTermBySlug = createAsyncThunk(
   "glossary/getGlossaryTermBySlug",
   async (slug: string, thunkAPI) => {
     try {
-      console.log(`Fetching glossary term with slug: ${slug}`);
-      const requestUrl = `${server}/glossary/${slug}`;
-      console.log(`Request URL: ${requestUrl}`);
-      
+      const requestUrl = `${server}/glossary/${slug}`;      
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("getGlossaryTermBySlug response:", data);
       
       if (!data || !data.glossaryTerm) {
         console.error("No glossary term data in response");
@@ -57,13 +52,11 @@ export const getGlossaryTermById = createAsyncThunk(
   async (termId: string, thunkAPI) => {
     try {
       const requestUrl = `${server}/glossary/id/${termId}`;
-      console.log("Making request to:", requestUrl);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("Glossary term by ID response:", data);
       return data.glossaryTerm;
     } catch (error: any) {
       console.error("getGlossaryTermById Error:", error);

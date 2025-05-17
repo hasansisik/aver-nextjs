@@ -113,10 +113,8 @@ export const serviceReducer = createReducer(initialState, (builder) => {
     .addCase(getServiceBySlug.pending, (state) => {
       state.loading = true;
       state.error = null; // Clear any previous errors
-      console.log("getServiceBySlug.pending - Setting loading to true");
     })
     .addCase(getServiceBySlug.fulfilled, (state, action) => {
-      console.log("getServiceBySlug.fulfilled - Received payload:", action.payload);
       state.loading = false;
       
       if (action.payload) {
@@ -130,7 +128,6 @@ export const serviceReducer = createReducer(initialState, (builder) => {
       }
     })
     .addCase(getServiceBySlug.rejected, (state, action) => {
-      console.log("getServiceBySlug.rejected - Error:", action.payload);
       state.loading = false;
       state.error = action.payload as string;
       state.success = false;

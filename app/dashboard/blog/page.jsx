@@ -61,10 +61,6 @@ export default function BlogPage() {
     dispatch(getBlogs());
   }, [dispatch]);
   
-  // Debug log to check blogs
-  useEffect(() => {
-    console.log("Blogs in state:", blogs);
-  }, [blogs]);
 
   useEffect(() => {
     if (success && message) {

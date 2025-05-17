@@ -113,10 +113,8 @@ export const projectReducer = createReducer(initialState, (builder) => {
     .addCase(getProjectBySlug.pending, (state) => {
       state.loading = true;
       state.error = null; // Clear any previous errors
-      console.log("getProjectBySlug.pending - Setting loading to true");
     })
     .addCase(getProjectBySlug.fulfilled, (state, action) => {
-      console.log("getProjectBySlug.fulfilled - Received payload:", action.payload);
       state.loading = false;
       
       if (action.payload) {
@@ -130,7 +128,6 @@ export const projectReducer = createReducer(initialState, (builder) => {
       }
     })
     .addCase(getProjectBySlug.rejected, (state, action) => {
-      console.log("getProjectBySlug.rejected - Error:", action.payload);
       state.loading = false;
       state.error = action.payload as string;
       state.success = false;

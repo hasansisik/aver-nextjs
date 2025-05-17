@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
-import { notFound } from 'next/navigation';
 import ServiceClient from "./ServiceClient";
 import { useParams } from "next/navigation";
 
@@ -19,12 +17,9 @@ export default function ServiceDetail() {
   // Fetch current service and all services
   useEffect(() => {
     if (params.slug) {
-      console.log("Dispatching getServiceBySlug with slug:", params.slug);
       dispatch(getServiceBySlug(params.slug));
     }
-    
-    // Also fetch all services to use for related services
-    dispatch(getServices());
+        dispatch(getServices());
   }, [dispatch, params.slug]);
   
   useEffect(() => {

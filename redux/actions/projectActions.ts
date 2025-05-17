@@ -11,7 +11,6 @@ export const getProjects = createAsyncThunk(
         withCredentials: true
       });
       
-      console.log("API response data:", data);
       return data;
     } catch (error: any) {
       console.error("getProjects Error:", error);
@@ -26,15 +25,12 @@ export const getProjectBySlug = createAsyncThunk(
   "project/getProjectBySlug",
   async (slug: string, thunkAPI) => {
     try {
-      console.log(`Fetching project with slug: ${slug}`);
       const requestUrl = `${server}/project/${slug}`;
-      console.log(`Request URL: ${requestUrl}`);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("getProjectBySlug response:", data);
       
       if (!data || !data.project) {
         console.error("No project data in response");
@@ -301,13 +297,11 @@ export const getProjectById = createAsyncThunk(
   async (projectId: string, thunkAPI) => {
     try {
       const requestUrl = `${server}/project/id/${projectId}`;
-      console.log("Making request to:", requestUrl);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("Project by ID response:", data);
       return data.project;
     } catch (error: any) {
       console.error("getProjectById Error:", error);

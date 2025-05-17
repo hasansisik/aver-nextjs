@@ -17,13 +17,10 @@ export default function ProjectPage() {
   const { currentProject, projects, loading, error } = useSelector((state) => state.project);
   const [relatedProjects, setRelatedProjects] = useState([]);
   const [debugInfo, setDebugInfo] = useState(null);
-  
-  console.log("Rendering ProjectPage with slug:", params.slug);
-  
+    
   // Fetch current project and all projects
   useEffect(() => {
     if (params.slug) {
-      console.log("Dispatching getProjectBySlug with slug:", params.slug);
       dispatch(getProjectBySlug(params.slug));
     }
     
@@ -32,7 +29,6 @@ export default function ProjectPage() {
   }, [dispatch, params.slug]);
   
   useEffect(() => {
-    console.log("Current project state:", { currentProject, loading, error });
     setDebugInfo({ currentProject, loading, error });
     
     if (currentProject && projects && projects.length > 0) {
@@ -56,11 +52,6 @@ export default function ProjectPage() {
 
   if (loading) {
     return <div className="container py-20 text-center">Loading...</div>;
-  }
-
-  // Show debug info in development
-  if (debugInfo && process.env.NODE_ENV === 'development') {
-    console.log("Debug info:", JSON.stringify(debugInfo, null, 2));
   }
 
   if (error) {
@@ -182,9 +173,6 @@ export default function ProjectPage() {
   const previousProject = relatedProjects[0] || null;
   const nextProject = relatedProjects[1] || null;
   
-  // Log the final content for debugging
-  console.log("Final markdown content:", content);
-
   return (
     <>
       <section className="pt-24 pb-28">

@@ -114,7 +114,6 @@ const PageData = ({ title, subtitle }) => {
   
   // Get services directly from Redux store
   const { services, pagination } = useSelector((state) => state.service);
-  console.log("services",services);
   const totalServices = pagination?.totalServices || services?.length || 0;
   
   const servicesToShow = 6;
@@ -132,7 +131,6 @@ const PageData = ({ title, subtitle }) => {
       const filteredServices = services.filter(service => 
         service.isPublished === true || (service.isPublished === undefined && service.isActive === true)
       );
-      console.log("filteredServices", filteredServices);
       setDisplayedServices(filteredServices.slice(0, servicesToShow));
       setCanLoadMore(filteredServices.length > servicesToShow);
     }

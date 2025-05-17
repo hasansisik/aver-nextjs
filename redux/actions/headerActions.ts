@@ -61,9 +61,6 @@ export const addMenuItem = createAsyncThunk(
     try {
       const token = localStorage.getItem("accessToken");
       
-      console.log("AddMenuItem payload:", payload);
-      console.log("Token:", token);
-      
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -71,9 +68,6 @@ export const addMenuItem = createAsyncThunk(
         },
         withCredentials: true,
       };
-      
-      console.log("Request config:", config);
-      console.log("Request URL:", `${server}/header/add-menu-item`);
       
       const { data } = await axios.post(`${server}/header/add-menu-item`, payload, config);
       return data.header;

@@ -15,7 +15,6 @@ export const getServices = createAsyncThunk(
       
       const { data } = await axios.get(`${server}/service`, config);
       
-      console.log("API response data:", data);
       return data;
     } catch (error: any) {
       console.error("getServices Error:", error);
@@ -30,17 +29,12 @@ export const getServiceBySlug = createAsyncThunk(
   "service/getServiceBySlug",
   async (slug: string, thunkAPI) => {
     try {
-      console.log(`Fetching service with slug: ${slug}`);
       const requestUrl = `${server}/service/${slug}`;
-      console.log(`Request URL: ${requestUrl}`);
-      
-      // For server components, we don't need withCredentials
+
       const config = isServer() ? {} : { withCredentials: true };
       
       const { data } = await axios.get(requestUrl, config);
-      
-      console.log("getServiceBySlug response:", data);
-      
+            
       if (!data || !data.service) {
         console.error("No service data in response");
         return thunkAPI.rejectWithValue('Servis bulunamadı');
@@ -302,13 +296,11 @@ export const getServiceById = createAsyncThunk(
   async (serviceId: string, thunkAPI) => {
     try {
       const requestUrl = `${server}/service/id/${serviceId}`;
-      console.log("Making request to:", requestUrl);
       
       const { data } = await axios.get(requestUrl, {
         withCredentials: true
       });
       
-      console.log("Service by ID response:", data);
       return data.service;
     } catch (error: any) {
       console.error("getServiceById Error:", error);

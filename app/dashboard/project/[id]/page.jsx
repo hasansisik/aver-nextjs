@@ -55,8 +55,6 @@ export default function ProjectEditPage() {
   
   useEffect(() => {
     if (params.id) {
-      // Fetch project by ID
-      console.log("Fetching project with ID:", params.id);
       dispatch(getProjectById(params.id));
     }
   }, [dispatch, params.id]);

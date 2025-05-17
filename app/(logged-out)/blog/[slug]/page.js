@@ -19,13 +19,10 @@ export default function BlogPage() {
   const { currentBlog, blogs, loading, error } = useSelector((state) => state.blog);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [debugInfo, setDebugInfo] = useState(null);
-  
-  console.log("Rendering BlogPage with slug:", params.slug);
-  
+    
   // Fetch current blog and all blogs
   useEffect(() => {
     if (params.slug) {
-      console.log("Dispatching getBlogBySlug with slug:", params.slug);
       dispatch(getBlogBySlug(params.slug));
     }
     
@@ -34,7 +31,6 @@ export default function BlogPage() {
   }, [dispatch, params.slug]);
   
   useEffect(() => {
-    console.log("Current blog state:", { currentBlog, loading, error });
     setDebugInfo({ currentBlog, loading, error });
     
     if (currentBlog && blogs && blogs.length > 0) {
@@ -58,11 +54,6 @@ export default function BlogPage() {
 
   if (loading) {
     return <div className="container py-20 text-center">Loading...</div>;
-  }
-
-  // Show debug info in development
-  if (debugInfo && process.env.NODE_ENV === 'development') {
-    console.log("Debug info:", JSON.stringify(debugInfo, null, 2));
   }
 
   if (error) {
@@ -177,9 +168,6 @@ export default function BlogPage() {
   const previousPost = relatedPosts[0] || null;
   const nextPost = relatedPosts[1] || null;
   
-  // Log the final content for debugging
-  console.log("Final markdown content:", content);
-
   return (
     <>
       <section className="pt-24 pb-28">

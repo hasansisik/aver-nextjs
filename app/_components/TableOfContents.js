@@ -10,21 +10,16 @@ const TableOfContents = ({ content }) => {
   useEffect(() => {
     // Extract headings from markdown content
     const extractHeadings = () => {
-      console.log("Extracting headings from content:", content);
       
       // Modified regex to catch more heading formats, both with and without spaces after #
       const headingRegex = /^(#{2,3})\s*(.+)$/gm;
       const matches = [...content.matchAll(headingRegex)];
-      
-      console.log("Heading matches found:", matches.length);
-      
+            
       return matches.map((match, index) => {
         const level = match[1].length; // Count # symbols for level
         const text = match[2];
         const id = text.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
-        
-        console.log(`Heading ${index+1}: Level ${level}, Text: ${text}, ID: ${id}`);
-        
+                
         return { id, text, level };
       });
     };
@@ -96,13 +91,6 @@ const TableOfContents = ({ content }) => {
       }, 50);
     }
   };
-
-  if (headings.length === 0) {
-    console.log("No headings found, TableOfContents will not render");
-    return null;
-  }
-
-  console.log("Rendering TableOfContents with", headings.length, "headings");
 
   return (
     <div className="sticky top-8 bg-transparent backdrop-blur-sm rounded-lg p-5">
