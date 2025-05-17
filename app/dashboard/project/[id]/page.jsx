@@ -25,7 +25,6 @@ import {
   DialogFooter
 } from "@/app/_components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
-import { Checkbox } from "@/app/_components/ui/checkbox";
 import { uploadImageToCloudinary } from "../../../../utils/cloudinary";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
@@ -51,7 +50,6 @@ export default function ProjectEditPage() {
     category: "",
     color: "#000000",
     projectInfo: [],
-    isPublished: false,
     markdownContent: ""
   });
   
@@ -110,7 +108,6 @@ export default function ProjectEditPage() {
         category: currentProject.category || "",
         color: currentProject.color || "#000000",
         projectInfo: currentProject.projectInfo || [],
-        isPublished: currentProject.isPublished || false,
         markdownContent: markdownContent
       });
     }
@@ -168,10 +165,10 @@ export default function ProjectEditPage() {
   };
   
   const handleFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setProjectForm({
       ...projectForm,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     });
   };
   
@@ -224,25 +221,10 @@ export default function ProjectEditPage() {
       category: projectForm.category,
       color: projectForm.color,
       projectInfo: filteredProjectInfo,
-      isPublished: projectForm.isPublished,
       markdownContent: projectForm.markdownContent
     };
     
     dispatch(updateProject(projectData));
-  };
-  
-  const handlePublishToggle = () => {
-    const updatedPublishState = !projectForm.isPublished;
-    
-    setProjectForm({
-      ...projectForm,
-      isPublished: updatedPublishState
-    });
-    
-    dispatch(updateProject({
-      projectId: params.id,
-      isPublished: updatedPublishState
-    }));
   };
   
   // Handle content changes from the editor
@@ -472,18 +454,6 @@ export default function ProjectEditPage() {
                         ))
                       )}
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="isPublished" 
-                      name="isPublished"
-                      checked={projectForm.isPublished}
-                      onCheckedChange={(checked) => 
-                        setProjectForm({...projectForm, isPublished: checked})
-                      }
-                    />
-                    <Label htmlFor="isPublished">Yayında</Label>
                   </div>
                 </div>
               </form>

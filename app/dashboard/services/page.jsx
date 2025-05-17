@@ -112,8 +112,7 @@ export default function ServicesManager() {
     icon: "",
     image: "",
     markdownContent: "",
-    features: [],
-    isPublished: false
+    features: []
   })
   const [featureInput, setFeatureInput] = useState("")
   const [editMode, setEditMode] = useState(false)
@@ -165,8 +164,7 @@ export default function ServicesManager() {
       icon: "",
       image: "",
       markdownContent: "",
-      features: [],
-      isPublished: false
+      features: []
     })
     setFeatureInput("")
     setEditMode(false)
@@ -209,7 +207,6 @@ export default function ServicesManager() {
       image: service.image || "",
       markdownContent: service.markdownContent || "",
       features: service.features || [],
-      isPublished: service.isPublished || false
     })
     setEditMode(true)
     setCurrentServiceId(service._id)
@@ -481,17 +478,6 @@ export default function ServicesManager() {
                     </div>
                   </CardHeader>
                   <CardFooter className="p-4 pt-0 flex justify-between">
-                    <div className="text-xs">
-                      {service.isPublished ? (
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                          Published
-                        </span>
-                      ) : (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          Draft
-                        </span>
-                      )}
-                    </div>
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -793,18 +779,6 @@ export default function ServicesManager() {
                     <p className="text-sm text-gray-500 mt-1">
                       Use Markdown syntax for formatting. Include headings (#), lists (- or 1.), and emphasis (* or **).
                     </p>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2 pt-4">
-                    <input
-                      type="checkbox"
-                      id="isPublished"
-                      name="isPublished"
-                      checked={formData.isPublished}
-                      onChange={handleInputChange}
-                      className="rounded border-gray-300"
-                    />
-                    <Label htmlFor="isPublished">Publish this service</Label>
                   </div>
                   
                   <div className="pt-6 flex justify-between">

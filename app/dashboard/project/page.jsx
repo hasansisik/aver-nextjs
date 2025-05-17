@@ -55,8 +55,7 @@ export default function ProjectPage() {
     image: "",
     category: "",
     color: "#67A94C",
-    projectInfo: [],
-    isPublished: false
+    projectInfo: []
   });
   
   // Load all projects on component mount
@@ -167,8 +166,7 @@ export default function ProjectPage() {
       image: "",
       category: "",
       color: "#67A94C",
-      projectInfo: [],
-      isPublished: false
+      projectInfo: []
     });
   };
   
@@ -413,20 +411,6 @@ export default function ProjectPage() {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <div></div>
-                  <div className="flex items-center space-x-2 col-span-3">
-                    <Checkbox 
-                      id="isPublished" 
-                      name="isPublished"
-                      checked={projectForm.isPublished}
-                      onCheckedChange={(checked) => 
-                        setProjectForm({...projectForm, isPublished: checked})
-                      }
-                    />
-                    <Label htmlFor="isPublished">Hemen yayınla</Label>
-                  </div>
-                </div>
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setNewProjectDialogOpen(false)}>
@@ -493,17 +477,6 @@ export default function ProjectPage() {
                         />
                       )}
                     </div>
-                  </div>
-                  <div className="flex space-x-1">
-                    {project.isPublished ? (
-                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
-                        Yayında
-                      </span>
-                    ) : (
-                      <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded">
-                        Taslak
-                      </span>
-                    )}
                   </div>
                 </div>
               </CardHeader>

@@ -53,8 +53,7 @@ export default function BlogPage() {
     description: "",
     image: "",
     category: "",
-    tags: "",
-    isPublished: false
+    tags: ""
   });
   
   // Load all blogs on component mount
@@ -129,15 +128,14 @@ export default function BlogPage() {
   const handleCreateBlog = (e) => {
     e.preventDefault();
     
-    // Prepare the tags array from the comma-separated string
+    // Convert tags string to array
     const tagsArray = blogForm.tags
       ? blogForm.tags.split(',').map(tag => tag.trim())
       : [];
     
     const blogData = {
       ...blogForm,
-      tags: tagsArray,
-      contentBlocks: [] // Start with empty content blocks
+      tags: tagsArray
     };
     
     dispatch(createBlog(blogData));
@@ -151,8 +149,7 @@ export default function BlogPage() {
       description: "",
       image: "",
       category: "",
-      tags: "",
-      isPublished: false
+      tags: ""
     });
   };
   
@@ -273,20 +270,6 @@ export default function BlogPage() {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <div></div>
-                  <div className="flex items-center space-x-2 col-span-3">
-                    <Checkbox 
-                      id="isPublished" 
-                      name="isPublished"
-                      checked={blogForm.isPublished}
-                      onCheckedChange={(checked) => 
-                        setBlogForm({...blogForm, isPublished: checked})
-                      }
-                    />
-                    <Label htmlFor="isPublished">Hemen yayınla</Label>
-                  </div>
-                </div>
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setNewBlogDialogOpen(false)}>
@@ -342,17 +325,6 @@ export default function BlogPage() {
                     {blog.category && (
                       <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-2">
                         {blog.category}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex space-x-1">
-                    {blog.isPublished ? (
-                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
-                        Yayında
-                      </span>
-                    ) : (
-                      <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded">
-                        Taslak
                       </span>
                     )}
                   </div>

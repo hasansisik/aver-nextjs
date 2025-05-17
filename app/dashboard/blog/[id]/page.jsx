@@ -35,7 +35,6 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
-import { Checkbox } from "@/app/_components/ui/checkbox";
 import { uploadImageToCloudinary } from "../../../../utils/cloudinary";
 import Link from "next/link";
 import BlogContentEditor from "../../_components/blog/BlogContentEditor";
@@ -58,7 +57,6 @@ export default function BlogEditPage() {
     image: "",
     category: "",
     tags: "",
-    isPublished: false,
     content: ""
   });
   
@@ -133,7 +131,6 @@ export default function BlogEditPage() {
         image: currentBlog.image || "",
         category: currentBlog.category || "",
         tags: currentBlog.tags ? currentBlog.tags.join(", ") : "",
-        isPublished: currentBlog.isPublished || false,
         content: markdownContent
       });
     }
@@ -191,10 +188,10 @@ export default function BlogEditPage() {
   };
   
   const handleFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setBlogForm({
       ...blogForm,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     });
   };
   
@@ -213,7 +210,6 @@ export default function BlogEditPage() {
       image: blogForm.image,
       category: blogForm.category,
       tags: tagsArray,
-      isPublished: blogForm.isPublished,
       markdownContent: blogForm.content // Save content to markdownContent field
     };
     
@@ -242,7 +238,6 @@ export default function BlogEditPage() {
       image: blogForm.image,
       category: blogForm.category,
       tags: tagsArray,
-      isPublished: blogForm.isPublished,
       markdownContent: newContent // Save content to markdownContent field
     };
     
@@ -347,18 +342,6 @@ export default function BlogEditPage() {
                         placeholder="Virgülle ayırarak yazın"
                       />
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="isPublished" 
-                      name="isPublished"
-                      checked={blogForm.isPublished}
-                      onCheckedChange={(checked) => 
-                        setBlogForm({...blogForm, isPublished: checked})
-                      }
-                    />
-                    <Label htmlFor="isPublished">Yayında</Label>
                   </div>
                 </div>
               </form>
