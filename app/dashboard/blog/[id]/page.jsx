@@ -20,26 +20,17 @@ import {
   Save, 
   Upload, 
   ArrowLeft, 
-  Heading1, 
-  Heading2, 
-  Bold, 
-  Italic, 
-  List, 
-  ListOrdered, 
-  Link2, 
-  Image as ImageIcon, 
-  Code, 
-  Quote, 
-  Table, 
-  UploadCloud,
-  Loader2
+  ImageIcon, 
+  FileText,
+  Loader2,
+  Youtube
 } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
   DialogDescription, 
   DialogHeader, 
-  DialogTitle,
+  DialogTitle, 
   DialogFooter
 } from "@/app/_components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
@@ -47,58 +38,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/app/_components/ui/checkbox";
 import { uploadImageToCloudinary } from "../../../../utils/cloudinary";
 import Link from "next/link";
-
-// Simple markdown preview component
-const MarkdownPreview = ({ content }) => {
-  // Convert markdown to HTML (basic implementation)
-  const renderMarkdown = (text) => {
-    if (!text) return "";
-    let html = text
-      // Headers
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold my-4">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold my-3">$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold my-2">$1</h3>')
-      // Bold and Italic
-      .replace(/\*\*\*(.*)\*\*\*/gm, '<strong><em>$1</em></strong>')
-      .replace(/\*\*(.*)\*\*/gm, '<strong>$1</strong>')
-      .replace(/\*(.*)\*/gm, '<em>$1</em>')
-      // Lists
-      .replace(/^\- (.*$)/gm, '<li class="ml-4">$1</li>')
-      .replace(/^\* (.*$)/gm, '<li class="ml-4">$1</li>')
-      .replace(/^\d+\. (.*$)/gm, '<li class="ml-4 list-decimal">$1</li>')
-      // Quote
-      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-2">$1</blockquote>')
-      // Code
-      .replace(/```(.+)?\n([\s\S]*?)\n```/gm, '<pre class="bg-gray-100 p-4 rounded my-4"><code>$2</code></pre>')
-      .replace(/`([^`]+)`/gm, '<code class="bg-gray-100 px-1 rounded">$1</code>')
-      // Images
-      .replace(/!\[(.*?)\]\((.*?)\)/gm, '<img src="$2" alt="$1" class="my-4 max-w-full h-auto rounded">')
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/gm, '<a href="$2" class="text-blue-500 underline">$1</a>')
-      // Table parsing (basic)
-      .replace(/\|(.+)\|(.+)\|/gm, '<tr><td>$1</td><td>$2</td></tr>')
-      // Paragraphs
-      .replace(/^(?!<h|<li|<blockquote|<pre|<code|<img|<a|<ul|<ol|<p|<tr)(.*$)/gm, '<p class="my-2">$1</p>');
-    
-    // Replace consecutive list items with a list
-    html = html
-      .replace(/<li class="ml-4">.*?<\/li>(\s*<li class="ml-4">.*?<\/li>)+/gs, (match) => {
-        return '<ul class="list-disc my-2 ml-6">' + match + '</ul>';
-      })
-      .replace(/<li class="ml-4 list-decimal">.*?<\/li>(\s*<li class="ml-4 list-decimal">.*?<\/li>)+/gs, (match) => {
-        return '<ol class="list-decimal my-2 ml-6">' + match + '</ol>';
-      });
-    
-    return html;
-  };
-
-  return (
-    <div 
-      className="prose prose-sm max-w-none overflow-auto bg-white p-4 rounded-md border min-h-[300px]"
-      dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-    />
-  );
-};
+import BlogContentEditor from "../../_components/blog/BlogContentEditor";
 
 export default function BlogEditPage() {
   const params = useParams();
@@ -122,15 +62,24 @@ export default function BlogEditPage() {
     content: ""
   });
   
-  // Markdown editor state
-  const [markdownEditorTab, setMarkdownEditorTab] = useState("edit");
-  
   // Image upload dialog state
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const imageUploadRef = useRef(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [altText, setAltText] = useState("");
+  const [alignment, setAlignment] = useState("left");
+  const [titleText, setTitleText] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("single");
+  const [multipleImages, setMultipleImages] = useState([]);
+  const multipleImageRefsRef = useRef([]);
+  const [imageDialogTab, setImageDialogTab] = useState("template");
+  
+  // Video dialog state
+  const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
   
   useEffect(() => {
     if (params.id) {
@@ -271,91 +220,39 @@ export default function BlogEditPage() {
     dispatch(updateBlog(blogData));
   };
   
-  // Insert markdown syntax at cursor position or replace selected text
-  const insertMarkdown = (syntax, placeholder) => {
-    const textarea = document.getElementById('blogContent');
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = blogForm.content.substring(start, end);
-    const beforeText = blogForm.content.substring(0, start);
-    const afterText = blogForm.content.substring(end);
-    
-    let newText;
-    if (selectedText) {
-      // If text is selected, wrap it with the syntax
-      newText = `${beforeText}${syntax.replace('$1', selectedText)}${afterText}`;
-    } else {
-      // If no text is selected, insert syntax with placeholder
-      newText = `${beforeText}${syntax.replace('$1', placeholder)}${afterText}`;
-    }
-    
-    setBlogForm(prev => ({
-      ...prev,
-      content: newText
-    }));
-    
-    // Set focus back to textarea and position cursor appropriately
-    setTimeout(() => {
-      textarea.focus();
-      const newCursorPos = start + (placeholder ? start === end ? syntax.indexOf('$1') + placeholder.length : selectedText.length : syntax.length);
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
+  // Handle content changes from the editor
+  const handleContentChange = (newContent) => {
+    setBlogForm({
+      ...blogForm,
+      content: newContent
+    });
   };
   
-  // Handle file selection for image dialog
-  const handleImageFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-      setSelectedImage(null);
-      setImagePreview("");
-      return;
-    }
+  // Handle the save action from the editor
+  const handleContentSave = async (newContent) => {
+    // Prepare the tags array from the comma-separated string
+    const tagsArray = blogForm.tags
+      ? blogForm.tags.split(',').map(tag => tag.trim())
+      : [];
     
-    setSelectedImage(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
+    const blogData = {
+      blogId: currentBlog._id,
+      title: blogForm.title,
+      description: blogForm.description,
+      image: blogForm.image,
+      category: blogForm.category,
+      tags: tagsArray,
+      isPublished: blogForm.isPublished,
+      markdownContent: newContent // Save content to markdownContent field
     };
-    reader.readAsDataURL(file);
-  };
-  
-  // Handle image upload from dialog
-  const handleContentImageUpload = async () => {
-    if (!selectedImage) return;
     
-    setImageUploadLoading(true);
+    await dispatch(updateBlog(blogData)).unwrap();
     
-    try {
-      const uploadedUrl = await uploadImageToCloudinary(selectedImage);
-      
-      // Insert the image URL into the markdown content
-      insertMarkdown('![$1](' + uploadedUrl + ')', 'Image description');
-      
-      // Close the dialog
-      setIsImageDialogOpen(false);
-      setSelectedImage(null);
-      setImagePreview("");
-      
-      setAlertType("success");
-      setAlertMessage("Görsel yüklendi ve eklendi");
-      setShowAlert(true);
-    } catch (error) {
-      console.error('Image upload error:', error);
-      setAlertType("error");
-      setAlertMessage("Görsel yüklenemedi. Lütfen tekrar deneyin.");
-      setShowAlert(true);
-    } finally {
-      setImageUploadLoading(false);
-    }
-  };
-  
-  // Open file picker dialog when clicking Browse button
-  const triggerImageFilePicker = () => {
-    if (imageUploadRef.current) {
-      imageUploadRef.current.click();
-    }
+    // Update local state
+    setBlogForm({
+      ...blogForm,
+      content: newContent
+    });
   };
   
   if (loading && !currentBlog) {
@@ -518,231 +415,14 @@ export default function BlogEditPage() {
       
       {/* Content markdown editor section */}
       <div className="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>İçerik Editörü</CardTitle>
-            <CardDescription>
-              Blog yazınızın içeriğini markdown formatında düzenleyin
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="border rounded-md overflow-hidden">
-              <div className="bg-gray-50 p-2 border-b flex flex-wrap gap-1">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('# $1', 'Başlık')}
-                  title="Büyük Başlık"
-                >
-                  <Heading1 size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('## $1', 'Alt Başlık')}
-                  title="Orta Başlık"
-                >
-                  <Heading2 size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('**$1**', 'Kalın Metin')}
-                  title="Kalın"
-                >
-                  <Bold size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('*$1*', 'İtalik Metin')}
-                  title="İtalik"
-                >
-                  <Italic size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('* $1', 'Liste maddesi')}
-                  title="Sırasız Liste"
-                >
-                  <List size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('1. $1', 'Liste maddesi')}
-                  title="Sıralı Liste"
-                >
-                  <ListOrdered size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('[$1](https://ornek.com)', 'Bağlantı Metni')}
-                  title="Bağlantı"
-                >
-                  <Link2 size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setIsImageDialogOpen(true)}
-                  title="Görsel Ekle"
-                >
-                  <ImageIcon size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('```\n$1\n```', 'kod örneği')}
-                  title="Kod Bloğu"
-                >
-                  <Code size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('> $1', 'Alıntı metni')}
-                  title="Alıntı"
-                >
-                  <Quote size={16} />
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => insertMarkdown('| Başlık 1 | Başlık 2 |\n| --------- | --------- |\n| Hücre 1  | Hücre 2  |\n| Hücre 3  | Hücre 4  |', '')}
-                  title="Tablo"
-                >
-                  <Table size={16} />
-                </Button>
-              </div>
-              
-              <Tabs 
-                value={markdownEditorTab} 
-                onValueChange={setMarkdownEditorTab} 
-                className="w-full"
-              >
-                <TabsList className="w-full justify-start border-b rounded-none bg-gray-50">
-                  <TabsTrigger value="edit">Düzenle</TabsTrigger>
-                  <TabsTrigger value="preview">Önizleme</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="edit" className="m-0">
-                  <Textarea
-                    id="blogContent"
-                    name="content"
-                    value={blogForm.content}
-                    onChange={handleFormChange}
-                    className="min-h-[400px] border-0 rounded-none font-mono resize-y"
-                    placeholder="Blog içeriğini markdown formatında yazın..."
-                  />
-                </TabsContent>
-                
-                <TabsContent value="preview" className="m-0">
-                  <MarkdownPreview content={blogForm.content} />
-                </TabsContent>
-              </Tabs>
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              İçeriği formatlamak için markdown kullanın. Başlıklar (#), listeler (*, 1.), bağlantılar ([metin](url)) ve görseller (![açıklama](url)) ekleyebilirsiniz.
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button onClick={handleUpdateBlog}>
-              Değişiklikleri Kaydet
-            </Button>
-          </CardFooter>
-        </Card>
+        <BlogContentEditor 
+          content={blogForm.content}
+          onChange={handleContentChange}
+          onSave={handleContentSave}
+          title="İçerik Editörü"
+          description="Blog yazınızın içeriğini markdown formatında düzenleyin"
+        />
       </div>
-      
-      {/* Image upload dialog */}
-      <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Görsel Yükle</DialogTitle>
-            <DialogDescription>
-              İçeriğe eklemek için bir görsel yükleyin. Görsel imleç konumunda eklenecektir.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-6 w-full flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
-                onClick={triggerImageFilePicker}
-              >
-                <input
-                  ref={imageUploadRef}
-                  type="file"
-                  className="hidden"
-                  onChange={handleImageFileSelect}
-                  accept="image/*"
-                />
-                {imagePreview ? (
-                  <div className="relative w-full">
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      className="mx-auto max-h-[200px] object-contain" 
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2 mx-auto flex items-center"
-                      onClick={triggerImageFilePicker}
-                    >
-                      Görseli Değiştir
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <UploadCloud className="h-12 w-12 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-500">
-                      Görsel seçmek için tıklayın
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setIsImageDialogOpen(false);
-                setSelectedImage(null);
-                setImagePreview("");
-              }}
-            >
-              İptal
-            </Button>
-            <Button 
-              onClick={handleContentImageUpload}
-              disabled={!selectedImage || imageUploadLoading}
-            >
-              {imageUploadLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Yükleniyor...
-                </>
-              ) : 'Yükle ve Ekle'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 } 

@@ -58,14 +58,15 @@ export interface CreateProjectPayload {
   image?: string;
   category?: string;
   color?: string;
-  projectInfo?: Array<{
-    title: string;
-    data: string;
-  }>;
   contentBlocks?: Array<{
     type: string;
     content: string;
     metadata?: any;
+  }>;
+  markdownContent?: string;
+  projectInfo?: Array<{
+    title: string;
+    data: string;
   }>;
   isPublished?: boolean;
 }
@@ -101,15 +102,16 @@ export interface UpdateProjectPayload {
   image?: string;
   category?: string;
   color?: string;
-  projectInfo?: Array<{
-    title: string;
-    data: string;
-  }>;
   contentBlocks?: Array<{
     type: string;
     content: string;
     metadata?: any;
     order?: number;
+  }>;
+  markdownContent?: string;
+  projectInfo?: Array<{
+    title: string;
+    data: string;
   }>;
   isPublished?: boolean;
 }
