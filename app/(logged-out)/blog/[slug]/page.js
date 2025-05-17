@@ -10,64 +10,51 @@ import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogBySlug } from "@/redux/actions/blogActions";
+import { getBlogBySlug, getBlogs } from "@/redux/actions/blogActions";
 import { useParams } from "next/navigation";
 
 export default function BlogPage() {
   const params = useParams();
   const dispatch = useDispatch();
-  const { currentBlog, loading, error } = useSelector((state) => state.blog);
+  const { currentBlog, blogs, loading, error } = useSelector((state) => state.blog);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [debugInfo, setDebugInfo] = useState(null);
   
   console.log("Rendering BlogPage with slug:", params.slug);
   
+  // Fetch current blog and all blogs
   useEffect(() => {
     if (params.slug) {
       console.log("Dispatching getBlogBySlug with slug:", params.slug);
       dispatch(getBlogBySlug(params.slug));
     }
+    
+    // Also fetch all blogs to use for related posts
+    dispatch(getBlogs());
   }, [dispatch, params.slug]);
   
   useEffect(() => {
     console.log("Current blog state:", { currentBlog, loading, error });
     setDebugInfo({ currentBlog, loading, error });
     
-    if (currentBlog) {
-      // For related posts implementation
-      const fetchRelatedPosts = async () => {
-        try {
-          // Mock related posts with simple data
-          const mockRelatedPosts = [
-            {
-              slug: currentBlog.slug ? `${currentBlog.slug}-related-1` : 'related-post-1',
-              frontMatter: {
-                title: 'Related Post 1',
-                date: new Date().toISOString(),
-                image: currentBlog.image || 'https://via.placeholder.com/300',
-                category: currentBlog.category || 'General'
-              }
-            },
-            {
-              slug: currentBlog.slug ? `${currentBlog.slug}-related-2` : 'related-post-2',
-              frontMatter: {
-                title: 'Related Post 2',
-                date: new Date().toISOString(),
-                image: currentBlog.image || 'https://via.placeholder.com/300',
-                category: currentBlog.category || 'General'
-              }
-            }
-          ];
-          
-          setRelatedPosts(mockRelatedPosts);
-        } catch (error) {
-          console.error("Error fetching related posts:", error);
-        }
-      };
+    if (currentBlog && blogs && blogs.length > 0) {
+      // Filter out the current blog and get up to 2 related posts
+      const filteredBlogs = blogs.filter(blog => blog.slug !== params.slug);
       
-      fetchRelatedPosts();
+      // If we have related posts, format them for display
+      const formattedRelatedPosts = filteredBlogs.slice(0, 2).map(blog => ({
+        slug: blog.slug,
+        frontMatter: {
+          title: blog.title,
+          date: blog.createdAt || blog.date || new Date().toISOString(),
+          image: blog.image || 'https://via.placeholder.com/300',
+          category: blog.category || 'General'
+        }
+      }));
+      
+      setRelatedPosts(formattedRelatedPosts);
     }
-  }, [currentBlog, loading, error]);
+  }, [currentBlog, blogs, loading, error, params.slug]);
 
   if (loading) {
     return <div className="container py-20 text-center">Loading...</div>;

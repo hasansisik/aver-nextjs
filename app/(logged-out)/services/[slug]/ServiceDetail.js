@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getServiceBySlug } from "@/redux/actions/serviceActions";
+import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
 import { notFound } from 'next/navigation';
 import ServiceClient from "./ServiceClient";
 import { useParams } from "next/navigation";
@@ -13,46 +13,30 @@ import { useParams } from "next/navigation";
 export default function ServiceDetail() {
   const params = useParams();
   const dispatch = useDispatch();
-  const { currentService, loading, error } = useSelector((state) => state.service);
+  const { currentService, services, loading, error } = useSelector((state) => state.service);
   const [relatedServices, setRelatedServices] = useState([]);
   
+  // Fetch current service and all services
   useEffect(() => {
     if (params.slug) {
       console.log("Dispatching getServiceBySlug with slug:", params.slug);
       dispatch(getServiceBySlug(params.slug));
     }
+    
+    // Also fetch all services to use for related services
+    dispatch(getServices());
   }, [dispatch, params.slug]);
   
   useEffect(() => {
-    if (currentService) {
-      // For related services implementation
-      const fetchRelatedServices = async () => {
-        try {
-          // Mock related services with simple data
-          const mockRelatedServices = [
-            {
-              slug: "web-development",
-              title: "Web Development",
-              description: "Custom websites for your business needs",
-              image: "/images/services/web-development.jpg",
-            },
-            {
-              slug: "app-development", 
-              title: "App Development",
-              description: "Native and cross-platform mobile applications",
-              image: "/images/services/app-development.jpg",
-            }
-          ];
-          
-          setRelatedServices(mockRelatedServices);
-        } catch (error) {
-          console.error("Error fetching related services:", error);
-        }
-      };
+    if (currentService && services && services.length > 0) {
+      // Filter out the current service and get up to 2 related services
+      const filteredServices = services
+        .filter(service => service.slug !== params.slug && service.isPublished)
+        .slice(0, 2);
       
-      fetchRelatedServices();
+      setRelatedServices(filteredServices);
     }
-  }, [currentService]);
+  }, [currentService, services, params.slug]);
 
   if (loading) {
     return <div className="container py-20 text-center">Loading...</div>;

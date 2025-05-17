@@ -8,64 +8,51 @@ import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProjectBySlug } from "@/redux/actions/projectActions";
+import { getProjectBySlug, getProjects } from "@/redux/actions/projectActions";
 import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const params = useParams();
   const dispatch = useDispatch();
-  const { currentProject, loading, error } = useSelector((state) => state.project);
+  const { currentProject, projects, loading, error } = useSelector((state) => state.project);
   const [relatedProjects, setRelatedProjects] = useState([]);
   const [debugInfo, setDebugInfo] = useState(null);
   
   console.log("Rendering ProjectPage with slug:", params.slug);
   
+  // Fetch current project and all projects
   useEffect(() => {
     if (params.slug) {
       console.log("Dispatching getProjectBySlug with slug:", params.slug);
       dispatch(getProjectBySlug(params.slug));
     }
+    
+    // Also fetch all projects to use for related projects
+    dispatch(getProjects());
   }, [dispatch, params.slug]);
   
   useEffect(() => {
     console.log("Current project state:", { currentProject, loading, error });
     setDebugInfo({ currentProject, loading, error });
     
-    if (currentProject) {
-      // For related projects implementation
-      const fetchRelatedProjects = async () => {
-        try {
-          // Mock related projects with simple data
-          const mockRelatedProjects = [
-            {
-              slug: currentProject.slug ? `${currentProject.slug}-related-1` : 'related-project-1',
-              frontMatter: {
-                title: 'Related Project 1',
-                date: new Date().toISOString(),
-                image: currentProject.image || 'https://via.placeholder.com/500',
-                category: currentProject.category || 'Design'
-              }
-            },
-            {
-              slug: currentProject.slug ? `${currentProject.slug}-related-2` : 'related-project-2',
-              frontMatter: {
-                title: 'Related Project 2',
-                date: new Date().toISOString(),
-                image: currentProject.image || 'https://via.placeholder.com/500',
-                category: currentProject.category || 'Branding'
-              }
-            }
-          ];
-          
-          setRelatedProjects(mockRelatedProjects);
-        } catch (error) {
-          console.error("Error fetching related projects:", error);
-        }
-      };
+    if (currentProject && projects && projects.length > 0) {
+      // Filter out the current project and get up to 2 related projects
+      const filteredProjects = projects.filter(project => project.slug !== params.slug);
       
-      fetchRelatedProjects();
+      // If we have related projects, format them for display
+      const formattedRelatedProjects = filteredProjects.slice(0, 2).map(project => ({
+        slug: project.slug,
+        frontMatter: {
+          title: project.title,
+          date: project.createdAt || project.date || new Date().toISOString(),
+          image: project.image || 'https://via.placeholder.com/500',
+          category: project.category || 'Design'
+        }
+      }));
+      
+      setRelatedProjects(formattedRelatedProjects);
     }
-  }, [currentProject, loading, error]);
+  }, [currentProject, projects, loading, error, params.slug]);
 
   if (loading) {
     return <div className="container py-20 text-center">Loading...</div>;

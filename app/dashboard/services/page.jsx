@@ -612,7 +612,7 @@ export default function ServicesManager() {
                     </div>
                   </div>
                   
-                  <div className="space-y-1">
+                  <div className="space-y-4">
                     <Label htmlFor="features">Features</Label>
                     <div className="flex space-x-2">
                       <Input
