@@ -62,6 +62,7 @@ export interface CreateBlogPayload {
     content: string;
     metadata?: any;
   }>;
+  markdownContent?: string;
   tags?: string[];
   isPublished?: boolean;
 }
@@ -102,6 +103,7 @@ export interface UpdateBlogPayload {
     metadata?: any;
     order?: number;
   }>;
+  markdownContent?: string;
   tags?: string[];
   isPublished?: boolean;
 }
