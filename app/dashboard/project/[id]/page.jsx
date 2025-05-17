@@ -153,11 +153,11 @@ export default function ProjectEditPage() {
       });
       
       setAlertType("success");
-      setAlertMessage("Görsel başarıyla yüklendi");
+      setAlertMessage("Image uploaded successfully");
       setShowAlert(true);
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(`Görsel yüklenirken hata oluştu: ${error.message}`);
+      setAlertMessage(`Error uploading image: ${error.message}`);
       setShowAlert(true);
     } finally {
       setImageUploading(false);
@@ -252,11 +252,11 @@ export default function ProjectEditPage() {
   };
   
   if (loading && !currentProject) {
-    return <div className="text-center py-10">Yükleniyor...</div>;
+    return <div className="text-center py-10">Loading...</div>;
   }
   
   if (!currentProject) {
-    return <div className="text-center py-10">Proje bulunamadı</div>;
+    return <div className="text-center py-10">Project not found</div>;
   }
   
   return (
@@ -268,14 +268,14 @@ export default function ProjectEditPage() {
               <ArrowLeft size={16} />
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold">Proje Düzenle</h1>
+          <h1 className="text-3xl font-bold">Edit Project</h1>
         </div>
         <Button 
           onClick={handleUpdateProject} 
           className="flex items-center gap-2"
           disabled={!projectForm.title || imageUploading}
         >
-          <Save size={16} /> Tüm Değişiklikleri Kaydet
+          <Save size={16} /> Save All Changes
         </Button>
       </div>
       
@@ -286,7 +286,7 @@ export default function ProjectEditPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
@@ -295,16 +295,16 @@ export default function ProjectEditPage() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Proje Bilgileri</CardTitle>
+              <CardTitle>Project Information</CardTitle>
               <CardDescription>
-                Projenin temel bilgilerini düzenleyin
+                Edit basic information about the project
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Başlık</Label>
+                    <Label htmlFor="title">Title</Label>
                     <Input
                       id="title"
                       name="title"
@@ -315,7 +315,7 @@ export default function ProjectEditPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="description">Açıklama</Label>
+                    <Label htmlFor="description">Description</Label>
                     <Textarea
                       id="description"
                       name="description"
@@ -326,7 +326,7 @@ export default function ProjectEditPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="date">Tarih</Label>
+                    <Label htmlFor="date">Date</Label>
                     <Input
                       id="date"
                       name="date"
@@ -338,7 +338,7 @@ export default function ProjectEditPage() {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="category">Kategori</Label>
+                      <Label htmlFor="category">Category</Label>
                       <Input
                         id="category"
                         name="category"
@@ -348,7 +348,7 @@ export default function ProjectEditPage() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="color">Renk</Label>
+                      <Label htmlFor="color">Color</Label>
                       <div className="flex gap-3 items-center">
                         <Input
                           id="color"
@@ -370,20 +370,20 @@ export default function ProjectEditPage() {
                   
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <Label>Proje Detay Bilgileri</Label>
+                      <Label>Project Details</Label>
                       <Button 
                         type="button" 
                         variant="outline" 
                         size="sm" 
                         onClick={handleAddProjectInfo}
                       >
-                        Yeni Bilgi Ekle
+                        Add New Information
                       </Button>
                     </div>
                     <div className="space-y-3">
                       {projectForm.projectInfo.length === 0 ? (
                         <div className="text-center py-4 text-gray-500 border border-dashed rounded-md">
-                          <p>Henüz proje bilgisi eklenmemiş</p>
+                          <p>No project information added yet</p>
                           <Button 
                             type="button" 
                             variant="outline" 
@@ -401,14 +401,14 @@ export default function ProjectEditPage() {
                               });
                             }}
                           >
-                            Temel Bilgileri Ekle
+                            Add Basic Information
                           </Button>
                         </div>
                       ) : (
                         projectForm.projectInfo.map((info, index) => (
                           <div key={index} className="grid grid-cols-4 items-start gap-4 p-3 border rounded-md">
                             <div className="col-span-1">
-                              <Label htmlFor={`info-title-${index}`}>Başlık</Label>
+                              <Label htmlFor={`info-title-${index}`}>Title</Label>
                               <Input
                                 id={`info-title-${index}`}
                                 value={info.title}
@@ -417,13 +417,13 @@ export default function ProjectEditPage() {
                               />
                             </div>
                             <div className="col-span-2">
-                              <Label htmlFor={`info-data-${index}`}>İçerik</Label>
+                              <Label htmlFor={`info-data-${index}`}>Content</Label>
                               <Textarea
                                 id={`info-data-${index}`}
                                 value={info.data}
                                 onChange={(e) => handleProjectInfoChange(index, 'data', e.target.value)}
                                 className="mt-1 font-mono text-sm"
-                                placeholder="Markdown kullanımı desteklenir (örn: liste için - item1)"
+                                placeholder="Markdown supported (e.g: list with - item1)"
                                 rows={3}
                               />
                               {info.data && info.data.includes('-') && (
@@ -447,7 +447,7 @@ export default function ProjectEditPage() {
                                 className="mt-4"
                                 onClick={() => handleRemoveProjectInfo(index)}
                               >
-                                Kaldır
+                                Remove
                               </Button>
                             </div>
                           </div>
@@ -464,7 +464,7 @@ export default function ProjectEditPage() {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>Kapak Görseli</CardTitle>
+              <CardTitle>Cover Image</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -480,7 +480,7 @@ export default function ProjectEditPage() {
                     onChange={handleImageUpload}
                     accept="image/*"
                   />
-                  {imageUploading ? "Yükleniyor..." : "Görsel Yükle"}
+                  {imageUploading ? "Uploading..." : "Upload Image"}
                   <Upload className="ml-2 h-4 w-4" />
                 </Button>
                 
@@ -504,8 +504,8 @@ export default function ProjectEditPage() {
           content={projectForm.markdownContent}
           onChange={handleContentChange}
           onSave={handleContentSave}
-          title="Proje İçeriği"
-          description="Projenizin içeriğini markdown formatında düzenleyin"
+          title="Project Content"
+          description="Edit your project content in markdown format"
         />
       </div>
     </div>

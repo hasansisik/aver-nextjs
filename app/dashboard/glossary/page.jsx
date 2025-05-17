@@ -227,25 +227,25 @@ export default function GlossaryPage() {
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Sözlük Yönetimi</h1>
+        <h1 className="text-3xl font-bold">Glossary Management</h1>
         <Dialog open={newTermDialogOpen} onOpenChange={setNewTermDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
-              <Plus size={16} /> Yeni Terim Ekle
+              <Plus size={16} /> Add New Term
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[650px]">
             <DialogHeader>
-              <DialogTitle>Yeni Sözlük Terimi</DialogTitle>
+              <DialogTitle>New Glossary Term</DialogTitle>
               <DialogDescription>
-                Sözlüğe yeni bir terim ekleyin.
+                Add a new term to the glossary.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateTerm}>
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">
-                    Başlık
+                    Title
                   </Label>
                   <Input
                     id="title"
@@ -258,7 +258,7 @@ export default function GlossaryPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="description" className="text-right">
-                    Açıklama
+                    Description
                   </Label>
                   <Textarea
                     id="description"
@@ -271,7 +271,7 @@ export default function GlossaryPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="category" className="text-right">
-                    Kategori
+                    Category
                   </Label>
                   <Input
                     id="category"
@@ -279,12 +279,12 @@ export default function GlossaryPage() {
                     value={termForm.category}
                     onChange={handleFormChange}
                     className="col-span-3"
-                    placeholder="Örn: SEO, Pazarlama, Teknoloji"
+                    placeholder="E.g., SEO, Marketing, Technology"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-start gap-4">
                   <Label htmlFor="content" className="text-right pt-2">
-                    İçerik
+                    Content
                   </Label>
                   <div className="col-span-3 border rounded-md overflow-hidden">
                     <div className="bg-gray-50 p-2 border-b flex flex-wrap gap-1">
@@ -292,8 +292,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('# $1', 'Başlık')}
-                        title="Başlık 1"
+                        onClick={() => insertMarkdown('# $1', 'Heading')}
+                        title="Heading 1"
                       >
                         <Heading1 size={16} />
                       </Button>
@@ -301,8 +301,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('## $1', 'Alt Başlık')}
-                        title="Başlık 2"
+                        onClick={() => insertMarkdown('## $1', 'Subheading')}
+                        title="Heading 2"
                       >
                         <Heading2 size={16} />
                       </Button>
@@ -310,8 +310,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('**$1**', 'Kalın Metin')}
-                        title="Kalın"
+                        onClick={() => insertMarkdown('**$1**', 'Bold Text')}
+                        title="Bold"
                       >
                         <Bold size={16} />
                       </Button>
@@ -319,8 +319,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('*$1*', 'İtalik Metin')}
-                        title="İtalik"
+                        onClick={() => insertMarkdown('*$1*', 'Italic Text')}
+                        title="Italic"
                       >
                         <Italic size={16} />
                       </Button>
@@ -328,8 +328,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('- $1', 'Liste öğesi')}
-                        title="Madde İşaretli Liste"
+                        onClick={() => insertMarkdown('- $1', 'List item')}
+                        title="Bullet List"
                       >
                         <List size={16} />
                       </Button>
@@ -337,8 +337,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('1. $1', 'Liste öğesi')}
-                        title="Numaralı Liste"
+                        onClick={() => insertMarkdown('1. $1', 'List item')}
+                        title="Numbered List"
                       >
                         <ListOrdered size={16} />
                       </Button>
@@ -346,8 +346,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('[$1](https://ornek.com)', 'Bağlantı Metni')}
-                        title="Bağlantı"
+                        onClick={() => insertMarkdown('[$1](https://example.com)', 'Link Text')}
+                        title="Link"
                       >
                         <Link2 size={16} />
                       </Button>
@@ -355,8 +355,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('![$1](https://ornek.com/resim.jpg)', 'Resim açıklaması')}
-                        title="Görsel"
+                        onClick={() => insertMarkdown('![$1](https://example.com/image.jpg)', 'Image description')}
+                        title="Image"
                       >
                         <Image size={16} />
                       </Button>
@@ -364,8 +364,8 @@ export default function GlossaryPage() {
                         type="button" 
                         variant="outline" 
                         size="sm"
-                        onClick={() => insertMarkdown('`$1`', 'kod')}
-                        title="Kod"
+                        onClick={() => insertMarkdown('`$1`', 'code')}
+                        title="Code"
                       >
                         <Code size={16} />
                       </Button>
@@ -377,7 +377,7 @@ export default function GlossaryPage() {
                       className="w-full"
                     >
                       <TabsList className="w-full justify-start border-b rounded-none bg-gray-50">
-                        <TabsTrigger value="edit">Düzenle</TabsTrigger>
+                        <TabsTrigger value="edit">Edit</TabsTrigger>
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                       </TabsList>
                       
@@ -388,7 +388,7 @@ export default function GlossaryPage() {
                           value={termForm.content}
                           onChange={handleFormChange}
                           className="min-h-[200px] border-0 rounded-none font-mono resize-y"
-                          placeholder="Terimin detaylı açıklamasını markdown formatında yazabilirsiniz."
+                          placeholder="Write a detailed explanation of the term in markdown format."
                         />
                       </TabsContent>
                       
@@ -401,10 +401,10 @@ export default function GlossaryPage() {
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setNewTermDialogOpen(false)}>
-                  İptal
+                  Cancel
                 </Button>
                 <Button type="submit" disabled={!termForm.title || !termForm.description}>
-                  Terimi Oluştur
+                  Create Term
                 </Button>
               </DialogFooter>
             </form>
@@ -419,17 +419,17 @@ export default function GlossaryPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
       
-      {loading && <div className="text-center py-10">Yükleniyor...</div>}
+      {loading && <div className="text-center py-10">Loading...</div>}
       
       {!loading && (!sortedTerms || sortedTerms.length === 0) && (
         <div className="text-center py-10">
-          <p className="text-lg text-gray-500 mb-4">Henüz hiç sözlük terimi bulunmuyor.</p>
-          <Button onClick={() => setNewTermDialogOpen(true)}>İlk Sözlük Teriminizi Oluşturun</Button>
+          <p className="text-lg text-gray-500 mb-4">No glossary terms found yet.</p>
+          <Button onClick={() => setNewTermDialogOpen(true)}>Create Your First Glossary Term</Button>
         </div>
       )}
       
@@ -452,7 +452,7 @@ export default function GlossaryPage() {
               <CardContent>
                 <p className="text-sm text-muted-foreground line-clamp-3">{term.description}</p>
                 <p className="text-xs text-gray-500 mt-2">
-                  {new Date(term.createdAt).toLocaleDateString('tr-TR', {
+                  {new Date(term.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -475,7 +475,7 @@ export default function GlossaryPage() {
                       asChild
                     >
                       <Link href={`/glossary/${term.slug}`} target="_blank">
-                        <Eye size={16} className="mr-1" /> Görüntüle
+                        <Eye size={16} className="mr-1" /> View
                       </Link>
                     </Button>
                     <Button 
@@ -484,7 +484,7 @@ export default function GlossaryPage() {
                       asChild
                     >
                       <Link href={`/dashboard/glossary/${term._id}`}>
-                        <Edit size={16} className="mr-1" /> Düzenle
+                        <Edit size={16} className="mr-1" /> Edit
                       </Link>
                     </Button>
                   </div>
@@ -499,15 +499,15 @@ export default function GlossaryPage() {
       <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bu sözlük terimini silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this glossary term?</AlertDialogTitle>
             <AlertDialogDescription>
-              Bu işlem geri alınamaz. Sözlük terimi kalıcı olarak silinecektir.
+              This action cannot be undone. The glossary term will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setTermToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setTermToDelete(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteTerm} className="bg-red-600 focus:ring-red-600">
-              Sil
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

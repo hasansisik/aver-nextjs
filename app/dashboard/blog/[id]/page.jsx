@@ -176,11 +176,11 @@ export default function BlogEditPage() {
       });
       
       setAlertType("success");
-      setAlertMessage("Görsel başarıyla yüklendi");
+      setAlertMessage("Image uploaded successfully");
       setShowAlert(true);
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(`Görsel yüklenirken hata oluştu: ${error.message}`);
+      setAlertMessage(`Error uploading image: ${error.message}`);
       setShowAlert(true);
     } finally {
       setImageUploading(false);
@@ -251,11 +251,11 @@ export default function BlogEditPage() {
   };
   
   if (loading && !currentBlog) {
-    return <div className="text-center py-10">Yükleniyor...</div>;
+    return <div className="text-center py-10">Loading...</div>;
   }
   
   if (!currentBlog) {
-    return <div className="text-center py-10">Blog bulunamadı</div>;
+    return <div className="text-center py-10">Blog not found</div>;
   }
   
   return (
@@ -267,10 +267,10 @@ export default function BlogEditPage() {
               <ArrowLeft size={16} />
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold">Blog Düzenle</h1>
+          <h1 className="text-3xl font-bold">Edit Blog</h1>
         </div>
         <Button onClick={handleUpdateBlog} className="flex items-center gap-2">
-          <Save size={16} /> Kaydet
+          <Save size={16} /> Save
         </Button>
       </div>
       
@@ -281,7 +281,7 @@ export default function BlogEditPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
@@ -291,16 +291,16 @@ export default function BlogEditPage() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Blog Bilgileri</CardTitle>
+              <CardTitle>Blog Information</CardTitle>
               <CardDescription>
-                Blog yazınızın temel bilgilerini düzenleyin
+                Edit the basic information for your blog post
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Başlık</Label>
+                    <Label htmlFor="title">Title</Label>
                     <Input
                       id="title"
                       name="title"
@@ -311,7 +311,7 @@ export default function BlogEditPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="description">Açıklama</Label>
+                    <Label htmlFor="description">Description</Label>
                     <Textarea
                       id="description"
                       name="description"
@@ -323,7 +323,7 @@ export default function BlogEditPage() {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="category">Kategori</Label>
+                      <Label htmlFor="category">Category</Label>
                       <Input
                         id="category"
                         name="category"
@@ -333,13 +333,13 @@ export default function BlogEditPage() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="tags">Etiketler</Label>
+                      <Label htmlFor="tags">Tags</Label>
                       <Input
                         id="tags"
                         name="tags"
                         value={blogForm.tags}
                         onChange={handleFormChange}
-                        placeholder="Virgülle ayırarak yazın"
+                        placeholder="Separate with commas"
                       />
                     </div>
                   </div>
@@ -351,7 +351,7 @@ export default function BlogEditPage() {
                 onClick={handleUpdateBlog}
                 disabled={!blogForm.title || imageUploading}
               >
-                Değişiklikleri Kaydet
+                Save Changes
               </Button>
             </CardFooter>
           </Card>
@@ -361,7 +361,7 @@ export default function BlogEditPage() {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>Kapak Görseli</CardTitle>
+              <CardTitle>Cover Image</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -377,7 +377,7 @@ export default function BlogEditPage() {
                     onChange={handleImageUpload}
                     accept="image/*"
                   />
-                  {imageUploading ? "Yükleniyor..." : "Görsel Yükle"}
+                  {imageUploading ? "Uploading..." : "Upload Image"}
                   <Upload className="ml-2 h-4 w-4" />
                 </Button>
                 
@@ -402,8 +402,8 @@ export default function BlogEditPage() {
           content={blogForm.content}
           onChange={handleContentChange}
           onSave={handleContentSave}
-          title="İçerik Editörü"
-          description="Blog yazınızın içeriğini markdown formatında düzenleyin"
+          title="Content Editor"
+          description="Edit your blog content in markdown format"
         />
       </div>
     </div>

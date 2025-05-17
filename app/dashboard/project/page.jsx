@@ -107,11 +107,11 @@ export default function ProjectPage() {
       });
       
       setAlertType("success");
-      setAlertMessage("Görsel başarıyla yüklendi");
+      setAlertMessage("Image uploaded successfully");
       setShowAlert(true);
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(`Görsel yüklenirken hata oluştu: ${error.message}`);
+      setAlertMessage(`Error uploading image: ${error.message}`);
       setShowAlert(true);
     } finally {
       setImageUploading(false);
@@ -185,25 +185,25 @@ export default function ProjectPage() {
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Proje Yönetimi</h1>
+        <h1 className="text-3xl font-bold">Project Management</h1>
         <Dialog open={newProjectDialogOpen} onOpenChange={setNewProjectDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
-              <Plus size={16} /> Yeni Proje Ekle
+              <Plus size={16} /> Add New Project
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Yeni Proje</DialogTitle>
+              <DialogTitle>New Project</DialogTitle>
               <DialogDescription>
-                Yeni bir proje oluşturun. İçerik bloklarını daha sonra ekleyebilirsiniz.
+                Create a new project. You can add content blocks later.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateProject}>
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">
-                    Başlık
+                    Title
                   </Label>
                   <Input
                     id="title"
@@ -216,7 +216,7 @@ export default function ProjectPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="description" className="text-right">
-                    Açıklama
+                    Description
                   </Label>
                   <Textarea
                     id="description"
@@ -228,7 +228,7 @@ export default function ProjectPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="date" className="text-right">
-                    Tarih
+                    Date
                   </Label>
                   <Input
                     id="date"
@@ -241,7 +241,7 @@ export default function ProjectPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="category" className="text-right">
-                    Kategori
+                    Category
                   </Label>
                   <Input
                     id="category"
@@ -253,7 +253,7 @@ export default function ProjectPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="color" className="text-right">
-                    Renk
+                    Color
                   </Label>
                   <div className="col-span-3 flex gap-3 items-center">
                     <Input
@@ -276,7 +276,7 @@ export default function ProjectPage() {
                 {/* Project Info Section */}
                 <div className="border rounded-md p-4 mt-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium">Proje Bilgileri</h3>
+                    <h3 className="text-lg font-medium">Project Information</h3>
                     <Button 
                       type="button" 
                       variant="outline" 
@@ -291,28 +291,28 @@ export default function ProjectPage() {
                         });
                       }}
                     >
-                      Yeni Bilgi Ekle
+                      Add New Information
                     </Button>
                   </div>
                   {projectForm.projectInfo.map((info, index) => (
                     <div key={index} className="grid grid-cols-4 items-start gap-4 mb-4 border p-3 rounded-md">
                       <div className="col-span-1">
-                        <Label htmlFor={`info-title-${index}`}>Başlık</Label>
+                        <Label htmlFor={`info-title-${index}`}>Title</Label>
                         <Input
                           id={`info-title-${index}`}
                           value={info.title}
                           onChange={(e) => handleProjectInfoChange(index, 'title', e.target.value)}
-                          placeholder="Başlık"
+                          placeholder="Title"
                           className="mt-1"
                         />
                       </div>
                       <div className="col-span-2">
-                        <Label htmlFor={`info-data-${index}`}>İçerik</Label>
+                        <Label htmlFor={`info-data-${index}`}>Content</Label>
                         <Textarea
                           id={`info-data-${index}`}
                           value={info.data}
                           onChange={(e) => handleProjectInfoChange(index, 'data', e.target.value)}
-                          placeholder="Markdown kullanımı desteklenir (örn: liste için - item1)"
+                          placeholder="Markdown supported (e.g: list with - item1)"
                           className="mt-1 font-mono text-sm"
                           rows={3}
                         />
@@ -344,14 +344,14 @@ export default function ProjectPage() {
                             });
                           }}
                         >
-                          Kaldır
+                          Remove
                         </Button>
                       </div>
                     </div>
                   ))}
                   {projectForm.projectInfo.length === 0 && (
                     <div className="text-center py-4 text-gray-500">
-                      <p>Henüz proje bilgisi eklenmemiş</p>
+                      <p>No project information added yet</p>
                       <Button 
                         type="button" 
                         variant="outline" 
@@ -369,14 +369,14 @@ export default function ProjectPage() {
                           });
                         }}
                       >
-                        Temel Bilgileri Ekle
+                        Add Basic Information
                       </Button>
                     </div>
                   )}
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Kapak Görseli</Label>
+                  <Label className="text-right">Cover Image</Label>
                   <div className="col-span-3">
                     <div className="flex items-center gap-4">
                       <Button
@@ -391,12 +391,12 @@ export default function ProjectPage() {
                           onChange={handleImageUpload}
                           accept="image/*"
                         />
-                        {imageUploading ? "Yükleniyor..." : "Görsel Yükle"}
+                        {imageUploading ? "Uploading..." : "Upload Image"}
                         <Upload className="ml-2 h-4 w-4" />
                       </Button>
                       {projectForm.image && (
                         <div className="text-sm text-green-600 flex items-center gap-1">
-                          <Check className="h-4 w-4" /> Yüklendi
+                          <Check className="h-4 w-4" /> Uploaded
                         </div>
                       )}
                     </div>
@@ -414,10 +414,10 @@ export default function ProjectPage() {
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setNewProjectDialogOpen(false)}>
-                  İptal
+                  Cancel
                 </Button>
                 <Button type="submit" disabled={!projectForm.title || imageUploading}>
-                  Proje Oluştur
+                  Create Project
                 </Button>
               </DialogFooter>
             </form>
@@ -432,17 +432,17 @@ export default function ProjectPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
       
-      {loading && <div className="text-center py-10">Yükleniyor...</div>}
+      {loading && <div className="text-center py-10">Loading...</div>}
       
       {!loading && (!projects || projects.length === 0) && (
         <div className="text-center py-10">
-          <p className="text-lg text-gray-500 mb-4">Henüz hiç proje bulunmuyor.</p>
-          <Button onClick={() => setNewProjectDialogOpen(true)}>İlk Projenizi Oluşturun</Button>
+          <p className="text-lg text-gray-500 mb-4">No projects found yet.</p>
+          <Button onClick={() => setNewProjectDialogOpen(true)}>Create Your First Project</Button>
         </div>
       )}
       
@@ -495,7 +495,7 @@ export default function ProjectPage() {
                 )}
                 
                 <p className="text-xs text-gray-500 mt-2">
-                  {new Date(project.date || project.createdAt).toLocaleDateString('tr-TR', {
+                  {new Date(project.date || project.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -518,7 +518,7 @@ export default function ProjectPage() {
                       asChild
                     >
                       <Link href={`/project/${project.slug}`} target="_blank">
-                        <Eye size={16} className="mr-1" /> Görüntüle
+                        <Eye size={16} className="mr-1" /> View
                       </Link>
                     </Button>
                     <Button 
@@ -527,7 +527,7 @@ export default function ProjectPage() {
                       asChild
                     >
                       <Link href={`/dashboard/project/${project._id}`}>
-                        <Edit size={16} className="mr-1" /> Düzenle
+                        <Edit size={16} className="mr-1" /> Edit
                       </Link>
                     </Button>
                   </div>
@@ -542,15 +542,15 @@ export default function ProjectPage() {
       <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bu projeyi silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this project?</AlertDialogTitle>
             <AlertDialogDescription>
-              Bu işlem geri alınamaz. Proje kalıcı olarak silinecektir.
+              This action cannot be undone. The project will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setProjectToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setProjectToDelete(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 focus:ring-red-600">
-              Sil
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

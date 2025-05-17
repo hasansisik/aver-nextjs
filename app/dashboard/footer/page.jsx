@@ -110,7 +110,7 @@ export default function FooterPage() {
     e.preventDefault();
     if (!menuItem.name || !menuItem.link) {
       setAlertType("error");
-      setAlertMessage("Lütfen tüm alanları doldurun");
+      setAlertMessage("Please fill in all fields");
       setShowAlert(true);
       return;
     }
@@ -122,7 +122,7 @@ export default function FooterPage() {
       type: "footerMenu"
     });
     
-    // Dialog'ları kapat
+    // Close dialogs
     setMenuDialogOpen(false);
     setSocialDialogOpen(false);
   };
@@ -186,7 +186,7 @@ export default function FooterPage() {
   
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Footer Yönetimi</h1>
+      <h1 className="text-3xl font-bold mb-6">Footer Management</h1>
       
       {showAlert && (
         <Alert className={`mb-4 ${alertType === "success" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
@@ -195,74 +195,74 @@ export default function FooterPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
       
       <Tabs defaultValue="footer-menu">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="footer-menu">Footer Menüsü</TabsTrigger>
-          <TabsTrigger value="social-links">Sosyal Bağlantılar</TabsTrigger>
-          <TabsTrigger value="general-settings">Genel Ayarlar</TabsTrigger>
+          <TabsTrigger value="footer-menu">Footer Menu</TabsTrigger>
+          <TabsTrigger value="social-links">Social Links</TabsTrigger>
+          <TabsTrigger value="general-settings">General Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="footer-menu">
           <Card>
             <CardHeader>
-              <CardTitle>Footer Menü Yönetimi</CardTitle>
+              <CardTitle>Footer Menu Management</CardTitle>
               <CardDescription>
-                Footer menü öğelerini buradan yönetebilirsiniz. Öğeleri sürükleyerek sıralayabilirsiniz.
+                Manage footer menu items here. You can drag items to reorder them.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-6">
                 <Dialog open={menuDialogOpen} onOpenChange={setMenuDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Yeni Menü Öğesi Ekle</Button>
+                    <Button>Add New Menu Item</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Yeni Menü Öğesi</DialogTitle>
+                      <DialogTitle>New Menu Item</DialogTitle>
                       <DialogDescription>
-                        Lütfen yeni menü öğesi bilgilerini girin.
+                        Please enter information for the new menu item.
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleMenuItemAdd} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name">İsim</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input 
                           id="name" 
                           value={menuItem.name}
                           onChange={(e) => setMenuItem({...menuItem, name: e.target.value})}
-                          placeholder="Menü öğesi adı" 
+                          placeholder="Menu item name" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="link">Bağlantı</Label>
+                        <Label htmlFor="link">Link</Label>
                         <Input 
                           id="link" 
                           value={menuItem.link}
                           onChange={(e) => setMenuItem({...menuItem, link: e.target.value})}
-                          placeholder="/sayfa-baglanti" 
+                          placeholder="/page-link" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="type">Menü Tipi</Label>
+                        <Label htmlFor="type">Menu Type</Label>
                         <Select 
                           value={menuItem.type}
                           onValueChange={(value) => setMenuItem({...menuItem, type: value})}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Menü tipini seçin" />
+                            <SelectValue placeholder="Select menu type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="footerMenu">Footer Menü</SelectItem>
-                            <SelectItem value="socialLinks">Sosyal Bağlantılar</SelectItem>
+                            <SelectItem value="footerMenu">Footer Menu</SelectItem>
+                            <SelectItem value="socialLinks">Social Links</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button type="submit" className="w-full">Ekle</Button>
+                      <Button type="submit" className="w-full">Add</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
@@ -283,7 +283,7 @@ export default function FooterPage() {
                   />
                 ) : (
                   <div className="text-center py-6 text-gray-500">
-                    Henüz footer menü öğesi bulunmamaktadır.
+                    No footer menu items yet.
                   </div>
                 )}
               </div>
@@ -294,22 +294,22 @@ export default function FooterPage() {
         <TabsContent value="social-links">
           <Card>
             <CardHeader>
-              <CardTitle>Sosyal Bağlantılar Yönetimi</CardTitle>
+              <CardTitle>Social Links Management</CardTitle>
               <CardDescription>
-                Sitenizin sosyal medya bağlantılarını buradan yönetebilirsiniz. Öğeleri sürükleyerek sıralayabilirsiniz.
+                Manage your site's social media links here. You can drag items to reorder them.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-6">
                 <Dialog open={socialDialogOpen} onOpenChange={setSocialDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Yeni Sosyal Bağlantı Ekle</Button>
+                    <Button>Add New Social Link</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Yeni Sosyal Bağlantı</DialogTitle>
+                      <DialogTitle>New Social Link</DialogTitle>
                       <DialogDescription>
-                        Lütfen yeni sosyal bağlantı bilgilerini girin.
+                        Please enter information for the new social link.
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleMenuItemAdd} className="space-y-4">
@@ -319,11 +319,11 @@ export default function FooterPage() {
                           id="name" 
                           value={menuItem.name}
                           onChange={(e) => setMenuItem({...menuItem, name: e.target.value, type: "socialLinks"})}
-                          placeholder="örn: Twitter" 
+                          placeholder="e.g., Twitter" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="link">Bağlantı</Label>
+                        <Label htmlFor="link">Link</Label>
                         <Input 
                           id="link" 
                           value={menuItem.link}
@@ -332,7 +332,7 @@ export default function FooterPage() {
                         />
                       </div>
                       <input type="hidden" value="socialLinks" />
-                      <Button type="submit" className="w-full">Ekle</Button>
+                      <Button type="submit" className="w-full">Add</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
@@ -353,7 +353,7 @@ export default function FooterPage() {
                   />
                 ) : (
                   <div className="text-center py-6 text-gray-500">
-                    Henüz sosyal bağlantı bulunmamaktadır.
+                    No social links yet.
                   </div>
                 )}
               </div>
@@ -364,16 +364,16 @@ export default function FooterPage() {
         <TabsContent value="general-settings">
           <Card>
             <CardHeader>
-              <CardTitle>Genel Ayarlar</CardTitle>
+              <CardTitle>General Settings</CardTitle>
               <CardDescription>
-                Footer için genel ayarları buradan düzenleyebilirsiniz.
+                Edit general settings for the footer here.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleFooterUpdate}>
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="ctaText">CTA Metni</Label>
+                    <Label htmlFor="ctaText">CTA Text</Label>
                     <Input 
                       id="ctaText" 
                       value={formState.ctaText}
@@ -382,7 +382,7 @@ export default function FooterPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="ctaLink">CTA Bağlantısı</Label>
+                    <Label htmlFor="ctaLink">CTA Link</Label>
                     <Input 
                       id="ctaLink" 
                       value={formState.ctaLink}
@@ -391,7 +391,7 @@ export default function FooterPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="copyright">Telif Hakkı Metni</Label>
+                    <Label htmlFor="copyright">Copyright Text</Label>
                     <Input 
                       id="copyright" 
                       value={formState.copyright}
@@ -400,16 +400,16 @@ export default function FooterPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="developerInfo">Geliştirici Bilgisi</Label>
+                    <Label htmlFor="developerInfo">Developer Info</Label>
                     <Input 
                       id="developerInfo" 
                       value={formState.developerInfo}
                       onChange={(e) => setFormState({...formState, developerInfo: e.target.value})}
-                      placeholder="Geliştirici bilgisi" 
+                      placeholder="Developer information" 
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="developerLink">Geliştirici Bağlantısı</Label>
+                    <Label htmlFor="developerLink">Developer Link</Label>
                     <Input 
                       id="developerLink" 
                       value={formState.developerLink}
@@ -420,7 +420,7 @@ export default function FooterPage() {
                 </div>
                 <div className="mt-6">
                   <Button type="submit" disabled={loading}>
-                    {loading ? "Güncelleniyor..." : "Güncelle"}
+                    {loading ? "Updating..." : "Update"}
                   </Button>
                 </div>
               </form>
@@ -434,10 +434,10 @@ export default function FooterPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Bu {itemTypeToDelete === 'footerMenu' ? 'menü öğesini' : 'sosyal bağlantıyı'} silmek istediğinize emin misiniz?
+              Are you sure you want to delete this {itemTypeToDelete === 'footerMenu' ? 'menu item' : 'social link'}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Bu işlem geri alınamaz. Öğe kalıcı olarak silinecektir.
+              This action cannot be undone. The item will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -445,10 +445,10 @@ export default function FooterPage() {
               setItemToDelete(null);
               setItemTypeToDelete(null);
             }}>
-              İptal
+              Cancel
             </AlertDialogCancel>
             <AlertDialogAction onClick={handleMenuItemDelete} className="bg-red-600 focus:ring-red-600">
-              Sil
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

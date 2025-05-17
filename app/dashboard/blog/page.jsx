@@ -106,11 +106,11 @@ export default function BlogPage() {
       });
       
       setAlertType("success");
-      setAlertMessage("Görsel başarıyla yüklendi");
+      setAlertMessage("Image uploaded successfully");
       setShowAlert(true);
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(`Görsel yüklenirken hata oluştu: ${error.message}`);
+      setAlertMessage(`Error uploading image: ${error.message}`);
       setShowAlert(true);
     } finally {
       setImageUploading(false);
@@ -168,25 +168,25 @@ export default function BlogPage() {
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Blog Yönetimi</h1>
+        <h1 className="text-3xl font-bold">Blog Management</h1>
         <Dialog open={newBlogDialogOpen} onOpenChange={setNewBlogDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
-              <Plus size={16} /> Yeni Blog Ekle
+              <Plus size={16} /> Add New Blog
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[550px]">
             <DialogHeader>
-              <DialogTitle>Yeni Blog Yazısı</DialogTitle>
+              <DialogTitle>New Blog Post</DialogTitle>
               <DialogDescription>
-                Yeni bir blog yazısı oluşturun. İçerik bloklarını daha sonra ekleyebilirsiniz.
+                Create a new blog post. You can add content blocks later.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateBlog}>
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">
-                    Başlık
+                    Title
                   </Label>
                   <Input
                     id="title"
@@ -199,7 +199,7 @@ export default function BlogPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="description" className="text-right">
-                    Açıklama
+                    Description
                   </Label>
                   <Textarea
                     id="description"
@@ -211,7 +211,7 @@ export default function BlogPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="category" className="text-right">
-                    Kategori
+                    Category
                   </Label>
                   <Input
                     id="category"
@@ -223,7 +223,7 @@ export default function BlogPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="tags" className="text-right">
-                    Etiketler
+                    Tags
                   </Label>
                   <Input
                     id="tags"
@@ -231,11 +231,11 @@ export default function BlogPage() {
                     value={blogForm.tags}
                     onChange={handleFormChange}
                     className="col-span-3"
-                    placeholder="Virgülle ayırarak yazın"
+                    placeholder="Separate with commas"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">Kapak Görseli</Label>
+                  <Label className="text-right">Cover Image</Label>
                   <div className="col-span-3">
                     <div className="flex items-center gap-4">
                       <Button
@@ -250,12 +250,12 @@ export default function BlogPage() {
                           onChange={handleImageUpload}
                           accept="image/*"
                         />
-                        {imageUploading ? "Yükleniyor..." : "Görsel Yükle"}
+                        {imageUploading ? "Uploading..." : "Upload Image"}
                         <Upload className="ml-2 h-4 w-4" />
                       </Button>
                       {blogForm.image && (
                         <div className="text-sm text-green-600 flex items-center gap-1">
-                          <Check className="h-4 w-4" /> Yüklendi
+                          <Check className="h-4 w-4" /> Uploaded
                         </div>
                       )}
                     </div>
@@ -273,10 +273,10 @@ export default function BlogPage() {
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setNewBlogDialogOpen(false)}>
-                  İptal
+                  Cancel
                 </Button>
                 <Button type="submit" disabled={!blogForm.title || imageUploading}>
-                  Blog Oluştur
+                  Create Blog
                 </Button>
               </DialogFooter>
             </form>
@@ -291,17 +291,17 @@ export default function BlogPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
       
-      {loading && <div className="text-center py-10">Yükleniyor...</div>}
+      {loading && <div className="text-center py-10">Loading...</div>}
       
       {!loading && (!blogs || blogs.length === 0) && (
         <div className="text-center py-10">
-          <p className="text-lg text-gray-500 mb-4">Henüz hiç blog yazısı bulunmuyor.</p>
-          <Button onClick={() => setNewBlogDialogOpen(true)}>İlk Blog Yazınızı Oluşturun</Button>
+          <p className="text-lg text-gray-500 mb-4">No blog posts found yet.</p>
+          <Button onClick={() => setNewBlogDialogOpen(true)}>Create Your First Blog Post</Button>
         </div>
       )}
       
@@ -342,7 +342,7 @@ export default function BlogPage() {
                   </div>
                 )}
                 <p className="text-xs text-gray-500 mt-2">
-                  {new Date(blog.date).toLocaleDateString('tr-TR', {
+                  {new Date(blog.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -365,7 +365,7 @@ export default function BlogPage() {
                       asChild
                     >
                       <Link href={`/blog/${blog.slug}`} target="_blank">
-                        <Eye size={16} className="mr-1" /> Görüntüle
+                        <Eye size={16} className="mr-1" /> View
                       </Link>
                     </Button>
                     <Button 
@@ -374,7 +374,7 @@ export default function BlogPage() {
                       asChild
                     >
                       <Link href={`/dashboard/blog/${blog._id}`}>
-                        <Edit size={16} className="mr-1" /> Düzenle
+                        <Edit size={16} className="mr-1" /> Edit
                       </Link>
                     </Button>
                   </div>
@@ -389,15 +389,15 @@ export default function BlogPage() {
       <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bu blog yazısını silmek istediğinize emin misiniz?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this blog post?</AlertDialogTitle>
             <AlertDialogDescription>
-              Bu işlem geri alınamaz. Blog yazısı kalıcı olarak silinecektir.
+              This action cannot be undone. The blog post will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>İptal</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setBlogToDelete(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteBlog} className="bg-red-600 focus:ring-red-600">
-              Sil
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

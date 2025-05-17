@@ -432,8 +432,8 @@ export default function BlogContentEditor({
               className="w-full"
             >
               <TabsList className="w-full justify-start border-b rounded-none bg-gray-50">
-                <TabsTrigger value="edit">Düzenle</TabsTrigger>
-                <TabsTrigger value="preview">Önizleme</TabsTrigger>
+                <TabsTrigger value="edit">Edit</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
               </TabsList>
               
               <TabsContent value="edit" className="m-0">

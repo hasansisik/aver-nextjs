@@ -103,11 +103,11 @@ export default function HeaderPage() {
       });
       
       setAlertType("success");
-      setAlertMessage("Logo başarıyla yüklendi");
+      setAlertMessage("Logo uploaded successfully");
       setShowAlert(true);
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(`Logo yüklenirken hata oluştu: ${error.message}`);
+      setAlertMessage(`Error uploading logo: ${error.message}`);
       setShowAlert(true);
     } finally {
       setLogoUploading(false);
@@ -118,7 +118,7 @@ export default function HeaderPage() {
     e.preventDefault();
     if (!menuItem.name || !menuItem.link) {
       setAlertType("error");
-      setAlertMessage("Lütfen tüm alanları doldurun");
+      setAlertMessage("Please fill in all fields");
       setShowAlert(true);
       return;
     }
@@ -130,7 +130,7 @@ export default function HeaderPage() {
       type: "mainMenu"
     });
     
-    // Dialog'ları kapat
+    // Close dialogs
     setMenuDialogOpen(false);
     setSocialDialogOpen(false);
   };
@@ -173,7 +173,7 @@ export default function HeaderPage() {
     }, 10);
   };
   
-  // Menü öğelerini order alanına göre sıralama
+  // Sort menu items by order field
   const sortedMainMenu = header?.mainMenu
     ? [...header.mainMenu].sort((a, b) => (a.order || 0) - (b.order || 0))
     : [];
@@ -184,7 +184,7 @@ export default function HeaderPage() {
   
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Header Yönetimi</h1>
+      <h1 className="text-3xl font-bold mb-6">Header Management</h1>
       
       {showAlert && (
         <Alert className={`mb-4 ${alertType === "success" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}>
@@ -193,74 +193,74 @@ export default function HeaderPage() {
           ) : (
             <AlertCircle className="h-4 w-4" />
           )}
-          <AlertTitle>{alertType === "success" ? "Başarılı" : "Hata"}</AlertTitle>
+          <AlertTitle>{alertType === "success" ? "Success" : "Error"}</AlertTitle>
           <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
       
       <Tabs defaultValue="main-menu">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="main-menu">Ana Menü</TabsTrigger>
-          <TabsTrigger value="social-links">Sosyal Bağlantılar</TabsTrigger>
-          <TabsTrigger value="logo-settings">Logo Ayarları</TabsTrigger>
+          <TabsTrigger value="main-menu">Main Menu</TabsTrigger>
+          <TabsTrigger value="social-links">Social Links</TabsTrigger>
+          <TabsTrigger value="logo-settings">Logo Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="main-menu">
           <Card>
             <CardHeader>
-              <CardTitle>Ana Menü Yönetimi</CardTitle>
+              <CardTitle>Main Menu Management</CardTitle>
               <CardDescription>
-                Sitenizin ana menü öğelerini buradan yönetebilirsiniz. Öğeleri sürükleyerek sıralayabilirsiniz.
+                Manage your site's main menu items here. You can drag items to reorder them.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-6">
                 <Dialog open={menuDialogOpen} onOpenChange={setMenuDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Yeni Menü Öğesi Ekle</Button>
+                    <Button>Add New Menu Item</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Yeni Menü Öğesi</DialogTitle>
+                      <DialogTitle>New Menu Item</DialogTitle>
                       <DialogDescription>
-                        Lütfen yeni menü öğesi bilgilerini girin.
+                        Please enter information for the new menu item.
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleMenuItemAdd} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name">İsim</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input 
                           id="name" 
                           value={menuItem.name}
                           onChange={(e) => setMenuItem({...menuItem, name: e.target.value})}
-                          placeholder="Menü öğesi adı" 
+                          placeholder="Menu item name" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="link">Bağlantı</Label>
+                        <Label htmlFor="link">Link</Label>
                         <Input 
                           id="link" 
                           value={menuItem.link}
                           onChange={(e) => setMenuItem({...menuItem, link: e.target.value})}
-                          placeholder="/sayfa-baglanti" 
+                          placeholder="/page-link" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="type">Menü Tipi</Label>
+                        <Label htmlFor="type">Menu Type</Label>
                         <Select 
                           value={menuItem.type}
                           onValueChange={(value) => setMenuItem({...menuItem, type: value})}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Menü tipini seçin" />
+                            <SelectValue placeholder="Select menu type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="mainMenu">Ana Menü</SelectItem>
-                            <SelectItem value="socialLinks">Sosyal Bağlantılar</SelectItem>
+                            <SelectItem value="mainMenu">Main Menu</SelectItem>
+                            <SelectItem value="socialLinks">Social Links</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button type="submit" className="w-full">Ekle</Button>
+                      <Button type="submit" className="w-full">Add</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
@@ -281,7 +281,7 @@ export default function HeaderPage() {
                   />
                 ) : (
                   <div className="text-center py-6 text-gray-500">
-                    Henüz ana menü öğesi bulunmamaktadır.
+                    No main menu items yet.
                   </div>
                 )}
               </div>
@@ -292,22 +292,22 @@ export default function HeaderPage() {
         <TabsContent value="social-links">
           <Card>
             <CardHeader>
-              <CardTitle>Sosyal Bağlantılar Yönetimi</CardTitle>
+              <CardTitle>Social Links Management</CardTitle>
               <CardDescription>
-                Sitenizin sosyal medya bağlantılarını buradan yönetebilirsiniz. Öğeleri sürükleyerek sıralayabilirsiniz.
+                Manage your site's social media links here. You can drag items to reorder them.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-6">
                 <Dialog open={socialDialogOpen} onOpenChange={setSocialDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>Yeni Sosyal Bağlantı Ekle</Button>
+                    <Button>Add New Social Link</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Yeni Sosyal Bağlantı</DialogTitle>
+                      <DialogTitle>New Social Link</DialogTitle>
                       <DialogDescription>
-                        Lütfen yeni sosyal bağlantı bilgilerini girin.
+                        Please enter information for the new social link.
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleMenuItemAdd} className="space-y-4">
@@ -317,11 +317,11 @@ export default function HeaderPage() {
                           id="name" 
                           value={menuItem.name}
                           onChange={(e) => setMenuItem({...menuItem, name: e.target.value, type: "socialLinks"})}
-                          placeholder="örn: Twitter" 
+                          placeholder="e.g., Twitter" 
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="link">Bağlantı</Label>
+                        <Label htmlFor="link">Link</Label>
                         <Input 
                           id="link" 
                           value={menuItem.link}
@@ -330,7 +330,7 @@ export default function HeaderPage() {
                         />
                       </div>
                       <input type="hidden" value="socialLinks" />
-                      <Button type="submit" className="w-full">Ekle</Button>
+                      <Button type="submit" className="w-full">Add</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
@@ -351,7 +351,7 @@ export default function HeaderPage() {
                   />
                 ) : (
                   <div className="text-center py-6 text-gray-500">
-                    Henüz sosyal bağlantı bulunmamaktadır.
+                    No social links yet.
                   </div>
                 )}
               </div>
@@ -362,21 +362,21 @@ export default function HeaderPage() {
         <TabsContent value="logo-settings">
           <Card>
             <CardHeader>
-              <CardTitle>Logo Ayarları</CardTitle>
+              <CardTitle>Logo Settings</CardTitle>
               <CardDescription>
-                Site logosunu ve logo metnini buradan değiştirebilirsiniz.
+                Change your site logo and logo text here.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogoUpdate}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="logoText">Logo Metni</Label>
+                    <Label htmlFor="logoText">Logo Text</Label>
                     <Input 
                       id="logoText" 
                       value={formState.logoText}
                       onChange={(e) => setFormState({...formState, logoText: e.target.value})}
-                      placeholder="Logo metni" 
+                      placeholder="Logo text" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -404,18 +404,18 @@ export default function HeaderPage() {
                           className="relative"
                         >
                           {logoUploading ? (
-                            "Yükleniyor..."
+                            "Uploading..."
                           ) : (
                             <>
                               <Upload className="w-4 h-4 mr-2" />
-                              Yükle
+                              Upload
                             </>
                           )}
                         </Button>
                       </div>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      URL girin veya dosya yükleyin. Dosya yüklediğinizde URL otomatik olarak güncellenecektir.
+                      Enter a URL or upload a file. When you upload a file, the URL will be updated automatically.
                     </p>
                   </div>
                 </div>
@@ -431,7 +431,7 @@ export default function HeaderPage() {
                     </div>
                   )}
                   <Button type="submit" disabled={loading || logoUploading}>
-                    {loading ? "Güncelleniyor..." : "Güncelle"}
+                    {loading ? "Updating..." : "Update"}
                   </Button>
                 </div>
               </form>

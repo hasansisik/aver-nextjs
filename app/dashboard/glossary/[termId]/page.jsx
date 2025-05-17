@@ -12,61 +12,10 @@ import {
   ArrowLeft, 
   Save, 
   AlertCircle, 
-  Check, 
-  Heading1, 
-  Heading2, 
-  List, 
-  ListOrdered, 
-  Bold, 
-  Italic, 
-  Link2, 
-  Image, 
-  Code
+  Check
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-
-// Simple markdown preview component
-const MarkdownPreview = ({ content }) => {
-  // Convert markdown to HTML (very basic implementation)
-  const renderMarkdown = (text) => {
-    if (!text) return "";
-    let html = text
-      // Headers
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold my-4">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold my-3">$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold my-2">$1</h3>')
-      // Bold and Italic
-      .replace(/\*\*(.*)\*\*/gm, '<strong>$1</strong>')
-      .replace(/\*(.*)\*/gm, '<em>$1</em>')
-      // Lists
-      .replace(/^\- (.*$)/gm, '<li class="ml-4">$1</li>')
-      .replace(/^\d+\. (.*$)/gm, '<li class="ml-4 list-decimal">$1</li>')
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/gm, '<a href="$2" class="text-blue-500 underline">$1</a>')
-      // Paragraphs
-      .replace(/^(?!<h|<li|<ul|<ol|<p)(.*$)/gm, '<p class="my-2">$1</p>');
-    
-    // Replace consecutive list items with a list
-    html = html
-      .replace(/<li class="ml-4">.*?<\/li>(\s*<li class="ml-4">.*?<\/li>)+/gs, (match) => {
-        return '<ul class="list-disc my-2 ml-6">' + match + '</ul>';
-      })
-      .replace(/<li class="ml-4 list-decimal">.*?<\/li>(\s*<li class="ml-4 list-decimal">.*?<\/li>)+/gs, (match) => {
-        return '<ol class="list-decimal my-2 ml-6">' + match + '</ol>';
-      });
-    
-    return html;
-  };
-
-  return (
-    <div 
-      className="prose prose-sm max-w-none overflow-auto bg-white p-4 rounded-md border min-h-[300px]"
-      dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-    />
-  );
-};
+import BlogContentEditor from "../../_components/blog/BlogContentEditor";
 
 export default function EditGlossaryTermPage({ params }) {
   const { termId } = params;
@@ -77,7 +26,6 @@ export default function EditGlossaryTermPage({ params }) {
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
   const [formModified, setFormModified] = useState(false);
-  const [activeTab, setActiveTab] = useState("edit");
   
   // Form state
   const [termForm, setTermForm] = useState({
@@ -151,46 +99,37 @@ export default function EditGlossaryTermPage({ params }) {
     
     dispatch(updateGlossaryTerm(updateData));
   };
-  
-  // Insert markdown syntax at cursor position or replace selected text
-  const insertMarkdown = (syntax, placeholder) => {
-    const textarea = document.getElementById('content');
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = termForm.content.substring(start, end);
-    const beforeText = termForm.content.substring(0, start);
-    const afterText = termForm.content.substring(end);
-    
-    let newText;
-    if (selectedText) {
-      // If text is selected, wrap it with the syntax
-      newText = `${beforeText}${syntax.replace('$1', selectedText)}${afterText}`;
-    } else {
-      // If no text is selected, insert syntax with placeholder
-      newText = `${beforeText}${syntax.replace('$1', placeholder)}${afterText}`;
-    }
-    
+
+  // Handle content changes from the editor
+  const handleContentChange = (newContent) => {
     setTermForm({
       ...termForm,
-      content: newText
+      content: newContent
     });
     setFormModified(true);
+  };
+  
+  // Handle the save action from the editor
+  const handleContentSave = async (newContent) => {
+    const updateData = {
+      termId,
+      content: newContent
+    };
     
-    // Set focus back to textarea and position cursor appropriately
-    setTimeout(() => {
-      textarea.focus();
-      const newCursorPos = start + (placeholder ? start === end ? syntax.indexOf('$1') + placeholder.length : selectedText.length : syntax.length);
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
+    await dispatch(updateGlossaryTerm(updateData)).unwrap();
+    
+    // Update local state
+    setTermForm(prev => ({
+      ...prev,
+      content: newContent
+    }));
   };
   
   if (loading && !currentTerm) {
     return (
       <div className="container py-10">
         <div className="text-center">
-          <div className="text-xl">Yükleniyor...</div>
+          <div className="text-xl">Loading...</div>
         </div>
       </div>
     );
@@ -200,10 +139,10 @@ export default function EditGlossaryTermPage({ params }) {
     return (
       <div className="container py-10">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Hata</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
           <p className="mb-6">{error}</p>
           <Link href="/dashboard/glossary">
-            <Button>Sözlük Yönetimine Dön</Button>
+            <Button>Back to Glossary</Button>
           </Link>
         </div>
       </div>
@@ -218,7 +157,7 @@ export default function EditGlossaryTermPage({ params }) {
             <ArrowLeft size={16} />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold">Sözlük Terimi Düzenle</h1>
+        <h1 className="text-3xl font-bold">Glossary Term Edit</h1>
       </div>
       
       {showAlert && (
@@ -238,7 +177,7 @@ export default function EditGlossaryTermPage({ params }) {
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
             <div className="space-y-4">
               <div>
-                <Label htmlFor="title">Başlık</Label>
+                <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
                   name="title"
@@ -250,7 +189,7 @@ export default function EditGlossaryTermPage({ params }) {
               </div>
               
               <div>
-                <Label htmlFor="description">Açıklama</Label>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
                   name="description"
@@ -265,7 +204,7 @@ export default function EditGlossaryTermPage({ params }) {
               </div>
               
               <div>
-                <Label htmlFor="category">Kategori</Label>
+                <Label htmlFor="category">Category</Label>
                 <Input
                   id="category"
                   name="category"
@@ -280,122 +219,14 @@ export default function EditGlossaryTermPage({ params }) {
               </div>
               
               <div>
-                <Label htmlFor="content">İçerik</Label>
-                
-                <div className="border rounded-md mt-1 overflow-hidden">
-                  <div className="bg-gray-50 p-2 border-b flex flex-wrap gap-1">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('# $1', 'Başlık')}
-                      title="Başlık 1"
-                    >
-                      <Heading1 size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('## $1', 'Alt Başlık')}
-                      title="Başlık 2"
-                    >
-                      <Heading2 size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('**$1**', 'Kalın Metin')}
-                      title="Kalın"
-                    >
-                      <Bold size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('*$1*', 'İtalik Metin')}
-                      title="İtalik"
-                    >
-                      <Italic size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('- $1', 'Liste öğesi')}
-                      title="Madde İşaretli Liste"
-                    >
-                      <List size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('1. $1', 'Liste öğesi')}
-                      title="Numaralı Liste"
-                    >
-                      <ListOrdered size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('[$1](https://ornek.com)', 'Bağlantı Metni')}
-                      title="Bağlantı"
-                    >
-                      <Link2 size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('![$1](https://ornek.com/resim.jpg)', 'Resim açıklaması')}
-                      title="Görsel"
-                    >
-                      <Image size={16} />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => insertMarkdown('`$1`', 'kod')}
-                      title="Kod"
-                    >
-                      <Code size={16} />
-                    </Button>
-                  </div>
-                  
-                  <Tabs 
-                    value={activeTab} 
-                    onValueChange={setActiveTab} 
-                    className="w-full"
-                  >
-                    <TabsList className="w-full justify-start border-b rounded-none bg-gray-50">
-                      <TabsTrigger value="edit">Düzenle</TabsTrigger>
-                      <TabsTrigger value="preview">Preview</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="edit" className="m-0">
-                      <Textarea
-                        id="content"
-                        name="content"
-                        value={termForm.content}
-                        onChange={handleFormChange}
-                        className="min-h-[300px] border-0 rounded-none font-mono resize-y"
-                      />
-                    </TabsContent>
-                    
-                    <TabsContent value="preview" className="m-0">
-                      <MarkdownPreview content={termForm.content} />
-                    </TabsContent>
-                  </Tabs>
-                </div>
-                
-                <div className="text-xs text-gray-500 mt-1">
-                  Markdown formatını kullanabilirsiniz. Yukarıdaki düğmeler ile yaygın biçimlendirme öğeleri ekleyebilirsiniz.
-                </div>
+                <Label htmlFor="content">Content</Label>
+                <BlogContentEditor 
+                  content={termForm.content}
+                  onChange={handleContentChange}
+                  onSave={handleContentSave}
+                  title="Term Content"
+                  description="Edit the term content in markdown format"
+                />
               </div>
             </div>
             
@@ -414,7 +245,7 @@ export default function EditGlossaryTermPage({ params }) {
         
         <div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">Bilgiler</h2>
+            <h2 className="text-xl font-bold mb-4">Information</h2>
             
             {currentTerm && (
               <div className="space-y-4">
@@ -424,7 +255,7 @@ export default function EditGlossaryTermPage({ params }) {
                 </div>
                 
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Oluşturulma Tarihi</div>
+                  <div className="text-sm font-medium text-gray-500">Created Date</div>
                   <div className="mt-1">
                     {new Date(currentTerm.createdAt).toLocaleDateString('tr-TR', {
                       year: 'numeric',
@@ -435,7 +266,7 @@ export default function EditGlossaryTermPage({ params }) {
                 </div>
                 
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Son Güncelleme</div>
+                  <div className="text-sm font-medium text-gray-500">Last Update</div>
                   <div className="mt-1">
                     {new Date(currentTerm.updatedAt).toLocaleDateString('tr-TR', {
                       year: 'numeric',
@@ -448,7 +279,7 @@ export default function EditGlossaryTermPage({ params }) {
                 <div className="pt-4 border-t mt-4">
                   <Link href={`/glossary/${currentTerm.slug}`} target="_blank">
                     <Button variant="outline" className="w-full">
-                      Canlı Sayfayı Görüntüle
+                      View Live Page
                     </Button>
                   </Link>
                 </div>
@@ -457,12 +288,12 @@ export default function EditGlossaryTermPage({ params }) {
           </div>
           
           <div className="bg-white p-6 rounded-lg shadow mt-6">
-            <h2 className="text-xl font-bold mb-4">İpuçları</h2>
+            <h2 className="text-xl font-bold mb-4">Tips</h2>
             <div className="space-y-2 text-sm">
-              <p>• Başlık sözlük sayfasında alfabetik olarak listelenir.</p>
-              <p>• Açıklama kısa ve öz olmalıdır, ana sayfa listesinde görünür.</p>
-              <p>• İçerik bölümünde Markdown formatı kullanabilirsiniz.</p>
-              <p>• Kategori alanına istediğiniz etiket girilebilir.</p>
+              <p>• Title is listed alphabetically on the glossary page.</p>
+              <p>• Description should be short and concise, visible in the main page list.</p>
+              <p>• You can use Markdown format in the content section.</p>
+              <p>• You can enter the category you want in the category field.</p>
             </div>
           </div>
         </div>

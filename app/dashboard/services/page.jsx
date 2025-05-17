@@ -31,15 +31,6 @@ import {
   Trash2, 
   Plus, 
   ImageIcon, 
-  Heading1, 
-  Heading2, 
-  List, 
-  ListOrdered, 
-  Bold, 
-  Italic, 
-  Link2, 
-  Image as ImageIcon2, 
-  Code, 
   UploadCloud,
   Loader2
 } from "lucide-react"
@@ -58,6 +49,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/app/_components/ui/alert-dialog"
+import BlogContentEditor from "../_components/blog/BlogContentEditor"
 
 // Simple markdown preview component
 const MarkdownPreview = ({ content }) => {
@@ -118,9 +110,6 @@ export default function ServicesManager() {
   const [editMode, setEditMode] = useState(false)
   const [currentServiceId, setCurrentServiceId] = useState(null)
   
-  // Markdown editor state
-  const [markdownEditorTab, setMarkdownEditorTab] = useState("edit")
-  
   // File upload states
   const [uploading, setUploading] = useState(false)
   const [uploadType, setUploadType] = useState(null)
@@ -169,7 +158,6 @@ export default function ServicesManager() {
     setFeatureInput("")
     setEditMode(false)
     setCurrentServiceId(null)
-    setMarkdownEditorTab("edit")
   }
 
   const handleInputChange = (e) => {
@@ -303,39 +291,6 @@ export default function ServicesManager() {
     uploadFileToCloudinary(file, fileType)
   }
 
-  // Insert markdown syntax at cursor position or replace selected text
-  const insertMarkdown = (syntax, placeholder) => {
-    const textarea = document.getElementById('markdownContent')
-    if (!textarea) return
-    
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = formData.markdownContent.substring(start, end)
-    const beforeText = formData.markdownContent.substring(0, start)
-    const afterText = formData.markdownContent.substring(end)
-    
-    let newText
-    if (selectedText) {
-      // If text is selected, wrap it with the syntax
-      newText = `${beforeText}${syntax.replace('$1', selectedText)}${afterText}`
-    } else {
-      // If no text is selected, insert syntax with placeholder
-      newText = `${beforeText}${syntax.replace('$1', placeholder)}${afterText}`
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      markdownContent: newText
-    }))
-    
-    // Set focus back to textarea and position cursor appropriately
-    setTimeout(() => {
-      textarea.focus()
-      const newCursorPos = start + (placeholder ? start === end ? syntax.indexOf('$1') + placeholder.length : selectedText.length : syntax.length)
-      textarea.setSelectionRange(newCursorPos, newCursorPos)
-    }, 0)
-  }
-
   // Handle file selection for image dialog
   const handleImageFileSelect = (e) => {
     const file = e.target.files[0]
@@ -387,6 +342,40 @@ export default function ServicesManager() {
   const triggerImageFilePicker = () => {
     if (imageUploadRef.current) {
       imageUploadRef.current.click()
+    }
+  }
+
+  // Handle content changes from the editor
+  const handleContentChange = (newContent) => {
+    setFormData(prev => ({
+      ...prev,
+      markdownContent: newContent
+    }))
+  }
+  
+  // Handle the save action from the editor
+  const handleContentSave = async (newContent) => {
+    if (!editMode) return;
+    
+    try {
+      await dispatch(updateService({
+        serviceId: currentServiceId,
+        markdownContent: newContent
+      }))
+      
+      setAlertType("success")
+      setAlertMessage("Content saved successfully")
+      setShowAlert(true)
+      
+      // Update local state
+      setFormData(prev => ({
+        ...prev,
+        markdownContent: newContent
+      }))
+    } catch (error) {
+      setAlertType("error")
+      setAlertMessage("Failed to save content. Please try again.")
+      setShowAlert(true)
     }
   }
 
@@ -663,122 +652,14 @@ export default function ServicesManager() {
                     )}
                   </div>
                   
-                  <div className="space-y-1">
-                    <Label htmlFor="markdownContent">Full Content (Markdown)</Label>
-                    <div className="border rounded-md overflow-hidden">
-                      <div className="bg-gray-50 p-2 border-b flex flex-wrap gap-1">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('# $1', 'Heading')}
-                          title="Heading 1"
-                        >
-                          <Heading1 size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('## $1', 'Subheading')}
-                          title="Heading 2"
-                        >
-                          <Heading2 size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('**$1**', 'Bold Text')}
-                          title="Bold"
-                        >
-                          <Bold size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('*$1*', 'Italic Text')}
-                          title="Italic"
-                        >
-                          <Italic size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('- $1', 'List item')}
-                          title="Bullet List"
-                        >
-                          <List size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('1. $1', 'List item')}
-                          title="Numbered List"
-                        >
-                          <ListOrdered size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('[$1](https://example.com)', 'Link Text')}
-                          title="Link"
-                        >
-                          <Link2 size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setIsImageDialogOpen(true)}
-                          title="Upload and Insert Image"
-                        >
-                          <ImageIcon2 size={16} />
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => insertMarkdown('`$1`', 'code')}
-                          title="Code"
-                        >
-                          <Code size={16} />
-                        </Button>
-                      </div>
-                      
-                      <Tabs 
-                        value={markdownEditorTab} 
-                        onValueChange={setMarkdownEditorTab} 
-                        className="w-full"
-                      >
-                        <TabsList className="w-full justify-start border-b rounded-none bg-gray-50">
-                          <TabsTrigger value="edit">Edit</TabsTrigger>
-                          <TabsTrigger value="preview">Preview</TabsTrigger>
-                        </TabsList>
-                        
-                        <TabsContent value="edit" className="m-0">
-                          <Textarea
-                            id="markdownContent"
-                            name="markdownContent"
-                            value={formData.markdownContent}
-                            onChange={handleInputChange}
-                            className="min-h-[300px] border-0 rounded-none font-mono resize-y"
-                            placeholder="Enter full service content in Markdown format"
-                          />
-                        </TabsContent>
-                        
-                        <TabsContent value="preview" className="m-0">
-                          <MarkdownPreview content={formData.markdownContent} />
-                        </TabsContent>
-                      </Tabs>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Use Markdown syntax for formatting. Include headings (#), lists (- or 1.), and emphasis (* or **).
-                    </p>
+                  <div className="mt-6">
+                    <BlogContentEditor 
+                      content={formData.markdownContent}
+                      onChange={handleContentChange}
+                      onSave={handleContentSave}
+                      title="Service Content"
+                      description="Edit your service content in markdown format"
+                    />
                   </div>
                   
                   <div className="pt-6 flex justify-between">
