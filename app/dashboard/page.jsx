@@ -83,7 +83,7 @@ export default function Page() {
               </CardContent>
               <CardFooter>
                 <Link 
-                  href="/dashboard/posts" 
+                  href="/dashboard/blog" 
                   className="flex items-center text-blue-500 hover:underline"
                 >
                   Manage Posts <ArrowRight className="h-4 w-4 ml-1" />
@@ -101,7 +101,7 @@ export default function Page() {
               </CardContent>
               <CardFooter>
                 <Link 
-                  href="/dashboard/projects" 
+                  href="/dashboard/project" 
                   className="flex items-center text-blue-500 hover:underline"
                 >
                   Manage Projects <ArrowRight className="h-4 w-4 ml-1" />
