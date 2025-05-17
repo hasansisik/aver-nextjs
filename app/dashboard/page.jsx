@@ -73,7 +73,95 @@ export default function Page() {
               </CardFooter>
             </Card>
             
-            <div className="aspect-video rounded-xl bg-muted/50" />
+            <Card>
+              <CardHeader>
+                <CardTitle>Blog Posts</CardTitle>
+                <CardDescription>Manage blog posts and articles</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Create, edit, and publish blog posts. Manage categories and tags.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/posts" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Manage Posts <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Projects</CardTitle>
+                <CardDescription>Manage portfolio projects</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Add, edit, and showcase your projects. Upload images and manage project details.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/projects" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Manage Projects <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Glossary</CardTitle>
+                <CardDescription>Manage glossary terms</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Add and edit industry terms and definitions for your glossary section.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/glossary" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Manage Glossary <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Header</CardTitle>
+                <CardDescription>Manage website header</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Configure navigation menu, logo, and other header elements.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/header" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Edit Header <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Footer</CardTitle>
+                <CardDescription>Manage website footer</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Edit footer content, links, social media icons, and contact information.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/footer" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Edit Footer <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
           </div>
           <div className="min-h-[60vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>

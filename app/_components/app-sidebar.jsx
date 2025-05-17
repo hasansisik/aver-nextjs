@@ -43,7 +43,7 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "All Posts",
+          title: "All Blogs",
           url: "/dashboard/blog",
           icon: FileText,
         },
