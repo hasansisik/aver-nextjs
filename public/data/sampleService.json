@@ -1,0 +1,23 @@
+{
+  "service": {
+    "_id": "sample1",
+    "title": "Web Development",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus sollicitudin odio, eu tempor velit pellentesque et.",
+    "icon": "/images/icons/web-development.svg",
+    "image": "/images/services/web-development.jpg",
+    "slug": "web-development",
+    "isPublished": true,
+    "isActive": true,
+    "features": [
+      { "_id": "f1", "title": "Content management systems", "order": 0 },
+      { "_id": "f2", "title": "Virtual shops and ecommerce", "order": 1 },
+      { "_id": "f3", "title": "Presentation websites", "order": 2 },
+      { "_id": "f4", "title": "Online catalogues", "order": 3 },
+      { "_id": "f5", "title": "Portal systems", "order": 4 },
+      { "_id": "f6", "title": "& any other dynamic website", "order": 5 }
+    ],
+    "markdownContent": "# Web Development Services\n\nAt our company, we offer comprehensive web development services to help businesses establish a strong online presence. Our team of experienced developers is skilled in creating responsive, user-friendly websites that drive engagement and conversions.\n\n## What We Offer\n\n### Custom Website Development\nWe build custom websites tailored to your specific needs and brand identity. Our developers use the latest technologies to ensure your website is fast, secure, and scalable.\n\n### E-commerce Solutions\nFrom small online stores to large-scale e-commerce platforms, we can help you sell your products or services online with ease.\n\n### Web Application Development\nWe create web applications that help streamline your business processes and improve efficiency.\n\n### Website Maintenance and Support\nWe provide ongoing maintenance and support to keep your website running smoothly and securely.\n\n## Our Technologies\n- React\n- Next.js\n- Node.js\n- PHP\n- WordPress\n- Shopify\n- WooCommerce\n\n## Why Choose Us\n- Experienced team of developers\n- Customized solutions for your business needs\n- Responsive design for all devices\n- SEO-friendly development\n- Ongoing support and maintenance",
+    "createdAt": "2023-11-01T12:00:00.000Z",
+    "updatedAt": "2023-11-15T09:30:00.000Z"
+  }
+} 

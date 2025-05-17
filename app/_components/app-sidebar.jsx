@@ -81,11 +81,6 @@ const data = {
           icon: Layers,
         },
         {
-          title: "Services",
-          url: "#",
-          icon: Wrench,
-        },
-        {
           title: "SEO",
           url: "/dashboard/seo",
           icon: FileText,

@@ -53,7 +53,26 @@ export default function Page() {
                   Manage SEO <ArrowRight className="h-4 w-4 ml-1" />
                 </Link>
               </CardFooter>
-            </Card>         
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Services</CardTitle>
+                <CardDescription>Manage services and their details</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Create, edit, and delete services. Manage content blocks and features for each service.</p>
+              </CardContent>
+              <CardFooter>
+                <Link 
+                  href="/dashboard/services" 
+                  className="flex items-center text-blue-500 hover:underline"
+                >
+                  Manage Services <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </CardFooter>
+            </Card>
+            
             <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
           <div className="min-h-[60vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />

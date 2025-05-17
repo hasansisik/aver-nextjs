@@ -422,7 +422,7 @@ export default function HeaderPage() {
                 <div className="mt-6">
                   {formState.logoUrl && (
                     <div className="mb-4">
-                      <p className="mb-2 text-sm text-gray-500">Önizleme:</p>
+                      <p className="mb-2 text-sm text-gray-500">Preview:</p>
                       <img 
                         src={formState.logoUrl} 
                         alt={formState.logoText || "Logo"} 

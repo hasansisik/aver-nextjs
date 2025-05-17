@@ -302,7 +302,7 @@ export default function ProjectPage() {
                         />
                         {info.data && info.data.includes('-') && (
                           <div className="mt-1 p-2 bg-gray-50 rounded text-xs">
-                            <p className="font-semibold mb-1">Önizleme:</p>
+                            <p className="font-semibold mb-1">Preview:</p>
                             <ul className="list-disc list-inside">
                               {info.data.split('\n').map((line, i) => (
                                 line.trim().startsWith('-') ? 

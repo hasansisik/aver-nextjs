@@ -904,7 +904,7 @@ export default function ProjectEditPage() {
                 rows={2}
               />
               <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                <div className="text-xs text-gray-500 mb-1">Önizleme:</div>
+                <div className="text-xs text-gray-500 mb-1">Preview:</div>
                 <div className={`${
                   blockForm.metadata?.level === 1 ? 'text-2xl font-bold' :
                   blockForm.metadata?.level === 2 ? 'text-xl font-bold' :
@@ -985,7 +985,7 @@ export default function ProjectEditPage() {
                 rows={5}
               />
               <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                <div className="text-xs text-gray-500 mb-1">Önizleme:</div>
+                <div className="text-xs text-gray-500 mb-1">Preview:</div>
                 <blockquote className="pl-3 border-l-2 border-gray-300 italic">
                   {blockForm.content.replace(/^>\s?/, '')}
                 </blockquote>
@@ -1226,7 +1226,7 @@ export default function ProjectEditPage() {
                               />
                               {info.data && info.data.includes('-') && (
                                 <div className="mt-1 p-2 bg-gray-50 rounded text-xs">
-                                  <p className="font-semibold mb-1">Önizleme:</p>
+                                  <p className="font-semibold mb-1">Preview:</p>
                                   <ul className="list-disc list-inside">
                                     {info.data.split('\n').map((line, i) => (
                                       line.trim().startsWith('-') ? 

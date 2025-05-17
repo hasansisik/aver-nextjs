@@ -6,8 +6,9 @@ import footerReducer from "./reducers/footerReducer";
 import blogReducer from "./reducers/blogReducer";
 import projectReducer from "./reducers/projectReducer";
 import glossaryReducer from './reducers/glossaryReducer';
+import serviceReducer from './reducers/serviceReducer';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     user: userReducer,
     header: headerReducer,
@@ -15,6 +16,7 @@ const store = configureStore({
     blog: blogReducer,
     project: projectReducer,
     glossary: glossaryReducer,
+    service: serviceReducer,
   },
 });
 

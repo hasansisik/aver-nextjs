@@ -593,7 +593,7 @@ export default function BlogEditPage() {
                 rows={2}
               />
               <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                <div className="text-xs text-gray-500 mb-1">Önizleme:</div>
+                <div className="text-xs text-gray-500 mb-1">Preview:</div>
                 <div className={`${
                   blockForm.metadata?.level === 1 ? 'text-2xl font-bold' :
                   blockForm.metadata?.level === 2 ? 'text-xl font-bold' :
@@ -674,7 +674,7 @@ export default function BlogEditPage() {
                 rows={5}
               />
               <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                <div className="text-xs text-gray-500 mb-1">Önizleme:</div>
+                <div className="text-xs text-gray-500 mb-1">Preview:</div>
                 <blockquote className="pl-3 border-l-2 border-gray-300 italic">
                   {blockForm.content.replace(/^>\s?/, '')}
                 </blockquote>

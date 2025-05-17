@@ -65,7 +65,7 @@ export default function MarkdownEditor({ value, onChange, height = "400px" }) {
         <div className="bg-gray-50 px-3 py-2 border-b flex items-center justify-between">
           <TabsList className="grid grid-cols-2 w-40">
             <TabsTrigger value="editor">Editor</TabsTrigger>
-            <TabsTrigger value="preview">Önizleme</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
           
           {tab === "editor" && (

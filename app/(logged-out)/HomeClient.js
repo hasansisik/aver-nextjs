@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProjects } from "@/redux/actions/projectActions";
 import { getBlogs } from "@/redux/actions/blogActions";
+import { getServices } from "@/redux/actions/serviceActions";
 import Banner from "@/app/_blocks/Banner";
 import BlogCard from "@/app/_blocks/BlogCard";
 import ProjectCard from "@/app/_blocks/ProjectCard";
@@ -11,15 +12,96 @@ import WorkProcess from "@/app/_blocks/WorkProcess";
 import Image from "next/image";
 import Link from "next/link";
 
+// Custom CSS for 3D transform effects
+const customStyles = {
+  '.perspective-1000': {
+    perspective: '1000px'
+  },
+  '.transform-style-3d': {
+    transformStyle: 'preserve-3d'
+  },
+  '.backface-hidden': {
+    backfaceVisibility: 'hidden'
+  },
+  '.service-card': {
+    transition: 'all 0.3s ease',
+    backgroundColor: '#f1f1f1',
+    position: 'relative',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+    height: 'auto'
+  },
+  '.service-card:hover': {
+    zIndex: '10',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+  },
+  '.service-feature-list': {
+    transition: 'all 0.35s ease-in-out',
+    opacity: '0',
+    height: '0',
+    overflow: 'hidden',
+    visibility: 'hidden',
+    padding: '0'
+  },
+  '.service-card:hover .service-feature-list': {
+    opacity: '1',
+    height: 'auto',
+    visibility: 'visible',
+    padding: '1rem 0 0'
+  }
+};
+
 const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProcess }) => {
   const dispatch = useDispatch();
   const { projects } = useSelector((state) => state.project);
   const { blogs } = useSelector((state) => state.blog);
+  const { services } = useSelector((state) => state.service);
+  const [activeServiceIndex, setActiveServiceIndex] = useState(0);
+  const serviceSliderRef = useRef(null);
+
+  // Apply custom styles to document
+  useEffect(() => {
+    // Add custom styles to the document
+    const styleElement = document.createElement('style');
+    styleElement.textContent = Object.entries(customStyles)
+      .map(([selector, styles]) => {
+        const cssRules = Object.entries(styles)
+          .map(([property, value]) => `${property}: ${value};`)
+          .join(' ');
+        return `${selector} { ${cssRules} }`;
+      })
+      .join('\n');
+    document.head.appendChild(styleElement);
+
+    // Cleanup on unmount
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(getProjects());
     dispatch(getBlogs());
+    dispatch(getServices());
   }, [dispatch]);
+
+  // Visible services (3 at a time)
+  const visibleServices = () => {
+    return [
+      services[activeServiceIndex % services.length] || {},
+      services[(activeServiceIndex + 1) % services.length] || {},
+      services[(activeServiceIndex + 2) % services.length] || {}
+    ];
+  };
+
+  const scrollServices = (direction) => {
+    if (services.length === 0) return;
+    if (direction === 'next') {
+      setActiveServiceIndex((prev) => (prev + 1) % services.length);
+    } else {
+      setActiveServiceIndex((prev) => (prev - 1 + services.length) % services.length);
+    }
+  };
 
   // Get limited number of projects and blogs
   const limitedProjects = projects.slice(0, 5);
@@ -113,6 +195,124 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
       </section>
 
       <WorkProcess workProcess={workProcess} />
+
+      {/* Services Section */}
+      <section className="py-28 bg-gray-100 text-dark">
+        <div className="container">
+          <div className="row mb-16 items-end">
+            <div className="sm:col-8 order-2 sm:order-1">
+              <h2 className="text-black text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
+                Services
+              </h2>
+            </div>
+            <div className="sm:col-4 order-1 sm:order-2 block mb-4 sm:mb-0 text-center sm:text-right">
+              <span className="font-secondary text-2xl leading-none text-black/75">
+                What we offer
+              </span>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="flex justify-center items-center">
+              <button 
+                onClick={() => scrollServices('prev')} 
+                className="absolute left-0 z-10 p-3 bg-white rounded-full shadow-md"
+                aria-label="Previous service"
+                disabled={services.length === 0}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              
+              <div className="row md:gx-4 mx-12" ref={serviceSliderRef}>
+                {services.length > 0 ? visibleServices().map((service, index) => (
+                  <div key={service._id || index} className="lg:col-4 sm:col-4 px-4">
+                    <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
+                      {/* Card Content */}
+                      <div className="p-8 flex flex-col">
+                        <div className="flex mb-4">
+                          <Image 
+                            src={service.icon || "/images/icons/default-service.svg"} 
+                            alt={service.title || "Service"}
+                            width={60} 
+                            height={60}
+                          />
+                        </div>
+                        <h3 className="text-2xl font-medium mb-4 text-gray-800">
+                          {service.title || "Service"}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          {service.description || "Service description"}
+                        </p>
+                        
+                        {/* Features List - Only visible on hover */}
+                        <div className="service-feature-list">
+                          <div className="border-t border-gray-200">
+                            <ul className="space-y-0 pt-4">
+                              {service.features && service.features.map ? 
+                                service.features.map((feature, idx) => (
+                                  <li key={idx}>
+                                    <Link href={`/services/${service.slug}#${typeof feature === 'string' ? 
+                                      feature.toLowerCase().replace(/\s+/g, '-') : 
+                                      feature.title.toLowerCase().replace(/\s+/g, '-')}`} 
+                                      className="text-red-500 hover:underline block py-3">
+                                      {typeof feature === 'string' ? feature : feature.title}
+                                    </Link>
+                                    {idx < (service.features.length - 1) && (
+                                      <div className="border-t border-gray-100"></div>
+                                    )}
+                                  </li>
+                                )) : (
+                                <li>
+                                  <Link href={`/services/${service.slug}`} className="text-red-500 hover:underline block py-3">
+                                    Learn more
+                                  </Link>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <Link href={`/services/${service.slug}`} className="absolute inset-0" aria-label={service.title || "Service"}></Link>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="col-12 text-center py-8">
+                    <p>Loading services...</p>
+                  </div>
+                )}
+              </div>
+              
+              <button 
+                onClick={() => scrollServices('next')} 
+                className="absolute right-0 z-10 p-3 bg-white rounded-full shadow-md"
+                aria-label="Next service"
+                disabled={services.length === 0}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex justify-center mt-8">
+              {services.map ? services.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveServiceIndex(index)}
+                  className={`w-3 h-3 mx-1 rounded-full ${
+                    index >= activeServiceIndex && index < activeServiceIndex + 3
+                      ? 'bg-red-500'
+                      : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to service ${index + 1}`}
+                />
+              )) : null}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="py-28 bg-white text-dark rounded-b-2xl">
         <div className="container">
