@@ -35,236 +35,236 @@ const Footer = () => {
   }, [dispatch]);
 
   // get the page slug from the url
-  const slug = usePathname();
   const [contactPage, setContactPage] = useState(false);
+  
+  // Update contact page state whenever pathname changes
   useEffect(() => {
-    slug.includes("contact") && setContactPage(true);
-  }, [slug]);
+    // Check if pathname includes 'contact' and update state accordingly
+    setContactPage(pathname.includes("contact"));
+  }, [pathname]);
 
   return (
     <footer className={`${contactPage ? "pt-24" : "pt-28"} pb-20 sticky bottom-0 z-[1]`}>
-      {!contactPage && (
-        <div className="mb-16 overflow-hidden">
-          <Link
-            href={ctaLink}
-            className={`${style["footer-cta"]} block text-5xl font-secondary font-medium mb-8`}
-          >
-            <div className={`${style["animated-line"]} ${style["animated-line-one"]} mb-5`}>
-              <div className={style["line-block"]}>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-              </div>
-              <div className={style["line-block-copy"]}>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-              </div>
+      <div className="mb-16 overflow-hidden">
+        <Link
+          href={ctaLink}
+          className={`${style["footer-cta"]} block text-5xl font-secondary font-medium mb-8`}
+        >
+          <div className={`${style["animated-line"]} ${style["animated-line-one"]} mb-5`}>
+            <div className={style["line-block"]}>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
             </div>
+            <div className={style["line-block-copy"]}>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+            </div>
+          </div>
 
-            <div className={`${style["animated-line"]} ${style["animated-line-two"]}`}>
-              <div className={style["line-block"]}>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-              </div>
-              <div className={style["line-block-copy"]}>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-                <span className="mr-24">
-                  <span className={style["cta-text"]}>{ctaText}</span>
-                  <Image
-                    className={`inline-block ml-16 ${style["cta-icon"]}`}
-                    src="/images/arrow-right.svg"
-                    alt="arrow-right"
-                    height={31}
-                    width={39}
-                  />
-                </span>
-              </div>
+          <div className={`${style["animated-line"]} ${style["animated-line-two"]}`}>
+            <div className={style["line-block"]}>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
             </div>
-          </Link>
-        </div>
-      )}
+            <div className={style["line-block-copy"]}>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+              <span className="mr-24">
+                <span className={style["cta-text"]}>{ctaText}</span>
+                <Image
+                  className={`inline-block ml-16 ${style["cta-icon"]}`}
+                  src="/images/arrow-right.svg"
+                  alt="arrow-right"
+                  height={31}
+                  width={39}
+                />
+              </span>
+            </div>
+          </div>
+        </Link>
+      </div>
       <div className="container">
         <div className="row">
           <div className="md:col-6 text-center md:text-left mb-4">
