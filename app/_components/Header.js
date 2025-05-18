@@ -180,7 +180,7 @@ const Header = () => {
       className={`fixed top-0 z-[9000] w-full ${style.header} ${isActive ? style.active : ""} ${isInvisible ? "-translate-y-full invisible" : ""}`}>
       <div className="container">
         <div className="flex justify-between py-6 items-center relative">
-          <div className={`w-1/4 transition-all duration-300 ${isScrolled ? "lg:opacity-0 lg:-translate-x-8" : ""}`}>
+          <div className={`w-1/5 lg:w-1/6 transition-all duration-300 ${isScrolled ? "lg:opacity-0 lg:-translate-x-8" : ""}`}>
             <Link
               href="/" 
               className="inline-block align-middle"
@@ -198,8 +198,8 @@ const Header = () => {
           </div>
           <nav
             ref={navRef}
-            className={`${style.navbar} ${mobileNavClose ? "w-12 !h-12 lg:w-auto lg:!h-auto" : "w-56 lg:w-auto"} ${!mobileNavClose ? style.navbarOpen : ""}`}
-            style={{ height: mobileNavClose ? "auto" : 42 + (mainMenuLength * 40) + "px" }}
+            className={`${style.navbar} ${mobileNavClose ? "w-12 !h-12 lg:w-auto lg:!h-auto" : "w-full max-w-xs lg:w-auto"} ${!mobileNavClose ? style.navbarOpen : ""}`}
+            style={{ height: mobileNavClose ? "auto" : "auto" }}
           >
             {indicatorPosition && (
               <span
@@ -246,22 +246,46 @@ const Header = () => {
           <button
             type="button"
             aria-label="Toggle Mobile Navigation"
-            className={`${style.navToggler} ${mobileNavClose ? "" : "scale-[0.85]"} `}
+            className={`${style.navToggler} ${mobileNavClose ? "" : "scale-[0.85]"}`}
             onClick={() => setMobileNavClose(!mobileNavClose)}
           >
-            <svg className={mobileNavClose ? "" : "-translate-x-[3rem]"} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M4 8l16 0"></path>
-              <path d="M4 16l16 0"></path>
-            </svg>
-            <svg className={mobileNavClose ? "-rotate-180 translate-x-[3rem]" : "rotate-0 translate-x-0"} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M18 6l-12 12"></path>
-              <path d="M6 6l12 12"></path>
-            </svg>
+            <div className="relative flex items-center justify-center w-full h-full">
+              <svg 
+                className={`${mobileNavClose ? "opacity-100" : "opacity-0"}`} 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                strokeWidth="2" 
+                stroke="currentColor" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 8l16 0"></path>
+                <path d="M4 16l16 0"></path>
+              </svg>
+              <svg 
+                className={`absolute ${mobileNavClose ? "opacity-0" : "opacity-100"}`} 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                strokeWidth="2" 
+                stroke="currentColor" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M18 6l-12 12"></path>
+                <path d="M6 6l12 12"></path>
+              </svg>
+            </div>
           </button>
 
-          <div className={`w-1/4 transition-all duration-300 text-right text-sm hidden lg:block ${isScrolled ? "lg:opacity-0 lg:translate-x-8" : ""}`}>
+          <div className={`w-1/5 lg:w-1/6 transition-all duration-300 text-right text-sm hidden lg:block ${isScrolled ? "lg:opacity-0 lg:translate-x-8" : ""}`}>
             <span className="block text-white/75 mb-1">Social Links:</span>
             <ul className="inline-flex gap-x-4">
               {socialLinks.length > 0 ? (
