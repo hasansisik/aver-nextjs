@@ -1,6 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import {
   login,
+  getMyProfile,
 } from "../actions/userActions";
 
 interface userState {
@@ -36,6 +37,19 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.loading = false;
       state.error = action.payload as string;
     })
+    // Get My Profile
+    .addCase(getMyProfile.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(getMyProfile.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload;
+    })
+    .addCase(getMyProfile.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
 });
 
 export default userReducer;
