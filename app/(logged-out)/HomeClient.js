@@ -48,6 +48,9 @@ const customStyles = {
     height: 'auto',
     visibility: 'visible',
     padding: '1rem 0 0'
+  },
+  '.services-slider': {
+    transition: 'transform 0.5s ease-in-out'
   }
 };
 
@@ -58,6 +61,9 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
   const { services } = useSelector((state) => state.service);
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
   const serviceSliderRef = useRef(null);
+
+  // Calculate total number of slides
+  const totalSlides = Math.ceil(services.length / 3);
 
   // Apply custom styles to document
   useEffect(() => {
@@ -97,9 +103,9 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
   const scrollServices = (direction) => {
     if (services.length === 0) return;
     if (direction === 'next') {
-      setActiveServiceIndex((prev) => (prev + 1) % services.length);
+      setActiveServiceIndex((prev) => (prev + 3) % services.length);
     } else {
-      setActiveServiceIndex((prev) => (prev - 1 + services.length) % services.length);
+      setActiveServiceIndex((prev) => (prev - 3 + services.length) % services.length);
     }
   };
 
@@ -214,101 +220,114 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
 
           <div className="relative">
             <div className="flex justify-center items-center">
-              <button 
-                onClick={() => scrollServices('prev')} 
-                className="absolute left-0 z-10 p-3 bg-white rounded-full shadow-md"
-                aria-label="Previous service"
-                disabled={services.length === 0}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </button>
+              {/* Sol ok sadece 3'ten fazla service varsa */}
+              {services.length > 3 && (
+                <button 
+                  onClick={() => scrollServices('prev')} 
+                  className="absolute left-0 z-10 p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                  aria-label="Previous service"
+                  disabled={services.length === 0}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+              )}
               
-              <div className="row md:gx-4 mx-12" ref={serviceSliderRef}>
-                {services.length > 0 ? visibleServices().map((service, index) => (
-                  <div key={service._id || index} className="lg:col-4 sm:col-4 px-4">
-                    <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
-                      {/* Card Content */}
-                      <div className="p-8 flex flex-col">
-                        <div className="flex mb-4">
-                          <Image 
-                            src={service.icon || "/images/icons/default-service.svg"} 
-                            alt={service.title || "Service"}
-                            width={60} 
-                            height={60}
-                          />
-                        </div>
-                        <h3 className="text-2xl font-medium mb-4 text-gray-800">
-                          {service.title || "Service"}
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                          {service.description || "Service description"}
-                        </p>
-                        
-                        {/* Features List - Only visible on hover */}
-                        <div className="service-feature-list">
-                          <div className="border-t border-gray-200">
-                            <ul className="space-y-0 pt-4">
-                              {service.features && service.features.map ? 
-                                service.features.map((feature, idx) => (
-                                  <li key={idx}>
-                                    <Link href={`/services/${service.slug}?feature=${typeof feature === 'string' ? 
-                                      encodeURIComponent(feature) : 
-                                      encodeURIComponent(feature.title)}`} 
-                                      className="text-red-500 hover:underline block py-3">
-                                      {typeof feature === 'string' ? feature : feature.title}
+              <div className="row md:gx-4 mx-12 overflow-hidden" ref={serviceSliderRef}>
+                <div 
+                  className="services-slider flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${(activeServiceIndex / 3) * 100}%)` }}
+                >
+                  {services.length > 0 ? visibleServices().map((service, index) => (
+                    <div key={service._id || index} className="lg:col-4 sm:col-4 px-4 flex-shrink-0">
+                      <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
+                        {/* Card Content */}
+                        <div className="p-8 flex flex-col">
+                          <div className="flex mb-4">
+                            <Image 
+                              src={service.icon || "/images/icons/default-service.svg"} 
+                              alt={service.title || "Service"}
+                              width={60} 
+                              height={60}
+                            />
+                          </div>
+                          <h3 className="text-2xl font-medium mb-4 text-gray-800">
+                            {service.title || "Service"}
+                          </h3>
+                          <p className="text-gray-600 mb-4">
+                            {service.description || "Service description"}
+                          </p>
+                          {/* Features List - Only visible on hover */}
+                          <div className="service-feature-list">
+                            <div className="border-t border-gray-200">
+                              <ul className="space-y-0 pt-4">
+                                {service.features && service.features.map ? 
+                                  service.features.map((feature, idx) => (
+                                    <li key={idx}>
+                                      <Link href={`/services/${service.slug}?feature=${typeof feature === 'string' ? 
+                                        encodeURIComponent(feature) : 
+                                        encodeURIComponent(feature.title)}`} 
+                                        className="text-red-500 hover:underline block py-3">
+                                        {typeof feature === 'string' ? feature : feature.title}
+                                      </Link>
+                                      {idx < (service.features.length - 1) && (
+                                        <div className="border-t border-gray-100"></div>
+                                      )}
+                                    </li>
+                                  )) : (
+                                  <li>
+                                    <Link href={`/services/${service.slug}`} className="text-red-500 hover:underline block py-3">
+                                      Learn more
                                     </Link>
-                                    {idx < (service.features.length - 1) && (
-                                      <div className="border-t border-gray-100"></div>
-                                    )}
                                   </li>
-                                )) : (
-                                <li>
-                                  <Link href={`/services/${service.slug}`} className="text-red-500 hover:underline block py-3">
-                                    Learn more
-                                  </Link>
-                                </li>
-                              )}
-                            </ul>
+                                )}
+                              </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )) : (
-                  <div className="col-12 text-center py-8">
-                    <p>Loading services...</p>
-                  </div>
-                )}
+                  )) : (
+                    <div className="col-12 text-center py-8">
+                      <p>Loading services...</p>
+                    </div>
+                  )}
+                </div>
               </div>
               
-              <button 
-                onClick={() => scrollServices('next')} 
-                className="absolute right-0 z-10 p-3 bg-white rounded-full shadow-md"
-                aria-label="Next service"
-                disabled={services.length === 0}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
+              {/* Sağ ok sadece 3'ten fazla service varsa */}
+              {services.length > 3 && (
+                <button 
+                  onClick={() => scrollServices('next')} 
+                  className="absolute right-0 z-10 p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                  aria-label="Next service"
+                  disabled={services.length === 0}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              )}
             </div>
 
-            <div className="flex justify-center mt-8">
-              {services.map ? services.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveServiceIndex(index)}
-                  className={`w-3 h-3 mx-1 rounded-full ${
-                    index >= activeServiceIndex && index < activeServiceIndex + 3
-                      ? 'bg-red-500'
-                      : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to service ${index + 1}`}
-                />
-              )) : null}
-            </div>
+            {/* Dotlar sadece 3'ten fazla service varsa */}
+            {services.length > 3 && (
+              <div className="flex justify-center mt-8">
+                {Array.from({ length: totalSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveServiceIndex(index * 3)}
+                    className={`w-3 h-3 mx-1 rounded-full transition-colors duration-300 ${
+                      index === Math.floor(activeServiceIndex / 3)
+                        ? 'bg-red-500'
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
