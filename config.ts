@@ -1,1 +1,1 @@
-export const server: string ="https://glawi-backend.vercel.app/v1";
+export const server: string ="http://localhost:3040/v1";

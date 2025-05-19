@@ -14,17 +14,10 @@ import {
   removeFeature
 } from "../actions/serviceActions";
 
-interface ContentBlock {
-  _id?: string;
-  type: string;
-  content: string;
-  order?: number;
-  metadata?: any;
-}
-
 interface Feature {
   _id?: string;
   title: string;
+  content: string;
   order?: number;
 }
 
@@ -35,9 +28,8 @@ interface Service {
   icon?: string;
   image?: string;
   slug?: string;                // Made optional for new drafts
-  contentBlocks?: ContentBlock[]; // Made optional for empty services
-  markdownContent?: string;      // Added for full markdown content
-  features?: Feature[];         // Service features list
+  markdownContent?: string;      // Main service content
+  features?: Feature[];         // Service features list with content
   isPublished?: boolean;        // Default false if not provided
   isActive?: boolean;           // Default true if not provided
   user?: string;

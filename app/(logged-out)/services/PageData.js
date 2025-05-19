@@ -82,8 +82,8 @@ const ServiceCard = ({ service }) => {
               {service.features && service.features.length > 0 ? 
                 service.features.map((feature, idx) => (
                   <li key={idx}>
-                    <Link href={`/services/${service.slug}#${typeof feature.title === 'string' ? 
-                      feature.title.toLowerCase().replace(/\s+/g, '-') : 
+                    <Link href={`/services/${service.slug}?feature=${typeof feature.title === 'string' ? 
+                      encodeURIComponent(feature.title) : 
                       'feature'}`} 
                       className="text-red-500 hover:underline block py-3">
                       {feature.title}
@@ -103,7 +103,6 @@ const ServiceCard = ({ service }) => {
           </div>
         </div>
       </div>
-      <Link href={`/services/${service.slug}`} className="absolute inset-0" aria-label={service.title}></Link>
     </div>
   );
 };

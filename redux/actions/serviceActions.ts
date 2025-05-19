@@ -98,14 +98,9 @@ export interface UpdateServicePayload {
   description?: string;
   icon?: string;
   image?: string;
-  contentBlocks?: Array<{
-    type: string;
-    content: string;
-    metadata?: any;
-    order?: number;
-  }>;
   features?: Array<{
     title: string;
+    content?: string;
     order?: number;
   }>;
   isPublished?: boolean;
@@ -316,6 +311,7 @@ export interface UpdateFeaturePayload {
   serviceId: string;
   featureId?: string;
   title: string;
+  content: string;
   order?: number;
 }
 

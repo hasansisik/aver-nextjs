@@ -253,9 +253,9 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                               {service.features && service.features.map ? 
                                 service.features.map((feature, idx) => (
                                   <li key={idx}>
-                                    <Link href={`/services/${service.slug}#${typeof feature === 'string' ? 
-                                      feature.toLowerCase().replace(/\s+/g, '-') : 
-                                      feature.title.toLowerCase().replace(/\s+/g, '-')}`} 
+                                    <Link href={`/services/${service.slug}?feature=${typeof feature === 'string' ? 
+                                      encodeURIComponent(feature) : 
+                                      encodeURIComponent(feature.title)}`} 
                                       className="text-red-500 hover:underline block py-3">
                                       {typeof feature === 'string' ? feature : feature.title}
                                     </Link>
@@ -274,7 +274,6 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                           </div>
                         </div>
                       </div>
-                      <Link href={`/services/${service.slug}`} className="absolute inset-0" aria-label={service.title || "Service"}></Link>
                     </div>
                   </div>
                 )) : (

@@ -6,22 +6,50 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
 import ServiceClient from "./ServiceClient";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function ServiceDetail() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const selectedFeature = searchParams.get('feature');
   const dispatch = useDispatch();
   const { currentService, services, loading, error } = useSelector((state) => state.service);
   const [relatedServices, setRelatedServices] = useState([]);
+  const [selectedFeatureContent, setSelectedFeatureContent] = useState(null);
+  const [otherFeatures, setOtherFeatures] = useState([]);
   
   // Fetch current service and all services
   useEffect(() => {
     if (params.slug) {
       dispatch(getServiceBySlug(params.slug));
     }
-        dispatch(getServices());
+    dispatch(getServices());
   }, [dispatch, params.slug]);
   
+  // Find selected feature content and other features when service or feature changes
+  useEffect(() => {
+    if (currentService && currentService.features) {
+      if (selectedFeature) {
+        const feature = currentService.features.find(f => 
+          (typeof f === 'string' ? f : f.title) === decodeURIComponent(selectedFeature)
+        );
+        if (feature) {
+          setSelectedFeatureContent(typeof feature === 'string' ? null : feature.content);
+        }
+      }
+      
+      // Get other features excluding the selected one
+      const features = currentService.features
+        .filter(f => (typeof f === 'string' ? f : f.title) !== decodeURIComponent(selectedFeature))
+        .map(f => ({
+          title: typeof f === 'string' ? f : f.title,
+          content: typeof f === 'string' ? null : f.content
+        }));
+      
+      setOtherFeatures(features);
+    }
+  }, [currentService, selectedFeature]);
+
   useEffect(() => {
     if (currentService && services && services.length > 0) {
       // Filter out the current service and get up to 2 related services
@@ -65,13 +93,17 @@ export default function ServiceDetail() {
           <div className="row">
             <div className="col-12">
               <div className="service-header mb-10 md:mb-16">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{currentService.title}</h1>
-                <p className="text-lg text-gray-500 max-w-3xl">{currentService.description}</p>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                  {selectedFeature ? decodeURIComponent(selectedFeature) : currentService.title}
+                </h1>
+                <p className="text-lg text-gray-500 max-w-3xl">
+                  {selectedFeature ? `Feature of ${currentService.title}` : currentService.description}
+                </p>
               </div>
             </div>
           </div>
 
-          {currentService.image && (
+          {!selectedFeature && currentService.image && (
             <div className="row mb-16">
               <div className="col-12">
                 <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] rounded-lg overflow-hidden">
@@ -88,16 +120,48 @@ export default function ServiceDetail() {
           )}
 
           <div className="row">
-            <div className="col-12 ">
+            <div className="col-12">
               <div className="prose prose-lg max-w-none dark:prose-invert">
-                <ServiceClient markdownContent={currentService.markdownContent || ""} />
+                <ServiceClient markdownContent={selectedFeatureContent || currentService.markdownContent || ""} />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {relatedServices.length > 0 && (
+      {otherFeatures.length > 0 && (
+        <section className="py-28 bg-white text-dark rounded-b-2xl">
+          <div className="container">
+            <div className="mb-20">
+              <h2 className="text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center">
+                Other Features
+              </h2>
+            </div>
+            <div className="row gy-4 justify-center">
+              {otherFeatures.map((feature, index) => (
+                <div key={index} className="lg:col-8 md:col-10">
+                  <Link 
+                    href={`/services/${currentService.slug}?feature=${encodeURIComponent(feature.title)}`}
+                    className="block p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 mb-2">
+                          {currentService.title}
+                        </span>
+                        <h3 className="text-xl font-bold">{feature.title}</h3>
+                      </div>
+                      <span className="text-red-500 text-sm font-medium">View Feature →</span>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!selectedFeature && relatedServices.length > 0 && (
         <section className="py-28 bg-white text-dark rounded-b-2xl">
           <div className="container">
             <div className="mb-20">

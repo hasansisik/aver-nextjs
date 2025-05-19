@@ -16,8 +16,9 @@ async function getServiceData(slug) {
   }
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const service = await getServiceData(params.slug);
+  const feature = searchParams?.feature;
   
   if (!service) {
     return {
@@ -27,11 +28,13 @@ export async function generateMetadata({ params }) {
   }
   
   return {
-    title: `${service.title} | Our Services`,
+    title: feature 
+      ? `${feature} - ${service.title} | Our Services`
+      : `${service.title} | Our Services`,
     description: service.description || "Professional service offered by our company",
   };
 }
 
-export default async function ServicePage({ params }) {
-  return <ServiceDetail />;
+export default async function ServicePage({ params, searchParams }) {
+  return <ServiceDetail selectedFeature={searchParams?.feature} />;
 } 

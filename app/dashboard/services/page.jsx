@@ -103,7 +103,6 @@ export default function ServicesManager() {
     description: "",
     icon: "",
     image: "",
-    markdownContent: "",
     features: []
   })
   const [featureInput, setFeatureInput] = useState("")
@@ -152,7 +151,6 @@ export default function ServicesManager() {
       description: "",
       icon: "",
       image: "",
-      markdownContent: "",
       features: []
     })
     setFeatureInput("")
@@ -169,16 +167,19 @@ export default function ServicesManager() {
   }
 
   const handleAddFeature = (e) => {
-    e.preventDefault()
-    if (!featureInput.trim()) return
+    e.preventDefault();
+    if (!featureInput.trim()) return;
     
     setFormData(prev => ({
       ...prev,
-      features: [...prev.features, { title: featureInput }]
-    }))
+      features: [...prev.features, { 
+        title: featureInput,
+        content: "" // Initialize with empty content
+      }]
+    }));
     
-    setFeatureInput("")
-  }
+    setFeatureInput("");
+  };
 
   const handleRemoveFeature = (index) => {
     setFormData(prev => ({
@@ -193,7 +194,6 @@ export default function ServicesManager() {
       description: service.description || "",
       icon: service.icon || "",
       image: service.image || "",
-      markdownContent: service.markdownContent || "",
       features: service.features || [],
     })
     setEditMode(true)
@@ -223,38 +223,43 @@ export default function ServicesManager() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     
     try {
       const serviceData = {
         ...formData,
-        features: formData.features.map(feature => ({ title: feature.title }))
-      }
+        features: formData.features.map(feature => ({
+          title: feature.title,
+          content: feature.content || "",
+          order: feature.order,
+          _id: feature._id
+        }))
+      };
       
       if (editMode) {
         await dispatch(updateService({
           serviceId: currentServiceId,
           ...serviceData
-        }))
-        setAlertType("success")
-        setAlertMessage("Service updated successfully")
+        }));
+        setAlertType("success");
+        setAlertMessage("Service updated successfully");
       } else {
-        await dispatch(createService(serviceData))
-        setAlertType("success")
-        setAlertMessage("Service created successfully")
+        await dispatch(createService(serviceData));
+        setAlertType("success");
+        setAlertMessage("Service created successfully");
       }
       
-      setShowAlert(true)
-      resetForm()
-      setActiveTab("list")
+      setShowAlert(true);
+      resetForm();
+      setActiveTab("list");
     } catch (error) {
-      setAlertType("error")
+      setAlertType("error");
       setAlertMessage(editMode 
         ? "Failed to update service. Please try again." 
-        : "Failed to create service. Please try again.")
-      setShowAlert(true)
+        : "Failed to create service. Please try again.");
+      setShowAlert(true);
     }
-  }
+  };
 
   // Upload file to Cloudinary
   const uploadFileToCloudinary = async (file, fileType) => {
@@ -379,6 +384,52 @@ export default function ServicesManager() {
     }
   }
 
+  const handleFeatureContentChange = (featureIndex, newContent) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.map((feature, index) => 
+        index === featureIndex 
+          ? { ...feature, content: newContent }
+          : feature
+      )
+    }));
+  };
+
+  const handleFeatureContentSave = async (featureIndex, newContent) => {
+    if (!editMode) return;
+    
+    try {
+      const updatedFeature = {
+        ...formData.features[featureIndex],
+        content: newContent
+      };
+      
+      const response = await dispatch(updateFeature({
+        serviceId: currentServiceId,
+        featureId: updatedFeature._id,
+        title: updatedFeature.title,
+        content: updatedFeature.content,
+        order: updatedFeature.order
+      })).unwrap();
+
+      // Update the local state with the response
+      setFormData(prev => ({
+        ...prev,
+        features: prev.features.map((feature, index) => 
+          index === featureIndex ? response.features.find(f => f._id === feature._id) || feature : feature
+        )
+      }));
+      
+      setAlertType("success");
+      setAlertMessage("Feature content saved successfully");
+      setShowAlert(true);
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Failed to save feature content. Please try again.");
+      setShowAlert(true);
+    }
+  };
+
   if (loading && services.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center">
@@ -466,14 +517,45 @@ export default function ServicesManager() {
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    {service.features && service.features.length > 0 && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Features</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {service.features.map((feature, index) => (
+                            <div 
+                              key={feature._id || index}
+                              className="bg-gray-50 rounded-lg p-2 text-sm"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{feature.title}</span>
+                              </div>
+                              {feature.content && (
+                                <div className="mt-1 text-gray-600 line-clamp-2">
+                                  {feature.content}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
                   <CardFooter className="p-4 pt-0 flex justify-between">
                     <Button 
                       variant="outline" 
                       size="sm"
+                      onClick={() => handleEditService(service)}
+                    >
+                      Edit Service
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       asChild
                     >
                       <Link href={`/services/${service.slug}`}>
-                      Preview
+                        Preview
                       </Link>
                     </Button>
                   </CardFooter>
@@ -613,13 +695,13 @@ export default function ServicesManager() {
                   </div>
                   
                   <div className="space-y-4">
-                    <Label htmlFor="features">Features</Label>
+                    <Label htmlFor="features">Features & Content</Label>
                     <div className="flex space-x-2">
                       <Input
                         id="featureInput"
                         value={featureInput}
                         onChange={(e) => setFeatureInput(e.target.value)}
-                        placeholder="Enter a feature"
+                        placeholder="Enter a feature title"
                       />
                       <Button 
                         type="button" 
@@ -631,35 +713,40 @@ export default function ServicesManager() {
                     </div>
                     
                     {formData.features.length > 0 && (
-                      <div className="mt-2 space-y-2">
+                      <div className="mt-2 space-y-4">
                         {formData.features.map((feature, index) => (
-                          <div 
-                            key={index}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                          >
-                            <span>{feature.title}</span>
-                            <Button 
-                              type="button" 
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleRemoveFeature(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          <Card key={index} className="bg-gray-50">
+                            <CardHeader className="p-4 pb-2">
+                              <div className="flex justify-between items-start">
+                                <div className="space-y-1">
+                                  <CardTitle className="text-base">{feature.title}</CardTitle>
+                                </div>
+                                <Button 
+                                  type="button" 
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRemoveFeature(index)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="p-4 pt-2">
+                              <div className="space-y-2">
+                                <Label>Content</Label>
+                                <BlogContentEditor 
+                                  content={feature.content || ""}
+                                  onChange={(newContent) => handleFeatureContentChange(index, newContent)}
+                                  onSave={(newContent) => handleFeatureContentSave(index, newContent)}
+                                  title={`Content for ${feature.title}`}
+                                  description="Edit the content in markdown format"
+                                />
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
                       </div>
                     )}
-                  </div>
-                  
-                  <div className="mt-6">
-                    <BlogContentEditor 
-                      content={formData.markdownContent}
-                      onChange={handleContentChange}
-                      onSave={handleContentSave}
-                      title="Service Content"
-                      description="Edit your service content in markdown format"
-                    />
                   </div>
                   
                   <div className="pt-6 flex justify-between">
