@@ -70,6 +70,8 @@ const Header = () => {
       left: link.offsetLeft === 0 ? link.offsetLeft + 8 : link.offsetLeft,
       width: link.offsetLeft === 0 ? link.offsetWidth + 7 : link.offsetWidth,
     });
+    // Close mobile menu when a link is clicked
+    setMobileNavClose(true);
   };
 
   // Update Header element position on Scroll
