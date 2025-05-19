@@ -24,10 +24,7 @@ export const metadata = {
   metadataBase: new URL(config.baseURL),
   alternates: {
     canonical: "/",
-  },
-  openGraph: {
-    images: config.metaData.ogImage,
-  },
+  }
 };
 
 const AverApp = ({ children }) => {

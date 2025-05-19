@@ -1,8 +1,7 @@
 {
   "metaData": {
     "title" : "Aver - Personal Portfolio React NextJS Template",
-    "description" : "Personal Portfolio React NextJS Template",
-    "ogImage" : "/images/ogimage.jpg"
+    "description" : "Personal Portfolio React NextJS Template"
   },
   "logo" : "/images/logo.svg",
   "logoText" : "Aver",

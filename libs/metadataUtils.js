@@ -25,10 +25,7 @@ export function generateMetadata(path, defaultValues = {}) {
     metadataBase: new URL(config.baseURL),
     alternates: {
       canonical: path,
-    },
-    openGraph: {
-      images: config.metaData.ogImage,
-    },
+    }
   }
   
   // Combine with default values provided by the page

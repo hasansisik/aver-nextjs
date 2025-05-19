@@ -22,10 +22,7 @@ export const metadata = {
   metadataBase: new URL(config.baseURL),
   alternates: {
     canonical: "/",
-  },
-  openGraph: {
-    images: config.metaData.ogImage,
-  },
+  }
 };
 
 export default function RootLayout({ children }) {

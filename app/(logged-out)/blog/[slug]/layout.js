@@ -16,10 +16,7 @@ export async function generateMetadata({ params }) {
     
     return {
       title: blog.title,
-      description: blog.description || siteConfig.metadata.description,
-      openGraph: {
-        images: blog.image ? [blog.image] : [`${siteConfig.baseURL.replace(/\/$|$/, "/")}${siteConfig.metadata.ogImage}`],
-      },
+      description: blog.description || siteConfig.metadata.description
     };
   } catch (error) {
     console.error("Error fetching blog data for metadata:", error);
