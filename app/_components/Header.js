@@ -32,6 +32,12 @@ const Header = () => {
   const navRef = useRef(null);
   const activeLinkRef = useRef(null);
 
+  // For debugging
+  useEffect(() => {
+    console.log("Current pathname:", pathname);
+    console.log("Main Menu:", mainMenu);
+  }, [pathname, mainMenu]);
+
   useEffect(() => {
     // Menü öğeleri değiştiğinde veya yüklendiğinde
     if (navRef.current && !loading && mainMenu.length > 0) {
@@ -44,7 +50,29 @@ const Header = () => {
         });
       }
     }
-  }, [mainMenu, loading]);
+  }, [mainMenu, loading, pathname]);
+
+  // Reset indicator position when pathname changes
+  useEffect(() => {
+    // Small delay to ensure DOM is updated
+    const timer = setTimeout(() => {
+      if (navRef.current) {
+        const activeLink = navRef.current.querySelector(".active");
+        if (activeLink) {
+          activeLinkRef.current = activeLink;
+          setIndicatorPosition({
+            left: activeLink.offsetLeft,
+            width: activeLink.offsetWidth,
+          });
+        } else {
+          // If no active link is found, reset the indicator
+          setIndicatorPosition(null);
+        }
+      }
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   const handleLinkMouseEnter = (event) => {
     const link = event.currentTarget;
@@ -212,30 +240,76 @@ const Header = () => {
 
             {mainMenu.length > 0 ? (
               // API'den gelen menü öğelerini göster
-              mainMenu.map((item, key) => (
-                <Link
-                  key={key}
-                  href={item.link}
-                  className={
-                    pathname == item.link
-                      || pathname.includes("/blog") && item.link == "/blog"
-                      || pathname.includes("/project") && item.link == "/project"
-                      ? "active !text-white/100" : ""}
+              mainMenu.map((item, key) => {
+                // Check for exact match or specific path patterns
+                const isActive = 
+                  pathname === item.link || 
+                  (pathname === "/" && item.link === "/") || // Explicitly check for home page
+                  (pathname.includes("/blog") && item.link === "/blog") ||
+                  (pathname.includes("/project") && item.link === "/project") ||
+                  (pathname.includes("/glossary") && item.link === "/glossary");
+                
+                return (
+                  <Link
+                    key={key}
+                    href={item.link}
+                    className={isActive ? "active !text-white/100" : ""}
+                    onMouseEnter={handleLinkMouseEnter}
+                    onMouseLeave={handleLinkMouseLeave}
+                    onClick={handleLinkClick}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })
+            ) : (
+              // API'den veri gelmezse veya hata olursa config'ten varsayılan menüyü göster
+              <>
+                <Link 
+                  href="/" 
+                  className={pathname === "/" ? "active !text-white/100" : ""}
                   onMouseEnter={handleLinkMouseEnter}
                   onMouseLeave={handleLinkMouseLeave}
                   onClick={handleLinkClick}
                 >
-                  {item.name}
+                  Home
                 </Link>
-              ))
-            ) : (
-              // API'den veri gelmezse veya hata olursa config'ten varsayılan menüyü göster
-              <>
-                <Link href="/" className={pathname === "/" ? "active !text-white/100" : ""}>Home</Link>
-                <Link href="/about" className={pathname === "/about" ? "active !text-white/100" : ""}>About</Link>
-                <Link href="/project" className={pathname.includes("/project") ? "active !text-white/100" : ""}>Project</Link>
-                <Link href="/blog" className={pathname.includes("/blog") ? "active !text-white/100" : ""}>Blog</Link>
-                <Link href="/contact" className={pathname === "/contact" ? "active !text-white/100" : ""}>Contact</Link>
+                <Link 
+                  href="/about" 
+                  className={pathname === "/about" ? "active !text-white/100" : ""}
+                  onMouseEnter={handleLinkMouseEnter}
+                  onMouseLeave={handleLinkMouseLeave}
+                  onClick={handleLinkClick}
+                >
+                  About
+                </Link>
+                <Link 
+                  href="/project" 
+                  className={pathname.includes("/project") ? "active !text-white/100" : ""}
+                  onMouseEnter={handleLinkMouseEnter}
+                  onMouseLeave={handleLinkMouseLeave}
+                  onClick={handleLinkClick}
+                >
+                  Project
+                </Link>
+                <Link 
+                  href="/blog" 
+                  className={pathname.includes("/blog") ? "active !text-white/100" : ""}
+                  onMouseEnter={handleLinkMouseEnter}
+                  onMouseLeave={handleLinkMouseLeave}
+                  onClick={handleLinkClick}
+                >
+                  Blog
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className={pathname === "/contact" ? "active !text-white/100" : ""}
+                  onMouseEnter={handleLinkMouseEnter}
+                  onMouseLeave={handleLinkMouseLeave}
+                  onClick={handleLinkClick}
+                >
+                  Contact
+                </Link>
               </>
             )}
           </nav>
