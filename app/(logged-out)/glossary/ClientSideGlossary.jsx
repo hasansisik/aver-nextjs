@@ -15,6 +15,7 @@ const ClientSideGlossary = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTerms, setFilteredTerms] = useState([]);
   const [groupedTerms, setGroupedTerms] = useState({});
+  const [selectedLetter, setSelectedLetter] = useState('');
 
   // Fetch glossary terms from API
   useEffect(() => {
@@ -59,6 +60,17 @@ const ClientSideGlossary = () => {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+    setSelectedLetter(''); // Arama yapılınca harf filtresi sıfırlansın
+  };
+
+  const handleLetterClick = (letter) => {
+    setSelectedLetter(letter);
+    setSearchQuery(''); // Harf filtresi yapılınca arama sıfırlansın
+  };
+
+  const handleClearFilter = () => {
+    setSelectedLetter('');
+    setSearchQuery('');
   };
 
   if (loading) {
@@ -89,20 +101,19 @@ const ClientSideGlossary = () => {
   }
 
   return (
-    <section className="py-28 bg-white text-dark rounded-b-2xl">
+    <section className="py-28 bg-[#f5f5f5] min-h-screen">
       <div className="container">
         <div className="row justify-center">
           <div className="col-12 text-center">
-            <h2 className="text-3xl font-medium mb-6">Search Terms</h2>
-            <p className="mb-8">Find any term in our glossary by typing below</p>
-            
+            <h2 className="text-4xl font-bold mb-6 text-black">Search Terms</h2>
+            <p className="mb-8 text-black">Find any term in our glossary by typing below</p>
             {/* Search input */}
-            <div className="max-w-4xl mx-auto mb-16">
+            <div className="max-w-8xl mx-auto mb-16">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search for marketing terms..."
-                  className="w-full py-4 px-6 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-dark"
+                  className="w-full py-4 px-6 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-dark placeholder:text-black"
                   value={searchQuery}
                   onChange={handleSearch}
                 />
@@ -114,29 +125,40 @@ const ClientSideGlossary = () => {
                 </button>
               </div>
             </div>
-            
-            {/* Alphabetical navigation */}
-            <div className="mb-16">
-              <h3 className="text-2xl font-medium mb-6">Browse by Letter</h3>
-              <div className="flex flex-wrap justify-center gap-2">
-                {alphabet.map(letter => (
-                  <Link 
-                    key={letter} 
-                    href={`#${letter}`}
-                    className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 text-white font-medium rounded hover:bg-primary transition-colors"
+            {/* Alphabetical navigation sadece arama ve harf filtresi yoksa göster */}
+            {!searchQuery && !selectedLetter && (
+              <div className="mb-16">
+                <h3 className="text-2xl font-medium mb-6 text-black">Browse by Letter</h3>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {alphabet.map(letter => (
+                    <button
+                      key={letter}
+                      onClick={() => handleLetterClick(letter)}
+                      className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 text-white font-medium rounded hover:bg-primary transition-colors focus:outline-none"
+                    >
+                      {letter}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handleLetterClick('#')}
+                    className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 text-white font-medium rounded hover:bg-primary transition-colors focus:outline-none"
                   >
-                    {letter}
-                  </Link>
-                ))}
-                <Link 
-                  href="#"
-                  className="inline-flex items-center justify-center w-12 h-12 bg-gray-900 text-white font-medium rounded hover:bg-primary transition-colors"
-                >
-                  #
-                </Link>
+                    #
+                  </button>
+                </div>
               </div>
-            </div>
-            
+            )}
+            {/* Filtre temizleme butonu */}
+            {(selectedLetter || searchQuery) && (
+              <div className="mb-8 text-center">
+                <button
+                  onClick={handleClearFilter}
+                  className="inline-block px-6 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+            )}
             {/* Search results message */}
             {searchQuery && (
               <div className="mb-8">
@@ -147,49 +169,86 @@ const ClientSideGlossary = () => {
                 </p>
               </div>
             )}
-            
-            {/* Terms listing */}
-            {alphabet.map(letter => (
-              <div key={letter} id={letter} className="mb-16">
-                {groupedTerms[letter] && groupedTerms[letter].length > 0 ? (
-                  <>
-                    <div className="flex items-center mb-8">
-                      <div className="inline-block w-16 h-16 bg-gray-900 text-white text-3xl font-bold flex items-center justify-center rounded">
-                        {letter}
+            {/* Search veya harf filtresi varsa sadece ilgili kartlar, yoksa harf başlıkları ve gruplu kartlar */}
+            {(searchQuery || selectedLetter) ? (
+              <div className="max-w-8xl mx-auto">
+                {(searchQuery ? filteredTerms : groupedTerms[selectedLetter] || []).length === 0 ? null : (
+                  Object.entries(
+                    (searchQuery
+                      ? filteredTerms.reduce((acc, term) => {
+                          const letter = term.title.charAt(0).toUpperCase();
+                          if (!acc[letter]) acc[letter] = [];
+                          acc[letter].push(term);
+                          return acc;
+                        }, {})
+                      : { [selectedLetter]: groupedTerms[selectedLetter] || [] }
+                    )
+                  ).map(([letter, terms]) => (
+                    <div key={letter} id={letter} className="mb-12 max-w-8xl mx-auto bg-white rounded-2xl p-0 shadow-sm">
+                      <div className="flex flex-row items-stretch">
+                        {/* Harf solda */}
+                        <div className="flex flex-col justify-start min-w-[64px] pl-8 pt-8">
+                          <span className="text-black text-3xl font-bold leading-none">{letter}</span>
+                        </div>
+                        {/* Termler sağda */}
+                        <div className="flex-1 flex flex-col">
+                          {terms.map((term, index) => (
+                            <div
+                              key={index}
+                              className={`flex flex-col items-start py-8 pr-8 pl-8 w-full ${index !== terms.length - 1 ? '' : ''}`}
+                            >
+                              <span className="text-lg font-semibold text-[#222] mb-2 text-left w-full">{term.title}</span>
+                              <span className="text-gray-600 mb-4 w-full text-left">{term.description}</span>
+                              <Link href={`/glossary/${term.slug}`} className="inline-flex items-center text-black font-medium hover:underline">
+                                Read more
+                                <svg className="ml-2" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                              </Link>
+                              {index !== terms.length - 1 && (
+                                <div className="w-full border-b border-gray-200 mt-8"></div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="ml-4 flex-grow border-t border-gray-200"></div>
                     </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {groupedTerms[letter].map((term, index) => (
-                        <Link 
-                          href={`/glossary/${term.slug}`} 
-                          key={index} 
-                          className="block p-6 border border-gray-200 rounded-lg hover:border-gray-400 transition-colors"
-                        >
-                          <h3 className="text-xl font-medium mb-2">{term.title}</h3>
-                          <p className="text-gray-600 line-clamp-2">{term.description}</p>
-                          <div className="mt-3 text-right">
-                            <span className="inline-block text-primary font-medium">View details →</span>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center mb-8">
-                      <div className="inline-block w-16 h-16 bg-gray-900 text-white text-3xl font-bold flex items-center justify-center rounded">
-                        {letter}
-                      </div>
-                      <div className="ml-4 flex-grow border-t border-gray-200"></div>
-                    </div>
-                    <p className="text-gray-500 mb-12">No terms starting with letter {letter}</p>
-                  </>
+                  ))
                 )}
               </div>
-            ))}
-            
+            ) : (
+              <>
+                {alphabet.map(letter => (
+                  groupedTerms[letter] && groupedTerms[letter].length > 0 && (
+                    <div key={letter} id={letter} className="mb-12 max-w-8xl mx-auto bg-white rounded-2xl p-0 shadow-sm">
+                      <div className="flex flex-row items-stretch">
+                        {/* Harf solda */}
+                        <div className="flex flex-col justify-start min-w-[64px] pl-8 pt-8">
+                          <span className="text-black text-3xl font-bold leading-none">{letter}</span>
+                        </div>
+                        {/* Termler sağda */}
+                        <div className="flex-1 flex flex-col">
+                          {groupedTerms[letter].map((term, index) => (
+                            <div
+                              key={index}
+                              className={`flex flex-col items-start py-8 pr-8 pl-8 w-full ${index !== groupedTerms[letter].length - 1 ? '' : ''}`}
+                            >
+                              <span className="text-lg font-semibold text-[#222] mb-2 text-left w-full">{term.title}</span>
+                              <span className="text-gray-600 mb-4 w-full text-left">{term.description}</span>
+                              <Link href={`/glossary/${term.slug}`} className="inline-flex items-center text-black font-medium hover:underline">
+                                Read more
+                                <svg className="ml-2" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                              </Link>
+                              {index !== groupedTerms[letter].length - 1 && (
+                                <div className="w-full border-b border-gray-200 mt-8"></div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                ))}
+              </>
+            )}
             {/* No results message when searching */}
             {searchQuery && filteredTerms.length === 0 && (
               <div className="py-12 text-center">
