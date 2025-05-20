@@ -1,6 +1,7 @@
 import { getServiceBySlug } from "@/redux/actions/serviceActions";
 import { store } from "@/redux/store";
-import ServiceDetail from "./ServiceDetail";
+import ServiceDetail from "../services/[slug]/ServiceDetail";
+import { notFound } from 'next/navigation';
 
 // Fetch service data for metadata
 async function getServiceData(slug) {
@@ -21,8 +22,8 @@ export async function generateMetadata({ params }) {
   
   if (!service) {
     return {
-      title: "Service Not Found | Our Services",
-      description: "The requested service could not be found",
+      title: "Page Not Found",
+      description: "The requested page could not be found",
     };
   }
   
@@ -33,6 +34,13 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ServicePage({ params }) {
-  // Just pass null as selectedFeature since this is the main service page
-  return <ServiceDetail selectedFeature={null} />;
+  const service = await getServiceData(params.slug);
+  
+  // If no service found, return 404
+  if (!service) {
+    return notFound();
+  }
+  
+  // Return the client component that handles state on its own
+  return <ServiceDetail />;
 } 
