@@ -51,10 +51,16 @@ const customStyles = {
     boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
     height: 'auto'
   },
+  '.service-card-wrapper': {
+    margin: '0',
+    padding: '0',
+    position: 'relative'
+  },
   '.service-card:hover': {
-    zIndex: '10',
+    zIndex: '30',
     backgroundColor: '#ffffff',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+    boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+    transform: 'translateY(-5px)'
   },
   '.service-feature-list': {
     transition: 'all 0.35s ease-in-out',
@@ -70,8 +76,22 @@ const customStyles = {
     visibility: 'visible',
     padding: '1rem 0 0'
   },
+  '.service-card-content': {
+    height: 'auto',
+    overflow: 'visible'
+  },
   '.services-slider': {
     transition: 'transform 0.5s ease-in-out'
+  },
+  '.services-section': {
+    position: 'relative',
+    overflow: 'hidden',
+    height: 'auto',
+    minHeight: '600px'
+  },
+  '.services-container': {
+    position: 'relative',
+    zIndex: '1'
   },
   '@media (max-width: 768px)': {
     '.service-card': {
@@ -249,8 +269,8 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
       <WorkProcess workProcess={workProcess} />
 
       {/* Services Section */}
-      <section className="py-28 bg-gray-100 text-dark">
-        <div className="container">
+      <section className="py-28 pb-20 bg-gray-100 text-dark services-section">
+        <div className="container services-container" style={{minHeight: "700px"}}>
           <div className="row mb-16 items-end">
             <div className="sm:col-8 order-2 sm:order-1">
               <h2 className="text-black text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
@@ -289,30 +309,49 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                 >
                   {services.length > 0 ? visibleServices().map((service, index) => (
                     <div key={service._id || index} className="lg:col-4 sm:col-4 px-4 flex-shrink-0">
-                      <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
-                        {/* Card Content */}
-                        <div className="p-8 flex flex-col">
-                          <div className="flex mb-4">
-                            <Image 
-                              src={service.icon || "/images/icons/default-service.svg"} 
-                              alt={service.title || "Service"}
-                              width={60} 
-                              height={60}
-                            />
-                          </div>
-                          <h3 className="text-2xl font-medium mb-4 text-gray-800">
-                            {service.title || "Service"}
-                          </h3>
-                          <p className="text-gray-600 mb-4">
-                            {service.description || "Service description"}
-                          </p>
-                          {/* Features List - Only visible on hover */}
-                          <div className="service-feature-list">
-                            <div className="border-t border-gray-200">
-                              <ul className="space-y-0 pt-4">
-                                {service.features && service.features.map ? 
-                                  service.features.map((feature, idx) => (
-                                    <li key={idx}>
+                      <div className="service-card-wrapper">
+                        <div className="relative service-card rounded-lg bg-white shadow-md h-auto overflow-visible">
+                          {/* Card Content */}
+                          <div className="p-8 flex flex-col service-card-content">
+                            <div className="flex mb-4">
+                              <Image 
+                                src={service.icon || "/images/icons/default-service.svg"} 
+                                alt={service.title || "Service"}
+                                width={60} 
+                                height={60}
+                              />
+                            </div>
+                            <h3 className="text-2xl font-medium mb-4 text-gray-800">
+                              {service.title || "Service"}
+                            </h3>
+                            <p className="text-gray-600 mb-4">
+                              {service.description || "Service description"}
+                            </p>
+                            {/* Features List - Only visible on hover */}
+                            <div className="service-feature-list">
+                              <div className="border-t border-gray-200">
+                                <ul className="space-y-0 pt-4">
+                                  {service.features && service.features.map ? 
+                                    service.features.map((feature, idx) => (
+                                      <li key={idx}>
+                                        <Link 
+                                          href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
+                                          onClick={() => {
+                                            localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                            localStorage.setItem('featureServiceSlug', service.slug);
+                                            localStorage.setItem('featureServiceTitle', service.title);
+                                            localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
+                                          }}
+                                          className="text-red-500 hover:underline block py-3"
+                                        >
+                                          {typeof feature === 'string' ? feature : feature.title}
+                                        </Link>
+                                        {idx < (service.features.length - 1) && (
+                                          <div className="border-t border-gray-100"></div>
+                                        )}
+                                      </li>
+                                    )) : (
+                                    <li>
                                       <Link 
                                         href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
                                         onClick={() => {
@@ -323,29 +362,12 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                         }}
                                         className="text-red-500 hover:underline block py-3"
                                       >
-                                        {typeof feature === 'string' ? feature : feature.title}
+                                        Learn more
                                       </Link>
-                                      {idx < (service.features.length - 1) && (
-                                        <div className="border-t border-gray-100"></div>
-                                      )}
                                     </li>
-                                  )) : (
-                                  <li>
-                                    <Link 
-                                      href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                      onClick={() => {
-                                        localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                        localStorage.setItem('featureServiceSlug', service.slug);
-                                        localStorage.setItem('featureServiceTitle', service.title);
-                                        localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                      }}
-                                      className="text-red-500 hover:underline block py-3"
-                                    >
-                                      Learn more
-                                    </Link>
-                                  </li>
-                                )}
-                              </ul>
+                                  )}
+                                </ul>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -399,33 +421,52 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
             <div className="md:hidden">
               <div className="space-y-6">
                 {services.length > 0 ? services.map((service, index) => (
-                  <div key={service._id || index} className="service-card rounded-lg bg-white shadow-md overflow-hidden">
-                    <div className="p-6">
-                      <div className="flex items-center mb-4">
-                        <Image 
-                          src={service.icon || "/images/icons/default-service.svg"} 
-                          alt={service.title || "Service"}
-                          width={60} 
-                          height={60}
-                          className="mr-4"
-                        />
-                        <div>
-                          <h3 className="text-2xl font-medium text-gray-800">
-                            {service.title || "Service"}
-                          </h3>
+                  <div key={service._id || index} className="service-card-wrapper">
+                    <div className="service-card rounded-lg bg-white shadow-md overflow-hidden">
+                      <div className="p-6 service-card-content">
+                        <div className="flex items-center mb-4">
+                          <Image 
+                            src={service.icon || "/images/icons/default-service.svg"} 
+                            alt={service.title || "Service"}
+                            width={60} 
+                            height={60}
+                            className="mr-4"
+                          />
+                          <div>
+                            <h3 className="text-2xl font-medium text-gray-800">
+                              {service.title || "Service"}
+                            </h3>
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-gray-600 mb-4">
-                        {service.description || "Service description"}
-                      </p>
-                      
-                      {/* Features List - Always visible on mobile */}
-                      <div className="service-feature-list">
-                        <div className="border-t border-gray-200">
-                          <ul className="space-y-0 pt-4">
-                            {service.features && service.features.map ? 
-                              service.features.map((feature, idx) => (
-                                <li key={idx}>
+                        <p className="text-gray-600 mb-4">
+                          {service.description || "Service description"}
+                        </p>
+                        
+                        {/* Features List - Always visible on mobile */}
+                        <div className="service-feature-list">
+                          <div className="border-t border-gray-200">
+                            <ul className="space-y-0 pt-4">
+                              {service.features && service.features.map ? 
+                                service.features.map((feature, idx) => (
+                                  <li key={idx}>
+                                    <Link 
+                                      href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
+                                      onClick={() => {
+                                        localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                        localStorage.setItem('featureServiceSlug', service.slug);
+                                        localStorage.setItem('featureServiceTitle', service.title);
+                                        localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
+                                      }}
+                                      className="text-red-500 hover:underline block py-3"
+                                    >
+                                      {typeof feature === 'string' ? feature : feature.title}
+                                    </Link>
+                                    {idx < (service.features.length - 1) && (
+                                      <div className="border-t border-gray-100"></div>
+                                    )}
+                                  </li>
+                                )) : (
+                                <li>
                                   <Link 
                                     href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
                                     onClick={() => {
@@ -436,29 +477,12 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                     }}
                                     className="text-red-500 hover:underline block py-3"
                                   >
-                                    {typeof feature === 'string' ? feature : feature.title}
+                                    Learn more
                                   </Link>
-                                  {idx < (service.features.length - 1) && (
-                                    <div className="border-t border-gray-100"></div>
-                                  )}
                                 </li>
-                              )) : (
-                              <li>
-                                <Link 
-                                  href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                  onClick={() => {
-                                    localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                    localStorage.setItem('featureServiceSlug', service.slug);
-                                    localStorage.setItem('featureServiceTitle', service.title);
-                                    localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                  }}
-                                  className="text-red-500 hover:underline block py-3"
-                                >
-                                  Learn more
-                                </Link>
-                              </li>
-                            )}
-                          </ul>
+                              )}
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
