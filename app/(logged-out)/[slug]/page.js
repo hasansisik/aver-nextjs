@@ -84,13 +84,24 @@ export default function DynamicPage() {
               if (feature) {
                 setSelectedFeature(selectedFeatureTitle);
                 setSelectedFeatureContent(typeof feature === 'string' ? null : feature.content);
+                
+                // Get other features from the same service
+                const otherFeatures = service.features
+                  .filter(f => {
+                    const featureTitle = typeof f === 'string' ? f : f.title;
+                    return featureTitle !== selectedFeatureTitle;
+                  })
+                  .slice(0, 3); // Get up to 3 related features
+                
                 setContent({
                   title: selectedFeatureTitle,
                   description: `Feature of ${service.title}`,
                   serviceTitle: service.title,
                   serviceSlug: service.slug,
-                  icon: service.icon
+                  icon: service.icon,
+                  otherFeatures: otherFeatures
                 });
+                
                 setLoading(false);
                 return true;
               }
@@ -336,51 +347,31 @@ export default function DynamicPage() {
     case 'feature':
       return (
         <>
-          <section className="pt-20 pb-20">
+          <section className="pt-24 pb-28">
             <div className="container">
-              <div className="row">
-                <div className="col-12 mb-4">
-                  <Link href="/" className="text-red-500 hover:underline flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                      <path d="M19 12H5M12 19l-7-7 7-7" />
-                    </svg>
-                    Back to Home
-                  </Link>
-                </div>
-                
-                <div className="col-12">
-                  <div className="service-header mb-10 md:mb-16">
-                    <div className="flex items-center">
-                      {content.icon && (
-                        <Image 
-                          src={content.icon}
-                          alt={content.serviceTitle}
-                          width={60}
-                          height={60}
-                          className="mr-4"
-                        />
-                      )}
-                      <div>
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{content.title}</h1>
-                        <p className="text-gray-500">
-                          Feature of {content.serviceTitle}
-                        </p>
-                      </div>
-                    </div>
+              <div className="row justify-center">
+                <div className="lg:col-8 text-center banner mb-16" data-aos="fade-up-sm">
+                  <div className="flex flex-wrap items-center justify-center mb-12 space-x-8">
+                    <span className="opacity-75 text-sm">
+                      {content.serviceTitle}
+                    </span>
                   </div>
+
+                  <h1 className="text-4xl md:text-5xl mb-4 !leading-tight text-white">{content.title}</h1>
+                  <p className="max-w-xl mx-auto text-white/75">{content.description}</p>
                 </div>
-                
-                <div className="col-12">
-                  <div className="prose prose-lg max-w-none dark:prose-invert">
+
+                <div className="xl:col-9 lg:col-10 mx-auto" data-aos="fade-in">
+                  <article className="content content-light">
                     {selectedFeatureContent ? (
                       <Markdown content={selectedFeatureContent} />
                     ) : (
                       <div>
-                        <p className="text-lg">Detailed information about {content.title}</p>
+                        <p className="text-lg text-white">Detailed information about {content.title}</p>
                         <div className="bg-gray-800 p-8 rounded-lg mt-8">
-                          <h2 className="text-2xl mb-4">About this feature</h2>
-                          <p>This is a detailed page about the {content.title} feature from our {content.serviceTitle} service.</p>
-                          <p className="mt-4">For more information or to request this service, please contact us.</p>
+                          <h2 className="text-2xl mb-4 text-white">About this feature</h2>
+                          <p className="text-white/80">This is a detailed page about the {content.title} feature from our {content.serviceTitle} service.</p>
+                          <p className="mt-4 text-white/80">For more information or to request this service, please contact us.</p>
                           
                           <Link href="/contact" className="button mt-8 inline-block">
                             <span>Contact Us</span>
@@ -388,7 +379,7 @@ export default function DynamicPage() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </article>
                 </div>
               </div>
             </div>
