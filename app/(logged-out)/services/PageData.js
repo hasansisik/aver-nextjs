@@ -171,17 +171,6 @@ const PageData = ({ title, subtitle }) => {
     }
   }, [services]);
 
-  const handleLoadMore = () => {
-    const currentLength = displayedServices.length;
-    const filteredServices = services.filter(service => service.isPublished);
-    const nextResults = filteredServices.slice(currentLength, currentLength + servicesToShow);
-    setDisplayedServices([...displayedServices, ...nextResults]);
-    
-    if (currentLength + servicesToShow >= filteredServices.length) {
-      setCanLoadMore(false);
-    }
-  };
-
   return (
     <>
       <PageHeader title={title} subtitle={subtitle + ` (${totalServices})`} />
