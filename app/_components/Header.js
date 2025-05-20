@@ -157,6 +157,14 @@ const Header = () => {
     banner && observer.observe(banner);
   }, []);
 
+  // Disable scroll when mobile nav is open
+  useEffect(() => {
+    const html = document.documentElement;
+    mobileNavClose 
+      ? html.classList.remove("overflow-hidden") 
+      : html.classList.add("overflow-hidden");
+  }, [mobileNavClose]);
+
   // Header yüklenirken fallback göster
   if (loading && mainMenu.length === 0) {
     // Default verilerle render et
@@ -189,6 +197,7 @@ const Header = () => {
               type="button"
               aria-label="Mobile Menu Button"
               className={`${style.navToggler} lg:hidden`}
+              onClick={() => setMobileNavClose(!mobileNavClose)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -225,7 +234,7 @@ const Header = () => {
           </div>
           <nav
             ref={navRef}
-            className={`${style.navbar} hidden lg:flex ${!mobileNavClose ? style.navbarOpen : ""}`}
+            className={`${style.navbar} ${mobileNavClose ? "hidden lg:flex" : "w-full max-w-xs lg:w-auto flex flex-col"} ${!mobileNavClose ? style.navbarOpen : ""}`}
             style={{ height: "auto" }}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={handleNavMouseLeave}
@@ -313,14 +322,20 @@ const Header = () => {
             )}
           </nav>
 
+          <div
+            className={`${style.navOverlay} ${mobileNavClose ? "" : style.navOverlayVisible}`}
+            onClick={() => setMobileNavClose(true)}
+          ></div>
+
           <button
             type="button"
             aria-label="Mobile Menu Button"
             className={`${style.navToggler} lg:hidden`}
+            onClick={() => setMobileNavClose(!mobileNavClose)}
           >
             <div className="relative flex items-center justify-center w-full h-full">
               <svg 
-                className="opacity-100" 
+                className={`${mobileNavClose ? "opacity-100" : "opacity-0"}`} 
                 xmlns="http://www.w3.org/2000/svg" 
                 width="24" 
                 height="24" 
@@ -334,6 +349,22 @@ const Header = () => {
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M4 8l16 0"></path>
                 <path d="M4 16l16 0"></path>
+              </svg>
+              <svg 
+                className={`absolute ${mobileNavClose ? "opacity-0" : "opacity-100"}`} 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                strokeWidth="2" 
+                stroke="currentColor" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M18 6l-12 12"></path>
+                <path d="M6 6l12 12"></path>
               </svg>
             </div>
           </button>
@@ -361,6 +392,6 @@ const Header = () => {
         </div>
       </div>
     </header>
-  );
+  )
 };
 export default Header;
