@@ -52,25 +52,34 @@ export default function ServiceDetail() {
     // This avoids issues with SSR where localStorage is not available
     const timer = setTimeout(() => {
       try {
-        // First check URL params for feature
-        if (params.feature) {
-          setSelectedFeature(decodeURIComponent(params.feature));
-        } else {
-          // Fallback to localStorage for backwards compatibility
-          const storedFeature = localStorage.getItem('selectedFeature');
-          if (storedFeature) {
-            setSelectedFeature(storedFeature);
-            // Clear it after reading to avoid persisting the selection between page loads
-            localStorage.removeItem('selectedFeature');
+        // Check for hash in URL (e.g. #feature-name)
+        if (window.location.hash) {
+          const featureSlug = window.location.hash.substring(1); // Remove the # character
+          
+          // Find the feature that matches this slug
+          if (currentService && currentService.features) {
+            const matchingFeature = currentService.features.find(f => {
+              const featureTitle = typeof f === 'string' ? f : f.title;
+              return slugify(featureTitle) === featureSlug;
+            });
+            
+            if (matchingFeature) {
+              const featureTitle = typeof matchingFeature === 'string' ? matchingFeature : matchingFeature.title;
+              setSelectedFeature(featureTitle);
+            }
           }
         }
+        // Fallback to previous approach
+        else if (params.feature) {
+          setSelectedFeature(decodeURIComponent(params.feature));
+        } 
       } catch (e) {
-        console.error('Error accessing localStorage:', e);
+        console.error('Error processing URL parameters:', e);
       }
     }, 0);
     
     return () => clearTimeout(timer);
-  }, [params.feature]);
+  }, [params.feature, currentService]);
   
   // Find selected feature content and other features when service or feature changes
   useEffect(() => {
@@ -118,17 +127,9 @@ export default function ServiceDetail() {
   const handleFeatureSelect = (featureTitle) => {
     setSelectedFeature(featureTitle);
     
-    // Update URL to include only the feature 
-    const newUrl = `/${slugify(featureTitle)}`;
-    
-    // Store service info for the feature page
-    localStorage.setItem('featureServiceSlug', params.slug);
-    localStorage.setItem('selectedFeature', featureTitle);
-    localStorage.setItem('featureServiceTitle', currentService.title);
-    localStorage.setItem('featureSlug', slugify(featureTitle));
-    
-    // Use router to navigate without full page refresh
-    window.history.pushState({}, '', newUrl);
+    // Update URL with hash for the feature
+    const featureSlug = slugify(featureTitle);
+    window.history.pushState({}, '', `#${featureSlug}`);
     
     // Scroll to top
     window.scrollTo(0, 0);
@@ -213,6 +214,39 @@ export default function ServiceDetail() {
               </div>
             </div>
           </div>
+          
+          {/* Feature List */}
+          {currentService.features && currentService.features.length > 0 && (
+            <div className="row mt-16">
+              <div className="col-12">
+                <h2 className="text-2xl md:text-3xl font-bold mb-8">
+                  {selectedFeature ? 'Other Features' : 'Features'}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {currentService.features.map((feature, idx) => {
+                    const featureTitle = typeof feature === 'string' ? feature : feature.title;
+                    // Skip the currently selected feature
+                    if (selectedFeature === featureTitle) return null;
+                    
+                    return (
+                      <div key={idx} className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                        <h3 className="text-xl font-semibold mb-3">{featureTitle}</h3>
+                        <button 
+                          onClick={() => handleFeatureSelect(featureTitle)}
+                          className="text-red-500 hover:underline flex items-center mt-2"
+                        >
+                          Learn more
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>  
     </>

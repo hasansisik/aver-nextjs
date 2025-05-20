@@ -332,34 +332,33 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                               <div className="border-t border-gray-200">
                                 <ul className="space-y-0 pt-4">
                                   {service.features && service.features.map ? 
-                                    service.features.map((feature, idx) => (
-                                      <li key={idx}>
-                                        <Link 
-                                          href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                          onClick={() => {
-                                            localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                            localStorage.setItem('featureServiceSlug', service.slug);
-                                            localStorage.setItem('featureServiceTitle', service.title);
-                                            localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                          }}
-                                          className="text-red-500 hover:underline block py-3"
-                                        >
-                                          {typeof feature === 'string' ? feature : feature.title}
-                                        </Link>
-                                        {idx < (service.features.length - 1) && (
-                                          <div className="border-t border-gray-100"></div>
-                                        )}
-                                      </li>
-                                    )) : (
+                                    service.features.map((feature, idx) => {
+                                      const featureTitle = typeof feature === 'string' ? feature : feature.title;
+                                      const featureSlug = slugify(featureTitle);
+                                      
+                                      return (
+                                        <li key={idx}>
+                                          <Link 
+                                            href={`/${featureSlug}`}
+                                            onClick={() => {
+                                              localStorage.setItem('selectedFeature', featureTitle);
+                                              localStorage.setItem('featureServiceSlug', service.slug);
+                                              localStorage.setItem('featureServiceTitle', service.title);
+                                              localStorage.setItem('featureSlug', featureSlug);
+                                            }}
+                                            className="text-red-500 hover:underline block py-3"
+                                          >
+                                            {featureTitle}
+                                          </Link>
+                                          {idx < (service.features.length - 1) && (
+                                            <div className="border-t border-gray-100"></div>
+                                          )}
+                                        </li>
+                                      );
+                                    }) : (
                                     <li>
                                       <Link 
-                                        href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                        onClick={() => {
-                                          localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                          localStorage.setItem('featureServiceSlug', service.slug);
-                                          localStorage.setItem('featureServiceTitle', service.title);
-                                          localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                        }}
+                                        href="/services"
                                         className="text-red-500 hover:underline block py-3"
                                       >
                                         Learn more
@@ -447,34 +446,33 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                           <div className="border-t border-gray-200">
                             <ul className="space-y-0 pt-4">
                               {service.features && service.features.map ? 
-                                service.features.map((feature, idx) => (
-                                  <li key={idx}>
-                                    <Link 
-                                      href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                      onClick={() => {
-                                        localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                        localStorage.setItem('featureServiceSlug', service.slug);
-                                        localStorage.setItem('featureServiceTitle', service.title);
-                                        localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                      }}
-                                      className="text-red-500 hover:underline block py-3"
-                                    >
-                                      {typeof feature === 'string' ? feature : feature.title}
-                                    </Link>
-                                    {idx < (service.features.length - 1) && (
-                                      <div className="border-t border-gray-100"></div>
-                                    )}
-                                  </li>
-                                )) : (
+                                service.features.map((feature, idx) => {
+                                  const featureTitle = typeof feature === 'string' ? feature : feature.title;
+                                  const featureSlug = slugify(featureTitle);
+                                  
+                                  return (
+                                    <li key={idx}>
+                                      <Link 
+                                        href={`/${featureSlug}`}
+                                        onClick={() => {
+                                          localStorage.setItem('selectedFeature', featureTitle);
+                                          localStorage.setItem('featureServiceSlug', service.slug);
+                                          localStorage.setItem('featureServiceTitle', service.title);
+                                          localStorage.setItem('featureSlug', featureSlug);
+                                        }}
+                                        className="text-red-500 hover:underline block py-3"
+                                      >
+                                        {featureTitle}
+                                      </Link>
+                                      {idx < (service.features.length - 1) && (
+                                        <div className="border-t border-gray-100"></div>
+                                      )}
+                                    </li>
+                                  );
+                                }) : (
                                 <li>
                                   <Link 
-                                    href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
-                                    onClick={() => {
-                                      localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
-                                      localStorage.setItem('featureServiceSlug', service.slug);
-                                      localStorage.setItem('featureServiceTitle', service.title);
-                                      localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
-                                    }}
+                                    href="/services"
                                     className="text-red-500 hover:underline block py-3"
                                   >
                                     Learn more
