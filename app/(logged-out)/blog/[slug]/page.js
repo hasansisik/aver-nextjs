@@ -161,7 +161,7 @@ export default function BlogPage() {
   }
 
   // Get Page Url
-  const pageUrl = `${siteConfig.baseURL?.replace(/\/$|$/, "/") || window.location.origin}blog/${params.slug || ''}`;
+  const pageUrl = `${siteConfig.baseURL?.replace(/\/$|$/, "/") || window.location.origin}${params.slug || ''}`;
 
   // Get Next and Previous Post from related posts
   const previousPost = relatedPosts[0] || null;
@@ -261,7 +261,7 @@ export default function BlogPage() {
                       </div>
                       <h3 className="text-lg sm:text-2xl leading-snug">
                         <Link
-                          href={`/blog/${previousPost.slug}`}
+                          href={`/${previousPost.slug}`}
                           className="stretched-link"
                         >
                           {previousPost.frontMatter.title}
@@ -287,7 +287,7 @@ export default function BlogPage() {
                       </div>
                       <h3 className="text-lg sm:text-2xl leading-snug text-right">
                         <Link
-                          href={`/blog/${nextPost.slug}`}
+                          href={`/${nextPost.slug}`}
                           className="stretched-link"
                         >
                           {nextPost.frontMatter.title}

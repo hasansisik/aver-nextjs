@@ -38,7 +38,7 @@ const ProjectCard = ({ project }) => {
           <span className="uppercase text-white bg-white/25 text-sm font-light tracking-wider px-3 py-1 rounded-full backdrop-blur-lg">
             {category}
           </span>
-          <Link href={`/project/${slug}`} className="stretched-link">
+          <Link href={`/${slug}`} className="stretched-link">
             <Image
               className="inline-block rotate-[135deg]"
               src="/images/arrow-right.svg"

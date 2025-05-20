@@ -24,7 +24,7 @@ const BlogCard = ({ frontMatter, slug }) => {
           <span className="opacity-75 text-sm">{formatDate(date)}</span>
         </div>
         <h3 className="text-2xl leading-tight">
-          <Link href={`/blog/${slug}`} className="stretched-link">
+          <Link href={`/${slug}`} className="stretched-link">
             {title}
           </Link>
         </h3>

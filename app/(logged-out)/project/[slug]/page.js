@@ -167,7 +167,7 @@ export default function ProjectPage() {
   }
 
   // Get Page Url
-  const pageUrl = `${siteConfig.baseURL?.replace(/\/$|$/, "/") || window.location.origin}project/${params.slug || ''}`;
+  const pageUrl = `${siteConfig.baseURL?.replace(/\/$|$/, "/") || window.location.origin}${params.slug || ''}`;
 
   // Get Next and Previous Project from related projects
   const previousProject = relatedProjects[0] || null;
@@ -261,7 +261,7 @@ export default function ProjectPage() {
                     </div>
                     <h3 className="text-lg sm:text-2xl leading-snug">
                       <Link
-                        href={`/project/${previousProject.slug}`}
+                        href={`/${previousProject.slug}`}
                         className="stretched-link"
                       >
                         {previousProject.frontMatter.title}
@@ -284,7 +284,7 @@ export default function ProjectPage() {
                     </div>
                     <h3 className="text-lg sm:text-2xl leading-snug text-right">
                       <Link
-                        href={`/project/${nextProject.slug}`}
+                        href={`/${nextProject.slug}`}
                         className="stretched-link"
                       >
                         {nextProject.frontMatter.title}
