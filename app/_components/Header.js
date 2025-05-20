@@ -43,40 +43,39 @@ const Header = () => {
   }, [pathname, mainMenu]);
 
   useEffect(() => {
-    // Clear indicator when pathname changes unless user is actively hovering
-    if (!isHovering) {
-      setIndicatorPosition(null);
-      activeLinkRef.current = null;
-    }
-    
     // Only set active indicator if on exact matching page and not hovering
-    const timer = setTimeout(() => {
-      if (navRef.current && !isHovering) {
-        const activeLink = navRef.current.querySelector(".active");
-        if (activeLink) {
-          activeLinkRef.current = activeLink;
-          setIndicatorPosition({
-            left: activeLink.offsetLeft,
-            width: activeLink.offsetWidth,
-          });
-        }
+    if (navRef.current && !isHovering) {
+      const activeLink = navRef.current.querySelector(".active");
+      if (activeLink) {
+        activeLinkRef.current = activeLink;
+        setIndicatorPosition({
+          left: activeLink.offsetLeft === 0 ? activeLink.offsetLeft + 8 : activeLink.offsetLeft,
+          width: activeLink.offsetLeft === 0 ? activeLink.offsetWidth + 7 : activeLink.offsetWidth,
+        });
+      } else {
+        // No active link, remove indicator
+        setIndicatorPosition(null);
       }
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, [pathname, isHovering]);
+    }
+  }, [mainMenu, isHovering, pathname]);
 
   const handleLinkMouseEnter = (event) => {
     setIsHovering(true);
     const link = event.currentTarget;
     setIndicatorPosition({
-      left: link.offsetLeft,
-      width: link.offsetWidth,
+      left: link.offsetLeft === 0 ? link.offsetLeft + 8 : link.offsetLeft,
+      width: link.offsetLeft === 0 ? link.offsetWidth + 7 : link.offsetWidth,
     });
   };
 
   const handleLinkMouseLeave = () => {
-    // On mouse leave, don't do anything - let the nav mouse leave handle it
+    // When mouse leaves a link, return to active link position
+    if (activeLinkRef.current) {
+      setIndicatorPosition({
+        left: activeLinkRef.current.offsetLeft,
+        width: activeLinkRef.current.offsetWidth,
+      });
+    }
   };
 
   const handleNavMouseLeave = () => {
@@ -87,8 +86,8 @@ const Header = () => {
       if (activeLink) {
         activeLinkRef.current = activeLink;
         setIndicatorPosition({
-          left: activeLink.offsetLeft,
-          width: activeLink.offsetWidth,
+          left: activeLink.offsetLeft === 0 ? activeLink.offsetLeft + 8 : activeLink.offsetLeft,
+          width: activeLink.offsetLeft === 0 ? activeLink.offsetWidth + 7 : activeLink.offsetWidth,
         });
       } else {
         // If no active page, remove indicator completely
@@ -102,8 +101,8 @@ const Header = () => {
     const link = event.currentTarget;
     activeLinkRef.current = link;
     setIndicatorPosition({
-      left: link.offsetLeft,
-      width: link.offsetWidth,
+      left: link.offsetLeft === 0 ? link.offsetLeft + 8 : link.offsetLeft,
+      width: link.offsetLeft === 0 ? link.offsetWidth + 7 : link.offsetWidth,
     });
     // Close mobile menu when a link is clicked
     setMobileNavClose(true);
