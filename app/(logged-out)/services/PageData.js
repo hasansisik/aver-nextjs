@@ -51,59 +51,69 @@ const useCustomStyles = () => {
 // Create a ServiceCard component similar to BlogCard
 const ServiceCard = ({ service }) => {
   return (
-    <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
-      {/* Card Content */}
-      <div className="p-8 flex flex-col">
-        <div className="flex mb-4">
-          {service.icon ? (
-            <Image 
-              src={service.icon} 
-              alt={service.title}
-              width={60} 
-              height={60}
-            />
-          ) : (
-            <div className="w-[60px] h-[60px] bg-red-500 rounded-full flex items-center justify-center text-white">
-              <span className="text-xl">{service.title.charAt(0)}</span>
-            </div>
-          )}
-        </div>
-        <h3 className="text-2xl font-medium mb-4 text-gray-800">
-          {service.title}
-        </h3>
-        <p className="text-gray-600 mb-4">
-          {service.description}
-        </p>
-        
-        {/* Features List - Only visible on hover */}
-        <div className="service-feature-list">
-          <div className="border-t border-gray-200">
-            <ul className="space-y-0 pt-4">
-              {service.features && service.features.length > 0 ? 
-                service.features.map((feature, idx) => (
-                  <li key={idx}>
-                    <Link href={`/services/${service.slug}?feature=${typeof feature.title === 'string' ? 
-                      encodeURIComponent(feature.title) : 
-                      'feature'}`} 
-                      className="text-red-500 hover:underline block py-3">
-                      {feature.title}
-                    </Link>
-                    {idx < (service.features.length - 1) && (
-                      <div className="border-t border-gray-100"></div>
-                    )}
+    <Link href={`/${service.slug}`} className="block">
+      <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
+        {/* Card Content */}
+        <div className="p-8 flex flex-col">
+          <div className="flex mb-4">
+            {service.icon ? (
+              <Image 
+                src={service.icon} 
+                alt={service.title}
+                width={60} 
+                height={60}
+              />
+            ) : (
+              <div className="w-[60px] h-[60px] bg-red-500 rounded-full flex items-center justify-center text-white">
+                <span className="text-xl">{service.title.charAt(0)}</span>
+              </div>
+            )}
+          </div>
+          <h3 className="text-2xl font-medium mb-4 text-gray-800">
+            {service.title}
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {service.description}
+          </p>
+          
+          {/* Features List - Only visible on hover */}
+          <div className="service-feature-list">
+            <div className="border-t border-gray-200">
+              <ul className="space-y-0 pt-4">
+                {service.features && service.features.length > 0 ? 
+                  service.features.map((feature, idx) => (
+                    <li key={idx}>
+                      <a 
+                        href={`/${service.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Store selected feature in localStorage
+                          localStorage.setItem('selectedFeature', feature.title);
+                          // Navigate to the service page
+                          window.location.href = `/${service.slug}`;
+                        }}
+                        className="text-red-500 hover:underline block py-3"
+                      >
+                        {feature.title}
+                      </a>
+                      {idx < (service.features.length - 1) && (
+                        <div className="border-t border-gray-100"></div>
+                      )}
+                    </li>
+                  )) : (
+                  <li>
+                    <span className="text-red-500 block py-3">
+                      Learn more
+                    </span>
                   </li>
-                )) : (
-                <li>
-                  <Link href={`/services/${service.slug}`} className="text-red-500 hover:underline block py-3">
-                    Learn more
-                  </Link>
-                </li>
-              )}
-            </ul>
+                )}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -175,16 +185,7 @@ const PageData = ({ title, subtitle }) => {
               </div>
             )}
 
-            <div className="col-12 text-center mt-16">
-              {canLoadMore ? (
-                <button className="button button-dark" onClick={handleLoadMore}>
-                  <span>Load More</span>
-                </button>
-              ) : (
-                displayedServices.length > 0 && 
-                <p className="text-black/25">No more services to load</p>
-              )}
-            </div>
+           
           </div>
         </div>
       </section>

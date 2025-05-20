@@ -31,15 +31,14 @@ const Header = () => {
   const [indicatorPosition, setIndicatorPosition] = useState(null);
   const navRef = useRef(null);
   const activeLinkRef = useRef(null);
-
-  // For debugging
-  useEffect(() => {
-    console.log("Current pathname:", pathname);
-    console.log("Main Menu:", mainMenu);
-  }, [pathname, mainMenu]);
+  // Track if the user has manually hovered/activated a menu item
+  const [userInteracted, setUserInteracted] = useState(false);
 
   useEffect(() => {
-    // Menü öğeleri değiştiğinde veya yüklendiğinde
+    // Reset user interaction state when path changes
+    setUserInteracted(false);
+    
+    // Only set indicator if there's an active link and user hasn't manually hovered yet
     if (navRef.current && !loading && mainMenu.length > 0) {
       const activeLink = navRef.current.querySelector(".active");
       if (activeLink) {
@@ -48,13 +47,19 @@ const Header = () => {
           left: activeLink.offsetLeft,
           width: activeLink.offsetWidth,
         });
+      } else {
+        // No active link, remove indicator
+        setIndicatorPosition(null);
       }
     }
   }, [mainMenu, loading, pathname]);
 
   // Reset indicator position when pathname changes
   useEffect(() => {
-    // Small delay to ensure DOM is updated
+    // Clear any existing indicator when pathname changes
+    setIndicatorPosition(null);
+    
+    // No active indicator by default unless on a specific page
     const timer = setTimeout(() => {
       if (navRef.current) {
         const activeLink = navRef.current.querySelector(".active");
@@ -64,10 +69,8 @@ const Header = () => {
             left: activeLink.offsetLeft,
             width: activeLink.offsetWidth,
           });
-        } else {
-          // If no active link is found, reset the indicator
-          setIndicatorPosition(null);
         }
+        // If no active link is found, indicator remains null
       }
     }, 50);
     
@@ -75,6 +78,7 @@ const Header = () => {
   }, [pathname]);
 
   const handleLinkMouseEnter = (event) => {
+    setUserInteracted(true);
     const link = event.currentTarget;
     setIndicatorPosition({
       left: link.offsetLeft,
@@ -83,20 +87,27 @@ const Header = () => {
   };
 
   const handleLinkMouseLeave = () => {
-    if (activeLinkRef.current) {
+    const activeLink = navRef.current?.querySelector(".active");
+    if (activeLink) {
+      // Return to active link if one exists
+      activeLinkRef.current = activeLink;
       setIndicatorPosition({
-        left: activeLinkRef.current.offsetLeft,
-        width: activeLinkRef.current.offsetWidth,
+        left: activeLink.offsetLeft,
+        width: activeLink.offsetWidth,
       });
+    } else {
+      // No active link, hide indicator
+      setIndicatorPosition(null);
     }
   };
 
   const handleLinkClick = (event) => {
+    setUserInteracted(true);
     const link = event.currentTarget;
     activeLinkRef.current = link;
     setIndicatorPosition({
       left: link.offsetLeft === 0 ? link.offsetLeft + 8 : link.offsetLeft,
-      width: link.offsetLeft === 0 ? link.offsetWidth + 7 : link.offsetWidth,
+      width: link.offsetWidth,
     });
     // Close mobile menu when a link is clicked
     setMobileNavClose(true);
@@ -230,10 +241,17 @@ const Header = () => {
             ref={navRef}
             className={`${style.navbar} ${mobileNavClose ? "w-12 !h-12 lg:w-auto lg:!h-auto" : "w-full max-w-xs lg:w-auto"} ${!mobileNavClose ? style.navbarOpen : ""}`}
             style={{ height: mobileNavClose ? "auto" : "auto" }}
+            onMouseLeave={() => {
+              // When mouse leaves the navigation completely, reset indicator if no active item
+              const activeLink = navRef.current?.querySelector(".active");
+              if (!activeLink) {
+                setIndicatorPosition(null);
+              }
+            }}
           >
             {indicatorPosition && (
               <span
-                className={style.indicator}
+                className={`${style.indicator} ${activeLinkRef.current ? 'visible' : 'invisible'}`}
                 style={indicatorPosition}
               ></span>
             )}
@@ -243,11 +261,11 @@ const Header = () => {
               mainMenu.map((item, key) => {
                 // Check for exact match or specific path patterns
                 const isActive = 
+                  // Only highlight if the path exactly matches, or if it's a subpage of blog/project/glossary
                   pathname === item.link || 
-                  (pathname === "/" && item.link === "/") || // Explicitly check for home page
-                  (pathname.includes("/blog") && item.link === "/blog") ||
-                  (pathname.includes("/project") && item.link === "/project") ||
-                  (pathname.includes("/glossary") && item.link === "/glossary");
+                  (pathname.includes("/blog/") && item.link === "/blog") ||
+                  (pathname.includes("/project/") && item.link === "/project") ||
+                  (pathname.includes("/glossary/") && item.link === "/glossary");
                 
                 return (
                   <Link
@@ -285,7 +303,7 @@ const Header = () => {
                 </Link>
                 <Link 
                   href="/project" 
-                  className={pathname.includes("/project") ? "active !text-white/100" : ""}
+                  className={pathname === "/project" || pathname.includes("/project/") ? "active !text-white/100" : ""}
                   onMouseEnter={handleLinkMouseEnter}
                   onMouseLeave={handleLinkMouseLeave}
                   onClick={handleLinkClick}
@@ -294,7 +312,7 @@ const Header = () => {
                 </Link>
                 <Link 
                   href="/blog" 
-                  className={pathname.includes("/blog") ? "active !text-white/100" : ""}
+                  className={pathname === "/blog" || pathname.includes("/blog/") ? "active !text-white/100" : ""}
                   onMouseEnter={handleLinkMouseEnter}
                   onMouseLeave={handleLinkMouseLeave}
                   onClick={handleLinkClick}

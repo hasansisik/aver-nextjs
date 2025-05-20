@@ -17,7 +17,9 @@ async function getServiceData(slug) {
 }
 
 export async function generateMetadata({ params }) {
-  const service = await getServiceData(params.slug);
+  // Await params before destructuring
+  const resolvedParams = await params;
+  const service = await getServiceData(resolvedParams.slug);
   
   if (!service) {
     return {
@@ -34,5 +36,5 @@ export async function generateMetadata({ params }) {
 
 export default async function ServicePage({ params }) {
   // Just pass null as selectedFeature since this is the main service page
-  return <ServiceDetail selectedFeature={null} />;
+  return <ServiceDetail />;
 } 

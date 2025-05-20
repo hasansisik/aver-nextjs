@@ -111,17 +111,7 @@ const PageData = ({ title, subtitle, allProjects, totalProjects }) => {
                 <p className="text-gray-500">No projects found</p>
               </div>
             )}
-
-            <div className="col-12 text-center mt-16">
-              {loadMore && (
-                <button className="button button-dark" onClick={handleLoadMore}>
-                  <span>Load More</span>
-                </button>
-              )}
-              {!loadMore && totalProjects > 0 && (
-                <p className="text-black/25">No more projects to load</p>
-              )}
-            </div>
+         
           </div>
         </div>
       </section>

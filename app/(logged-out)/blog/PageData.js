@@ -43,15 +43,6 @@ const PageData = ({ title, subtitle, blogPosts, totalPosts }) => {
               </div>
             ))}
 
-            <div className="text-center mt-16">
-              {(blogPosts.length > postsToShow) && loadMore ? (
-                <button className="button button-dark" onClick={() => handleLoadMore()}>
-                  <span>Load More</span>
-                </button>
-              ) : (
-                <p className="text-black/25">No more posts to load</p>
-              )}
-            </div>
           </div>
         </div>
       </section>
