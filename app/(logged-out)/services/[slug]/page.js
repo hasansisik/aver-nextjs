@@ -1,6 +1,7 @@
 import { getServiceBySlug } from "@/redux/actions/serviceActions";
 import { store } from "@/redux/store";
 import ServiceDetail from "./ServiceDetail";
+import { redirect } from "next/navigation";
 
 // Fetch service data for metadata
 async function getServiceData(slug) {
@@ -34,6 +35,12 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function ServicePage({ params }) {
+export default async function ServicePage({ params, searchParams }) {
+  // Check if there's a feature parameter in the URL or hash
+  // If not, redirect to the services page
+  if (!searchParams?.feature && !params?.feature) {
+    redirect('/services');
+  }
+  
   return <ServiceDetail />;
 } 
