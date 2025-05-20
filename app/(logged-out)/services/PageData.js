@@ -72,69 +72,67 @@ const useCustomStyles = () => {
 // Create a ServiceCard component similar to BlogCard
 const ServiceCard = ({ service }) => {
   return (
-    <Link href={`/${service.slug}`} className="block">
-      <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
-        {/* Card Content */}
-        <div className="p-8 flex flex-col">
-          <div className="flex mb-4">
-            {service.icon ? (
-              <Image 
-                src={service.icon} 
-                alt={service.title}
-                width={60} 
-                height={60}
-              />
-            ) : (
-              <div className="w-[60px] h-[60px] bg-red-500 rounded-full flex items-center justify-center text-white">
-                <span className="text-xl">{service.title.charAt(0)}</span>
-              </div>
-            )}
-          </div>
-          <h3 className="text-2xl font-medium mb-4 text-gray-800">
-            {service.title}
-          </h3>
-          <p className="text-gray-600 mb-4">
-            {service.description}
-          </p>
-          
-          {/* Features List - Only visible on hover */}
-          <div className="service-feature-list">
-            <div className="border-t border-gray-200">
-              <ul className="space-y-0 pt-4">
-                {service.features && service.features.length > 0 ? 
-                  service.features.map((feature, idx) => (
-                    <li key={idx}>
-                      <Link 
-                        href={`/${slugify(feature.title)}`}
-                        onClick={() => {
-                          // Store both the feature and service info
-                          localStorage.setItem('selectedFeature', feature.title);
-                          localStorage.setItem('featureServiceSlug', service.slug);
-                          localStorage.setItem('featureServiceTitle', service.title);
-                          localStorage.setItem('featureSlug', slugify(feature.title));
-                    
-                        }}
-                        className="text-red-500 hover:underline block py-3"
-                      >
-                        {feature.title}
-                      </Link>
-                      {idx < (service.features.length - 1) && (
-                        <div className="border-t border-gray-100"></div>
-                      )}
-                    </li>
-                  )) : (
-                  <li>
-                    <span className="text-red-500 block py-3">
-                      Learn more
-                    </span>
-                  </li>
-                )}
-              </ul>
+    <div className="relative service-card rounded-lg bg-white shadow-md h-auto">
+      {/* Card Content */}
+      <div className="p-8 flex flex-col">
+        <div className="flex mb-4">
+          {service.icon ? (
+            <Image 
+              src={service.icon} 
+              alt={service.title}
+              width={60} 
+              height={60}
+            />
+          ) : (
+            <div className="w-[60px] h-[60px] bg-red-500 rounded-full flex items-center justify-center text-white">
+              <span className="text-xl">{service.title.charAt(0)}</span>
             </div>
+          )}
+        </div>
+        <h3 className="text-2xl font-medium mb-4 text-gray-800">
+          {service.title}
+        </h3>
+        <p className="text-gray-600 mb-4">
+          {service.description}
+        </p>
+        
+        {/* Features List - Only visible on hover */}
+        <div className="service-feature-list">
+          <div className="border-t border-gray-200">
+            <ul className="space-y-0 pt-4">
+              {service.features && service.features.length > 0 ? 
+                service.features.map((feature, idx) => (
+                  <li key={idx}>
+                    <Link 
+                      href={`/${slugify(feature.title)}`}
+                      onClick={() => {
+                        // Store both the feature and service info
+                        localStorage.setItem('selectedFeature', feature.title);
+                        localStorage.setItem('featureServiceSlug', service.slug);
+                        localStorage.setItem('featureServiceTitle', service.title);
+                        localStorage.setItem('featureSlug', slugify(feature.title));
+                  
+                      }}
+                      className="text-red-500 hover:underline block py-3"
+                    >
+                      {feature.title}
+                    </Link>
+                    {idx < (service.features.length - 1) && (
+                      <div className="border-t border-gray-100"></div>
+                    )}
+                  </li>
+                )) : (
+                <li>
+                  <span className="text-red-500 block py-3">
+                    Learn more
+                  </span>
+                </li>
+              )}
+            </ul>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
