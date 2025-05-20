@@ -7,6 +7,27 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getServices } from "@/redux/actions/serviceActions";
 
+// Utility function for creating clean slugs
+function slugify(text) {
+  if (!text) return '';
+  
+  // Turkish character mapping
+  const turkishMap = {
+    'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c',
+    'İ': 'i', 'Ğ': 'g', 'Ü': 'u', 'Ş': 's', 'Ö': 'o', 'Ç': 'c'
+  };
+  
+  return text
+    .toString()
+    .trim()
+    .replace(/[ıİğĞüÜşŞöÖçÇ]/g, match => turkishMap[match] || match) // Replace Turkish chars
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/[&+.,()'"!:@#$%^*{}[\]<>~`;?/\\|=]/g, "") // Remove special chars
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .toLowerCase();
+}
+
 // Custom CSS for the service card hover effect
 const useCustomStyles = () => {
   useEffect(() => {
@@ -83,20 +104,25 @@ const ServiceCard = ({ service }) => {
                 {service.features && service.features.length > 0 ? 
                   service.features.map((feature, idx) => (
                     <li key={idx}>
-                      <a 
-                        href={`/${service.slug}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          // Store selected feature in localStorage
+                      <Link 
+                        href={`/${slugify(feature.title)}`}
+                        onClick={() => {
+                          // Store both the feature and service info
                           localStorage.setItem('selectedFeature', feature.title);
-                          // Navigate to the service page
-                          window.location.href = `/${service.slug}`;
+                          localStorage.setItem('featureServiceSlug', service.slug);
+                          localStorage.setItem('featureServiceTitle', service.title);
+                          localStorage.setItem('featureSlug', slugify(feature.title));
+                          console.log('Clicked feature in PageData:', {
+                            feature: feature.title,
+                            serviceSlug: service.slug,
+                            serviceTitle: service.title,
+                            featureSlug: slugify(feature.title)
+                          });
                         }}
                         className="text-red-500 hover:underline block py-3"
                       >
                         {feature.title}
-                      </a>
+                      </Link>
                       {idx < (service.features.length - 1) && (
                         <div className="border-t border-gray-100"></div>
                       )}

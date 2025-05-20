@@ -8,6 +8,27 @@ import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
 import ServiceClient from "./ServiceClient";
 import { useParams } from "next/navigation";
 
+// Utility function for creating clean slugs
+function slugify(text) {
+  if (!text) return '';
+  
+  // Turkish character mapping
+  const turkishMap = {
+    'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c',
+    'İ': 'i', 'Ğ': 'g', 'Ü': 'u', 'Ş': 's', 'Ö': 'o', 'Ç': 'c'
+  };
+  
+  return text
+    .toString()
+    .trim()
+    .replace(/[ıİğĞüÜşŞöÖçÇ]/g, match => turkishMap[match] || match) // Replace Turkish chars
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/[&+.,()'"!:@#$%^*{}[\]<>~`;?/\\|=]/g, "") // Remove special chars
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .toLowerCase();
+}
+
 export default function ServiceDetail() {
   const params = useParams();
   const dispatch = useDispatch();
@@ -25,17 +46,23 @@ export default function ServiceDetail() {
     dispatch(getServices());
   }, [dispatch, params.slug]);
   
-  // Check for selected feature in localStorage on initial load
+  // Check for feature in URL and localStorage on initial load
   useEffect(() => {
     // Use a setTimeout to ensure this runs after the component is mounted
     // This avoids issues with SSR where localStorage is not available
     const timer = setTimeout(() => {
       try {
-        const storedFeature = localStorage.getItem('selectedFeature');
-        if (storedFeature) {
-          setSelectedFeature(storedFeature);
-          // Clear it after reading to avoid persisting the selection between page loads
-          localStorage.removeItem('selectedFeature');
+        // First check URL params for feature
+        if (params.feature) {
+          setSelectedFeature(decodeURIComponent(params.feature));
+        } else {
+          // Fallback to localStorage for backwards compatibility
+          const storedFeature = localStorage.getItem('selectedFeature');
+          if (storedFeature) {
+            setSelectedFeature(storedFeature);
+            // Clear it after reading to avoid persisting the selection between page loads
+            localStorage.removeItem('selectedFeature');
+          }
         }
       } catch (e) {
         console.error('Error accessing localStorage:', e);
@@ -43,7 +70,7 @@ export default function ServiceDetail() {
     }, 0);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [params.feature]);
   
   // Find selected feature content and other features when service or feature changes
   useEffect(() => {
@@ -87,16 +114,27 @@ export default function ServiceDetail() {
     }
   }, [currentService, services, params.slug]);
   
-  // Function to handle feature selection without changing URL
+  // Function to handle feature selection with URL change
   const handleFeatureSelect = (featureTitle) => {
     setSelectedFeature(featureTitle);
     
-    // Update browser history state without changing URL
-    window.history.replaceState(
-      { ...window.history.state, feature: featureTitle }, 
-      '', 
-      window.location.pathname
-    );
+    // Update URL to include only the feature 
+    const newUrl = `/${slugify(featureTitle)}`;
+    
+    // Store service info for the feature page
+    localStorage.setItem('featureServiceSlug', params.slug);
+    localStorage.setItem('selectedFeature', featureTitle);
+    localStorage.setItem('featureServiceTitle', currentService.title);
+    localStorage.setItem('featureSlug', slugify(featureTitle));
+    console.log('Set feature from ServiceDetail:', {
+      feature: featureTitle,
+      serviceSlug: params.slug,
+      serviceTitle: currentService.title,
+      featureSlug: slugify(featureTitle)
+    });
+    
+    // Use router to navigate without full page refresh
+    window.history.pushState({}, '', newUrl);
     
     // Scroll to top
     window.scrollTo(0, 0);
@@ -182,80 +220,7 @@ export default function ServiceDetail() {
             </div>
           </div>
         </div>
-      </section>
-
-      {otherFeatures.length > 0 && (
-        <section className="py-28 bg-white text-dark rounded-b-2xl">
-          <div className="container">
-            <div className="mb-20">
-              <h2 className="text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center">
-                Other Features
-              </h2>
-            </div>
-            <div className="row gy-4 justify-center">
-              {otherFeatures.map((feature, index) => (
-                <div key={index} className="lg:col-8 md:col-10">
-                  <button
-                    onClick={() => handleFeatureSelect(feature.title)}
-                    className="w-full text-left"
-                  >
-                    <div className="block p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="inline-block text-sm rounded-full bg-[#efefef] px-3 py-1 mb-2">
-                            {currentService.title}
-                          </span>
-                          <h3 className="text-xl font-bold">{feature.title}</h3>
-                        </div>
-                        <span className="text-red-500 text-sm font-medium">View Feature →</span>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {!selectedFeature && relatedServices.length > 0 && (
-        <section className="py-28 bg-white text-dark rounded-b-2xl">
-          <div className="container">
-            <div className="mb-20">
-              <h2 className="text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center">
-                Related Services
-              </h2>
-            </div>
-            <div className="row gy-4 md:gx-8 justify-center">
-              {relatedServices.map((service) => (
-                <div key={service.slug} className="lg:col-6">
-                  <Link href={`/${service.slug}`} className="group">
-                    <div className="flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300">
-                      {service.image && (
-                        <div className="shrink-0 relative overflow-hidden rounded-lg h-40 w-full md:h-32 md:w-40">
-                          <Image
-                            src={service.image}
-                            alt={service.title}
-                            fill
-                            className="object-cover transition-all duration-500 group-hover:scale-110"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                        <p className="text-gray-600">{service.description}</p>
-                        <div className="mt-3">
-                          <span className="text-primary text-sm font-medium">Learn more →</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      </section>  
     </>
   );
 } 

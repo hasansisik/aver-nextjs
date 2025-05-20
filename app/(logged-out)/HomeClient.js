@@ -12,6 +12,27 @@ import WorkProcess from "@/app/_blocks/WorkProcess";
 import Image from "next/image";
 import Link from "next/link";
 
+// Utility function for creating clean slugs
+function slugify(text) {
+  if (!text) return '';
+  
+  // Turkish character mapping
+  const turkishMap = {
+    'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c',
+    'İ': 'i', 'Ğ': 'g', 'Ü': 'u', 'Ş': 's', 'Ö': 'o', 'Ç': 'c'
+  };
+  
+  return text
+    .toString()
+    .trim()
+    .replace(/[ıİğĞüÜşŞöÖçÇ]/g, match => turkishMap[match] || match) // Replace Turkish chars
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/[&+.,()'"!:@#$%^*{}[\]<>~`;?/\\|=]/g, "") // Remove special chars
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .toLowerCase();
+}
+
 // Custom CSS for 3D transform effects
 const customStyles = {
   '.perspective-1000': {
@@ -293,10 +314,12 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                   service.features.map((feature, idx) => (
                                     <li key={idx}>
                                       <Link 
-                                        href={`/${service.slug}`}
+                                        href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
                                         onClick={() => {
-                                          // Set a custom attribute to local storage that the service page can read
                                           localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                          localStorage.setItem('featureServiceSlug', service.slug);
+                                          localStorage.setItem('featureServiceTitle', service.title);
+                                          localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
                                         }}
                                         className="text-red-500 hover:underline block py-3"
                                       >
@@ -308,7 +331,16 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                     </li>
                                   )) : (
                                   <li>
-                                    <Link href={`/${service.slug}`} className="text-red-500 hover:underline block py-3">
+                                    <Link 
+                                      href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
+                                      onClick={() => {
+                                        localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                        localStorage.setItem('featureServiceSlug', service.slug);
+                                        localStorage.setItem('featureServiceTitle', service.title);
+                                        localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
+                                      }}
+                                      className="text-red-500 hover:underline block py-3"
+                                    >
                                       Learn more
                                     </Link>
                                   </li>
@@ -395,10 +427,12 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                               service.features.map((feature, idx) => (
                                 <li key={idx}>
                                   <Link 
-                                    href={`/${service.slug}`}
+                                    href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
                                     onClick={() => {
-                                      // Set a custom attribute to local storage that the service page can read
                                       localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                      localStorage.setItem('featureServiceSlug', service.slug);
+                                      localStorage.setItem('featureServiceTitle', service.title);
+                                      localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
                                     }}
                                     className="text-red-500 hover:underline block py-3"
                                   >
@@ -411,7 +445,13 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                               )) : (
                               <li>
                                 <Link 
-                                  href={`/${service.slug}`} 
+                                  href={`/${slugify(typeof feature === 'string' ? feature : feature.title)}`}
+                                  onClick={() => {
+                                    localStorage.setItem('selectedFeature', typeof feature === 'string' ? feature : feature.title);
+                                    localStorage.setItem('featureServiceSlug', service.slug);
+                                    localStorage.setItem('featureServiceTitle', service.title);
+                                    localStorage.setItem('featureSlug', slugify(typeof feature === 'string' ? feature : feature.title));
+                                  }}
                                   className="text-red-500 hover:underline block py-3"
                                 >
                                   Learn more

@@ -35,6 +35,5 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ServicePage({ params }) {
-  // Just pass null as selectedFeature since this is the main service page
   return <ServiceDetail />;
 } 
