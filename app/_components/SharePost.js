@@ -1,7 +1,6 @@
-
 const SharePost = ({ title, pageUrl }) => {
   return (
-    <ul className="text-white mt-10 sm:mt-2 [&>li]:bg-light/10 [&>li]:rounded-lg [&>li]:leading-none [&>li]:mb-3 [&>li:hover]:bg-light/20 flex flex-wrap space-x-5 sm:space-x-0 sm:inline-block items-center justify-center border-t border-b sm:border-none border-light/10 pt-3 sm:pt-0">
+    <ul className="text-white mt-10 sm:mt-2 [&>li]:bg-light/10 [&>li]:rounded-lg [&>li]:leading-none [&>li]:mb-3 [&>li:hover]:bg-light/20 flex flex-col sm:inline-block items-center justify-center sm:border-none border-light/10 pt-3 sm:pt-0">
       <li className="transition-all duration-300">
         <a
           href={`https://twitter.com/intent/tweet?text=${title}&url=${pageUrl}`}

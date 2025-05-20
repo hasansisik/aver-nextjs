@@ -7,7 +7,6 @@ import siteConfig from "@/config/site.config.json";
 import { formatDate } from "@/libs/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogBySlug, getBlogs } from "@/redux/actions/blogActions";

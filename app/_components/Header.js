@@ -31,37 +31,27 @@ const Header = () => {
   const [indicatorPosition, setIndicatorPosition] = useState(null);
   const navRef = useRef(null);
   const activeLinkRef = useRef(null);
-  // Track if the user has manually hovered/activated a menu item
-  const [userInteracted, setUserInteracted] = useState(false);
+  // Track if user is hovering on menu
+  const [isHovering, setIsHovering] = useState(false);
+  // Disable mobile menu functionality - keep state for design purposes only
+  const [mobileNavClose, setMobileNavClose] = useState(true);
+
+  // For debugging
+  useEffect(() => {
+    console.log("Current pathname:", pathname);
+    console.log("Main Menu:", mainMenu);
+  }, [pathname, mainMenu]);
 
   useEffect(() => {
-    // Reset user interaction state when path changes
-    setUserInteracted(false);
-    
-    // Only set indicator if there's an active link and user hasn't manually hovered yet
-    if (navRef.current && !loading && mainMenu.length > 0) {
-      const activeLink = navRef.current.querySelector(".active");
-      if (activeLink) {
-        activeLinkRef.current = activeLink;
-        setIndicatorPosition({
-          left: activeLink.offsetLeft,
-          width: activeLink.offsetWidth,
-        });
-      } else {
-        // No active link, remove indicator
-        setIndicatorPosition(null);
-      }
+    // Clear indicator when pathname changes unless user is actively hovering
+    if (!isHovering) {
+      setIndicatorPosition(null);
+      activeLinkRef.current = null;
     }
-  }, [mainMenu, loading, pathname]);
-
-  // Reset indicator position when pathname changes
-  useEffect(() => {
-    // Clear any existing indicator when pathname changes
-    setIndicatorPosition(null);
     
-    // No active indicator by default unless on a specific page
+    // Only set active indicator if on exact matching page and not hovering
     const timer = setTimeout(() => {
-      if (navRef.current) {
+      if (navRef.current && !isHovering) {
         const activeLink = navRef.current.querySelector(".active");
         if (activeLink) {
           activeLinkRef.current = activeLink;
@@ -70,15 +60,14 @@ const Header = () => {
             width: activeLink.offsetWidth,
           });
         }
-        // If no active link is found, indicator remains null
       }
-    }, 50);
+    }, 100);
     
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, isHovering]);
 
   const handleLinkMouseEnter = (event) => {
-    setUserInteracted(true);
+    setIsHovering(true);
     const link = event.currentTarget;
     setIndicatorPosition({
       left: link.offsetLeft,
@@ -87,26 +76,33 @@ const Header = () => {
   };
 
   const handleLinkMouseLeave = () => {
-    const activeLink = navRef.current?.querySelector(".active");
-    if (activeLink) {
-      // Return to active link if one exists
-      activeLinkRef.current = activeLink;
-      setIndicatorPosition({
-        left: activeLink.offsetLeft,
-        width: activeLink.offsetWidth,
-      });
-    } else {
-      // No active link, hide indicator
-      setIndicatorPosition(null);
+    // On mouse leave, don't do anything - let the nav mouse leave handle it
+  };
+
+  const handleNavMouseLeave = () => {
+    setIsHovering(false);
+    // When mouse leaves nav area, check if there's an active page link
+    if (navRef.current) {
+      const activeLink = navRef.current.querySelector(".active");
+      if (activeLink) {
+        activeLinkRef.current = activeLink;
+        setIndicatorPosition({
+          left: activeLink.offsetLeft,
+          width: activeLink.offsetWidth,
+        });
+      } else {
+        // If no active page, remove indicator completely
+        setIndicatorPosition(null);
+        activeLinkRef.current = null;
+      }
     }
   };
 
   const handleLinkClick = (event) => {
-    setUserInteracted(true);
     const link = event.currentTarget;
     activeLinkRef.current = link;
     setIndicatorPosition({
-      left: link.offsetLeft === 0 ? link.offsetLeft + 8 : link.offsetLeft,
+      left: link.offsetLeft,
       width: link.offsetWidth,
     });
     // Close mobile menu when a link is clicked
@@ -126,16 +122,6 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Open-Close Mobile Nav state
-  const [mobileNavClose, setMobileNavClose] = useState(true);
-  // disable scroll when mobile nav is open
-  useEffect(() => {
-    const html = document.documentElement;
-    mobileNavClose 
-      ? html.classList.remove("overflow-hidden") 
-      : html.classList.add("overflow-hidden");
-  }, [mobileNavClose]);
 
   // Header Show Hide state
   const [isInvisible, setIsInvisible] = useState(false);
@@ -193,16 +179,16 @@ const Header = () => {
               </Link>
             </div>
             
-            {/* Yükleniyor animasyonu */}
-            <div className="flex-1 flex justify-center items-center h-12">
+            {/* Yükleniyor animasyonu - only show on desktop */}
+            <div className="flex-1 hidden lg:flex justify-center items-center h-12">
               <div className="w-4 h-4 rounded-full bg-white/30 animate-pulse"></div>
             </div>
             
             {/* Telefon menü toggle butonu */}
             <button
               type="button"
-              aria-label="Toggle Mobile Navigation"
-              className={style.navToggler}
+              aria-label="Mobile Menu Button"
+              className={`${style.navToggler} lg:hidden`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -239,19 +225,14 @@ const Header = () => {
           </div>
           <nav
             ref={navRef}
-            className={`${style.navbar} ${mobileNavClose ? "w-12 !h-12 lg:w-auto lg:!h-auto" : "w-full max-w-xs lg:w-auto"} ${!mobileNavClose ? style.navbarOpen : ""}`}
-            style={{ height: mobileNavClose ? "auto" : "auto" }}
-            onMouseLeave={() => {
-              // When mouse leaves the navigation completely, reset indicator if no active item
-              const activeLink = navRef.current?.querySelector(".active");
-              if (!activeLink) {
-                setIndicatorPosition(null);
-              }
-            }}
+            className={`${style.navbar} hidden lg:flex ${!mobileNavClose ? style.navbarOpen : ""}`}
+            style={{ height: "auto" }}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={handleNavMouseLeave}
           >
             {indicatorPosition && (
               <span
-                className={`${style.indicator} ${activeLinkRef.current ? 'visible' : 'invisible'}`}
+                className={style.indicator}
                 style={indicatorPosition}
               ></span>
             )}
@@ -332,20 +313,14 @@ const Header = () => {
             )}
           </nav>
 
-          <div
-            className={`${style.navOverlay} ${mobileNavClose ? "" : style.navOverlayVisible}`}
-            onClick={() => setMobileNavClose(true)}
-          ></div>
-
           <button
             type="button"
-            aria-label="Toggle Mobile Navigation"
-            className={`${style.navToggler} ${mobileNavClose ? "" : "scale-[0.85]"}`}
-            onClick={() => setMobileNavClose(!mobileNavClose)}
+            aria-label="Mobile Menu Button"
+            className={`${style.navToggler} lg:hidden`}
           >
             <div className="relative flex items-center justify-center w-full h-full">
               <svg 
-                className={`${mobileNavClose ? "opacity-100" : "opacity-0"}`} 
+                className="opacity-100" 
                 xmlns="http://www.w3.org/2000/svg" 
                 width="24" 
                 height="24" 
@@ -359,22 +334,6 @@ const Header = () => {
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M4 8l16 0"></path>
                 <path d="M4 16l16 0"></path>
-              </svg>
-              <svg 
-                className={`absolute ${mobileNavClose ? "opacity-0" : "opacity-100"}`} 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                strokeWidth="2" 
-                stroke="currentColor" 
-                fill="none" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M18 6l-12 12"></path>
-                <path d="M6 6l12 12"></path>
               </svg>
             </div>
           </button>
