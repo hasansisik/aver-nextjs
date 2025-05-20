@@ -29,7 +29,7 @@ function slugify(text) {
     .toLowerCase();
 }
 
-export default function FeatureClient({ featureSlug, initialServiceData }) {
+export default function SlugClient({ slug, initialServiceData }) {
   const params = useParams();
   const dispatch = useDispatch();
   const { services, loading, error } = useSelector((state) => state.service);
@@ -66,7 +66,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
         // Verify if the stored feature slug matches the current URL
         const storedFeatureSlug = localStorage.getItem('featureSlug');
         const isStoredFeatureMatchingUrl = storedFeatureSlug && 
-          (storedFeatureSlug === featureSlug || storedFeatureSlug.toLowerCase() === featureSlug.toLowerCase());
+          (storedFeatureSlug === slug || storedFeatureSlug.toLowerCase() === slug.toLowerCase());
         
         // If we have a stored service slug and the feature matches the URL
         if (storedServiceSlug && (isStoredFeatureMatchingUrl || !storedFeatureSlug)) {
@@ -77,7 +77,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
             setFeatureTitle(storedFeature);
           } else {
             // Otherwise derive it from the slug
-            const derivedFeature = decodeURIComponent(featureSlug)
+            const derivedFeature = decodeURIComponent(slug)
               .replace(/-/g, ' ')
               .replace(/\b\w/g, l => l.toUpperCase()); // Convert to title case
             setFeatureTitle(derivedFeature);
@@ -95,7 +95,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
     };
     
     findFeatureAndService();
-  }, [dispatch, featureSlug, initialServiceData]);
+  }, [dispatch, slug, initialServiceData]);
   
   // Effect to find the feature in services once they are loaded
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
     
     const findServiceWithFeature = () => {
       // If we don't have a feature title yet, derive it from the slug
-      const searchFeatureTitle = featureTitle || decodeURIComponent(featureSlug)
+      const searchFeatureTitle = featureTitle || decodeURIComponent(slug)
         .replace(/-/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase());
       
@@ -117,10 +117,10 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
           
           // Create simple slugs for comparison
           const titleSlug = slugify(title);
-          const featureSlugified = slugify(featureSlug);
+          const slugified = slugify(slug);
           const searchSlug = searchFeatureTitle ? slugify(searchFeatureTitle) : '';
           
-          return titleSlug === featureSlugified || 
+          return titleSlug === slugified || 
                  (searchSlug && titleSlug === searchSlug);
         });
         
@@ -145,7 +145,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
     };
     
     findServiceWithFeature();
-  }, [services, featureSlug, featureTitle, dispatch, serviceData]);
+  }, [services, slug, featureTitle, dispatch, serviceData]);
   
   // Effect to clean up localStorage after successful render
   useEffect(() => {

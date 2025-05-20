@@ -1,6 +1,6 @@
 import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
 import { store } from "@/redux/store";
-import FeatureClient from "./FeatureClient";
+import SlugClient from "./SlugClient";
 
 // Utility function for creating clean slugs
 function slugify(text) {
@@ -24,7 +24,7 @@ function slugify(text) {
 }
 
 // This function will try to find a service containing the requested feature
-async function findServiceWithFeature(featureSlug) {
+async function findServiceWithFeature(slug) {
   try {
     // Get all services first
     await store.dispatch(getServices());
@@ -32,7 +32,7 @@ async function findServiceWithFeature(featureSlug) {
     const services = state.service.services;
     
     // Convert slug format back to potential feature names
-    const featureName = decodeURIComponent(featureSlug)
+    const featureName = decodeURIComponent(slug)
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase()); // Basic title case conversion
     
@@ -47,8 +47,8 @@ async function findServiceWithFeature(featureSlug) {
         const titleAsSlug = slugify(title);
         
         return normalizedTitle === featureName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || 
-               titleAsSlug === slugify(featureSlug) || 
-               titleAsSlug.replace(/-/g, '') === slugify(featureSlug).replace(/-/g, '');
+               titleAsSlug === slugify(slug) || 
+               titleAsSlug.replace(/-/g, '') === slugify(slug).replace(/-/g, '');
       });
       
       if (hasFeature) {
@@ -70,7 +70,7 @@ async function findServiceWithFeature(featureSlug) {
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
-  const result = await findServiceWithFeature(resolvedParams.feature);
+  const result = await findServiceWithFeature(resolvedParams.slug);
   
   if (!result) {
     return {
@@ -85,18 +85,18 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function FeaturePage({ params }) {
+export default async function SlugPage({ params }) {
   const resolvedParams = await params;
-  const featureSlug = resolvedParams.feature;
+  const slug = resolvedParams.slug;
   
   // Try to find the feature before rendering the client component
-  const result = await findServiceWithFeature(featureSlug);
+  const result = await findServiceWithFeature(slug);
   
-  // Pass the feature slug and found service data (if any) to the client component
+  // Pass the slug and found service data (if any) to the client component
   if (result) {
     return (
-      <FeatureClient 
-        featureSlug={featureSlug} 
+      <SlugClient 
+        slug={slug} 
         initialServiceData={{
           id: result.service._id,
           slug: result.service.slug,
@@ -107,6 +107,6 @@ export default async function FeaturePage({ params }) {
     );
   }
   
-  // If no service found, just pass the feature slug
-  return <FeatureClient featureSlug={featureSlug} />;
+  // If no service found, just pass the slug
+  return <SlugClient slug={slug} />;
 } 
