@@ -176,7 +176,7 @@ export default function FeatureClient({ featureSlug, initialServiceData }) {
       <div className="container py-20 text-center">
         <h2 className="text-2xl mb-4">Feature Not Found</h2>
         <p>The feature you&apos;re looking for could not be found.</p>
-        <Link href="/services" className="inline-block mt-6 px-6 py-2 bg-blue-500 text-white rounded-md">
+        <Link href="/services" className="inline-block mt-6 px-6 py-2 bg-white text-black rounded-md">
           Browse Services
         </Link>
       </div>
