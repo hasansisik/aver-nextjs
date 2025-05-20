@@ -36,12 +36,6 @@ const Header = () => {
   // Disable mobile menu functionality - keep state for design purposes only
   const [mobileNavClose, setMobileNavClose] = useState(true);
 
-  // For debugging
-  useEffect(() => {
-    console.log("Current pathname:", pathname);
-    console.log("Main Menu:", mainMenu);
-  }, [pathname, mainMenu]);
-
   useEffect(() => {
     // Only set active indicator if on exact matching page and not hovering
     if (navRef.current && !isHovering) {

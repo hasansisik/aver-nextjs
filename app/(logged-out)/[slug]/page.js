@@ -1,4 +1,6 @@
 import { getServiceBySlug, getServices } from "@/redux/actions/serviceActions";
+import { getProjectBySlug, getProjects } from "@/redux/actions/projectActions";
+import { getBlogBySlug, getBlogs } from "@/redux/actions/blogActions";
 import { store } from "@/redux/store";
 import SlugClient from "./SlugClient";
 
@@ -21,6 +23,57 @@ function slugify(text) {
     .replace(/[&+.,()'"!:@#$%^*{}[\]<>~`;?/\\|=]/g, "") // Remove special chars
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .toLowerCase();
+}
+
+// Function to find the content type and data for a given slug
+async function findContentForSlug(slug) {
+  try {
+    // Try blog first
+    await store.dispatch(getBlogBySlug(slug));
+    let state = store.getState();
+    if (state.blog.currentBlog && state.blog.currentBlog._id) {
+      return {
+        type: 'blog',
+        data: state.blog.currentBlog
+      };
+    }
+    
+    // Try project next
+    await store.dispatch(getProjectBySlug(slug));
+    state = store.getState();
+    if (state.project.currentProject && state.project.currentProject._id) {
+      return {
+        type: 'project',
+        data: state.project.currentProject
+      };
+    }
+    
+    // Finally, check if it's a service
+    await store.dispatch(getServiceBySlug(slug));
+    state = store.getState();
+    if (state.service.currentService && state.service.currentService._id) {
+      return {
+        type: 'service',
+        data: state.service.currentService
+      };
+    }
+    
+    // Check if it's a service feature
+    const serviceFeature = await findServiceWithFeature(slug);
+    if (serviceFeature) {
+      return {
+        type: 'feature',
+        data: serviceFeature.service,
+        featureName: serviceFeature.featureName
+      };
+    }
+    
+    // Not found in any of our content types
+    return null;
+  } catch (error) {
+    console.error("Error finding content for slug:", error);
+    return null;
+  }
 }
 
 // This function will try to find a service containing the requested feature
@@ -70,43 +123,63 @@ async function findServiceWithFeature(slug) {
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
-  const result = await findServiceWithFeature(resolvedParams.slug);
+  const contentData = await findContentForSlug(resolvedParams.slug);
   
-  if (!result) {
+  if (!contentData) {
     return {
-      title: "Feature Not Found",
-      description: "The requested feature could not be found",
+      title: "Content Not Found",
+      description: "The requested content could not be found",
     };
   }
   
-  return {
-    title: `${result.featureName} | ${result.service.title}`,
-    description: `Learn about ${result.featureName} - a feature of our ${result.service.title} service`,
-  };
+  switch (contentData.type) {
+    case 'blog':
+      return {
+        title: contentData.data.title || "Blog Post",
+        description: contentData.data.description || "Read our latest blog post",
+      };
+    case 'project':
+      return {
+        title: contentData.data.title || "Project",
+        description: contentData.data.description || "Check out our project",
+      };
+    case 'service':
+      return {
+        title: contentData.data.title || "Service",
+        description: contentData.data.description || "Learn about our services",
+      };
+    case 'feature':
+      return {
+        title: `${contentData.featureName} | ${contentData.data.title}`,
+        description: `Learn about ${contentData.featureName} - a feature of our ${contentData.data.title} service`,
+      };
+    default:
+      return {
+        title: "Content",
+        description: "View our content",
+      };
+  }
 }
 
 export default async function SlugPage({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
   
-  // Try to find the feature before rendering the client component
-  const result = await findServiceWithFeature(slug);
+  // Try to find the content type for this slug
+  const contentData = await findContentForSlug(slug);
   
-  // Pass the slug and found service data (if any) to the client component
-  if (result) {
+  // Pass the content data to the client component
+  if (contentData) {
     return (
       <SlugClient 
-        slug={slug} 
-        initialServiceData={{
-          id: result.service._id,
-          slug: result.service.slug,
-          title: result.service.title,
-          featureName: result.featureName
-        }} 
+        slug={slug}
+        contentType={contentData.type}
+        initialData={contentData.data}
+        featureName={contentData.featureName}
       />
     );
   }
   
-  // If no service found, just pass the slug
+  // If no content found, just pass the slug
   return <SlugClient slug={slug} />;
 } 

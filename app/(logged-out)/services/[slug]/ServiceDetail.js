@@ -126,12 +126,6 @@ export default function ServiceDetail() {
     localStorage.setItem('selectedFeature', featureTitle);
     localStorage.setItem('featureServiceTitle', currentService.title);
     localStorage.setItem('featureSlug', slugify(featureTitle));
-    console.log('Set feature from ServiceDetail:', {
-      feature: featureTitle,
-      serviceSlug: params.slug,
-      serviceTitle: currentService.title,
-      featureSlug: slugify(featureTitle)
-    });
     
     // Use router to navigate without full page refresh
     window.history.pushState({}, '', newUrl);

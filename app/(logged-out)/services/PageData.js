@@ -112,12 +112,7 @@ const ServiceCard = ({ service }) => {
                           localStorage.setItem('featureServiceSlug', service.slug);
                           localStorage.setItem('featureServiceTitle', service.title);
                           localStorage.setItem('featureSlug', slugify(feature.title));
-                          console.log('Clicked feature in PageData:', {
-                            feature: feature.title,
-                            serviceSlug: service.slug,
-                            serviceTitle: service.title,
-                            featureSlug: slugify(feature.title)
-                          });
+                    
                         }}
                         className="text-red-500 hover:underline block py-3"
                       >
