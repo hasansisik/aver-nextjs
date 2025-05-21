@@ -100,12 +100,16 @@ const customStyles = {
   '.service-feature-list li': {
     opacity: '0',
     transform: 'translateY(30px)',
-    transition: 'none',
+    transition: 'all 0.2s ease-out',
+    transitionBehavior: 'normal',
+    transitionDuration: '0.2s',
+    transitionTimingFunction: 'ease-out',
+    transitionDelay: '0s',
     visibility: 'hidden',
     position: 'relative'
   },
   '.service-feature-list li.animate-slide-up': {
-    animation: 'slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
+    animation: 'slideUp 0.2s ease-out forwards'
   },
   '@keyframes slideUp': {
     '0%': {
@@ -134,25 +138,28 @@ const customStyles = {
     opacity: '1',
     transform: 'translateY(0)',
     visibility: 'visible',
-    transition: 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), visibility 0.5s ease-out'
+    transition: 'all 0.2s ease-out',
+    transitionBehavior: 'normal',
+    transitionDuration: '0.2s',
+    transitionTimingFunction: 'ease-out'
   },
   '.service-card:hover .service-feature-list li:nth-child(1)': {
-    transitionDelay: '0.2s'
+    transitionDelay: '0.05s'
   },
   '.service-card:hover .service-feature-list li:nth-child(2)': {
-    transitionDelay: '0.35s'
+    transitionDelay: '0.1s'
   },
   '.service-card:hover .service-feature-list li:nth-child(3)': {
-    transitionDelay: '0.5s'
+    transitionDelay: '0.15s'
   },
   '.service-card:hover .service-feature-list li:nth-child(4)': {
-    transitionDelay: '0.65s'
+    transitionDelay: '0.2s'
   },
   '.service-card:hover .service-feature-list li:nth-child(5)': {
-    transitionDelay: '0.8s'
+    transitionDelay: '0.25s'
   },
   '.service-card:hover .service-feature-list li:nth-child(6)': {
-    transitionDelay: '0.95s'
+    transitionDelay: '0.3s'
   },
   '.service-card:hover .service-feature-list li::before': {
     width: '100%',
@@ -485,7 +492,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                       const featureSlug = slugify(featureTitle);
                                       
                                       return (
-                                        <li key={idx} className="transform translate-y-8 opacity-0 transition-all duration-500" style={{transitionDelay: `${idx * 0.15}s`}}>
+                                        <li key={idx} className="transform translate-y-8 opacity-0" style={{transition: 'all 0.2s ease-out', transitionDelay: `${idx * 0.05}s`}}>
                                           <Link 
                                             href={`/${featureSlug}`}
                                             onClick={() => {
@@ -504,7 +511,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                         </li>
                                       );
                                     }) : (
-                                    <li className="transform translate-y-8 opacity-0 transition-all duration-500">
+                                    <li className="transform translate-y-8 opacity-0" style={{transition: 'all 0.2s ease-out', transitionDelay: '0.05s'}}>
                                       <Link 
                                         href="/services"
                                         className="text-red-500 hover:underline block py-2"
@@ -624,7 +631,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                   const featureSlug = slugify(featureTitle);
                                   
                                   return (
-                                    <li key={idx} className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: `${idx * 0.15 + 0.3}s`}}>
+                                    <li key={idx} className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: `${idx * 0.05 + 0.05}s`}}>
                                       <Link 
                                         href={`/${featureSlug}`}
                                         onClick={() => {
@@ -643,7 +650,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                     </li>
                                   );
                                 }) : (
-                                <li className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: "0.3s"}}>
+                                <li className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: "0.05s"}}>
                                   <Link 
                                     href="/services"
                                     className="text-red-500 hover:underline block py-3"
