@@ -86,7 +86,9 @@ const customStyles = {
     visibility: 'hidden',
     padding: '0',
     width: '100%',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    position: 'relative',
+    zIndex: '5'
   },
   '.service-card:hover .service-feature-list': {
     opacity: '1',
@@ -106,7 +108,14 @@ const customStyles = {
     transitionTimingFunction: 'ease-out',
     transitionDelay: '0s',
     visibility: 'hidden',
-    position: 'relative'
+    position: 'relative',
+    zIndex: '1'
+  },
+  '.service-feature-list li a': {
+    position: 'relative',
+    zIndex: '2',
+    display: 'block',
+    pointerEvents: 'auto'
   },
   '.service-feature-list li.animate-slide-up': {
     animation: 'slideUp 0.2s ease-out forwards'
@@ -141,7 +150,8 @@ const customStyles = {
     transition: 'all 0.2s ease-out',
     transitionBehavior: 'normal',
     transitionDuration: '0.2s',
-    transitionTimingFunction: 'ease-out'
+    transitionTimingFunction: 'ease-out',
+    pointerEvents: 'auto'
   },
   '.service-card:hover .service-feature-list li:nth-child(1)': {
     transitionDelay: '0.05s'
@@ -215,7 +225,11 @@ const customStyles = {
       overflow: 'visible',
       visibility: 'visible',
       padding: '0',
-      transition: 'none'
+      transition: 'none',
+      pointerEvents: 'auto'
+    },
+    '.service-feature-list li a': {
+      pointerEvents: 'auto'
     },
     '.service-feature-list li': {
       opacity: '1',
