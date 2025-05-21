@@ -46,21 +46,25 @@ const customStyles = {
   },
   '.service-card': {
     transition: 'all 0.3s ease',
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#ffffff',
     position: 'relative',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-    height: 'auto'
+    boxShadow: '0 0 0 rgba(0,0,0,0)',
+    height: 'auto',
+    padding: '0',
+    margin: '0',
+    overflow: 'visible'
   },
   '.service-card-wrapper': {
     margin: '0',
-    padding: '0',
-    position: 'relative'
+    padding: '10px',
+    position: 'relative',
+    overflow: 'visible'
   },
   '.service-card:hover': {
-    zIndex: '30',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-    transform: 'translateY(-5px)'
+    zIndex: '100 !important',
+    backgroundColor: '#ffffff !important',
+    boxShadow: '15px 0 35px rgba(0,0,0,0.05) !important, -15px 0 35px rgba(0,0,0,0.05) !important, 0 15px 35px rgba(0,0,0,0.05) !important, 0 -45px 50px rgba(0,0,0,0.04) !important',
+    transform: 'scale(1.02) !important'
   },
   '.service-feature-list': {
     transition: 'all 0.35s ease-in-out',
@@ -78,20 +82,23 @@ const customStyles = {
   },
   '.service-card-content': {
     height: 'auto',
-    overflow: 'visible'
+    overflow: 'visible',
+    position: 'relative',
+    zIndex: '5'
   },
   '.services-slider': {
     transition: 'transform 0.5s ease-in-out'
   },
   '.services-section': {
     position: 'relative',
-    overflow: 'hidden',
+    overflow: 'visible',
     height: 'auto',
     minHeight: '600px'
   },
   '.services-container': {
     position: 'relative',
-    zIndex: '1'
+    zIndex: '1',
+    overflow: 'visible'
   },
   '@media (max-width: 768px)': {
     '.service-card': {
@@ -270,7 +277,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
 
       {/* Services Section */}
       <section className="py-28 pb-20 bg-gray-100 text-dark services-section">
-        <div className="container services-container" style={{minHeight: "700px"}}>
+        <div className="container services-container" style={{minHeight: "700px", overflow: "visible"}}>
           <div className="row mb-16 items-end">
             <div className="sm:col-8 order-2 sm:order-1">
               <h2 className="text-black text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
@@ -302,15 +309,28 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                 </button>
               )}
               
-              <div className="row md:gx-4 overflow-hidden" ref={serviceSliderRef}>
+              <div className="row md:gx-2 overflow-visible" ref={serviceSliderRef}>
                 <div 
                   className="services-slider flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${(activeServiceIndex / 3) * 100}%)` }}
+                  style={{ transform: `translateX(-${(activeServiceIndex / 3) * 100}%)`, overflow: 'visible' }}
                 >
                   {services.length > 0 ? visibleServices().map((service, index) => (
-                    <div key={service._id || index} className="lg:col-4 sm:col-4 px-4 flex-shrink-0">
+                    <div key={service._id || index} className="lg:col-4 sm:col-4 px-2 flex-shrink-0">
                       <div className="service-card-wrapper">
-                        <div className="relative service-card rounded-lg bg-white shadow-md h-auto overflow-visible">
+                        <div 
+                          className="relative service-card bg-white h-auto overflow-visible" 
+                          style={{boxShadow: '0 0 0 rgba(0,0,0,0)'}}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
+                            e.currentTarget.style.transform = 'scale(1.02)';
+                            e.currentTarget.style.zIndex = '100';
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.zIndex = '10';
+                          }}
+                        >
                           {/* Card Content */}
                           <div className="p-8 flex flex-col service-card-content">
                             <div className="flex mb-4">
@@ -421,8 +441,21 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
               <div className="space-y-6">
                 {services.length > 0 ? services.map((service, index) => (
                   <div key={service._id || index} className="service-card-wrapper">
-                    <div className="service-card rounded-lg bg-white shadow-md overflow-hidden">
-                      <div className="p-6 service-card-content">
+                    <div 
+                      className="service-card bg-white overflow-hidden" 
+                      style={{boxShadow: '0 0 0 rgba(0,0,0,0)'}}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.zIndex = '100';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.zIndex = '10';
+                      }}
+                    >
+                      <div className="p-8 flex flex-col service-card-content">
                         <div className="flex items-center mb-4">
                           <Image 
                             src={service.icon || "/images/icons/default-service.svg"} 
