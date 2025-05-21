@@ -59,16 +59,20 @@ const customStyles = {
     margin: '0',
     padding: '10px',
     position: 'relative',
-    overflow: 'visible'
+    overflow: 'visible',
+    height: '100%',
+    boxSizing: 'border-box'
   },
   '.service-card:hover': {
     zIndex: '100 !important',
     backgroundColor: '#ffffff !important',
     boxShadow: '15px 0 35px rgba(0,0,0,0.05) !important, -15px 0 35px rgba(0,0,0,0.05) !important, 0 15px 35px rgba(0,0,0,0.05) !important, 0 -45px 50px rgba(0,0,0,0.04) !important',
-    transform: 'none !important'
+    transform: 'none !important',
+    position: 'absolute !important',
+    width: '100% !important'
   },
   '.service-feature-list': {
-    transition: 'all 0.35s ease-in-out',
+    transition: 'opacity 0.35s ease-in-out',
     opacity: '0',
     height: '0',
     overflow: 'hidden',
@@ -79,7 +83,52 @@ const customStyles = {
     opacity: '1',
     height: 'auto',
     visibility: 'visible',
-    padding: '1rem 0 0'
+    padding: '1rem 0 0',
+    transition: 'opacity 0.3s ease-in-out, height 0.3s ease-in-out, visibility 0.3s ease-in-out, padding 0.3s ease-in-out'
+  },
+  '.service-feature-list li': {
+    opacity: '0',
+    transform: 'translateY(30px)',
+    transition: 'none',
+    visibility: 'hidden',
+    position: 'relative'
+  },
+  '.service-feature-list li::before': {
+    content: '""',
+    position: 'absolute',
+    left: '0',
+    width: '0',
+    height: '100%',
+    backgroundColor: 'rgba(239, 68, 68, 0.05)',
+    zIndex: '-1',
+    transition: 'none',
+    borderRadius: '4px'
+  },
+  '.service-card:hover .service-feature-list li': {
+    opacity: '1',
+    transform: 'translateY(0)',
+    visibility: 'visible',
+    transition: 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), visibility 0.5s ease-out'
+  },
+  '.service-card:hover .service-feature-list li::before': {
+    width: '100%',
+    transition: 'width 0.5s ease-out',
+    transitionDelay: 'inherit'
+  },
+  '.service-card:hover .service-feature-list li:nth-child(1)': {
+    transitionDelay: '0.2s'
+  },
+  '.service-card:hover .service-feature-list li:nth-child(2)': {
+    transitionDelay: '0.6s'
+  },
+  '.service-card:hover .service-feature-list li:nth-child(3)': {
+    transitionDelay: '1.0s'
+  },
+  '.service-card:hover .service-feature-list li:nth-child(4)': {
+    transitionDelay: '1.4s'
+  },
+  '.service-card:hover .service-feature-list li:nth-child(5)': {
+    transitionDelay: '1.8s'
   },
   '.service-card-content': {
     height: 'auto',
@@ -99,7 +148,9 @@ const customStyles = {
   '.services-container': {
     position: 'relative',
     zIndex: '1',
-    overflow: 'visible'
+    overflow: 'visible',
+    maxHeight: '800px',
+    height: 'auto'
   },
   '@media (max-width: 768px)': {
     '.service-card': {
@@ -110,7 +161,25 @@ const customStyles = {
       height: 'auto',
       overflow: 'visible',
       visibility: 'visible',
-      padding: '1rem 0 0'
+      padding: '1rem 0 0',
+      transition: 'none'
+    },
+    '.service-feature-list li': {
+      opacity: '1',
+      transform: 'translateY(0)',
+      transition: 'none !important',
+      visibility: 'visible',
+      transitionDelay: '0s !important' 
+    },
+    '.service-feature-list li::before': {
+      transition: 'none !important',
+      width: '0'
+    },
+    '.service-card:hover .service-feature-list li': {
+      transition: 'none !important'
+    },
+    '.service-card:hover .service-feature-list li::before': {
+      transition: 'none !important'
     }
   }
 };
@@ -277,8 +346,8 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
       <WorkProcess workProcess={workProcess} />
 
       {/* Services Section */}
-      <section className="py-28 pb-20 bg-gray-100 text-dark services-section">
-        <div className="container services-container" style={{minHeight: "700px", overflow: "visible"}}>
+      <section className="py-28 pb-4 bg-gray-100 text-dark services-section">
+        <div className="container services-container" style={{minHeight: "500px", overflow: "visible", position: "relative", maxHeight: "800px"}}>
           <div className="row mb-16 items-end">
             <div className="sm:col-8 order-2 sm:order-1">
               <h2 className="text-black text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
@@ -319,19 +388,19 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                     <div key={service._id || index} className="lg:col-4 sm:col-4 px-2 flex-shrink-0">
                       <div className="service-card-wrapper">
                         <div 
-                          className="relative service-card bg-white h-auto overflow-visible" 
+                          className="service-card bg-white overflow-hidden" 
                           style={{
                             boxShadow: '0 0 0 rgba(0,0,0,0)',
                             borderRadius: '8px'
                           }}
                           onMouseOver={(e) => {
                             e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
-                            e.currentTarget.style.transform = 'none';
                             e.currentTarget.style.zIndex = '100';
+                            // Removing the scale transform to prevent container size changes
                           }}
                           onMouseOut={(e) => {
                             e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                            e.currentTarget.style.transform = 'none';
+                            // Removed transform reset since we're not using transforms
                             e.currentTarget.style.zIndex = '10';
                           }}
                         >
@@ -341,20 +410,20 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                               <Image 
                                 src={service.icon || "/images/icons/default-service.svg"} 
                                 alt={service.title || "Service"}
-                                width={60} 
-                                height={60}
+                                width={50} 
+                                height={50}
                               />
                             </div>
-                            <h3 className="text-2xl font-medium mb-4 text-gray-800">
+                            <h3 className="text-xl font-medium mb-4 text-gray-800 ">
                               {service.title || "Service"}
                             </h3>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-gray-600 mb-4 text-sm">
                               {service.description || "Service description"}
                             </p>
                             {/* Features List - Only visible on hover */}
                             <div className="service-feature-list">
-                              <div className="border-t border-gray-200">
-                                <ul className="space-y-0 pt-4">
+                              <div className="border-t border-gray-100">
+                                <ul className="space-y-0 pt-2">
                                   {service.features && service.features.map ? 
                                     service.features.map((feature, idx) => {
                                       const featureTitle = typeof feature === 'string' ? feature : feature.title;
@@ -370,7 +439,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                               localStorage.setItem('featureServiceTitle', service.title);
                                               localStorage.setItem('featureSlug', featureSlug);
                                             }}
-                                            className="text-red-500 hover:underline block py-3"
+                                            className="text-red-500 text-sm hover:underline block py-3 transition-all duration-300 hover:pl-2"
                                           >
                                             {featureTitle}
                                           </Link>
@@ -449,16 +518,16 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                       className="service-card bg-white overflow-hidden" 
                       style={{
                         boxShadow: '0 0 0 rgba(0,0,0,0)',
-                        borderRadius: '15px'
+                        borderRadius: '8px'
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
-                        e.currentTarget.style.transform = 'none';
+                        // Removed scale transform to prevent container size changes
                         e.currentTarget.style.zIndex = '100';
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                        e.currentTarget.style.transform = 'none';
+                        // Removed transform reset since we're not using transforms
                         e.currentTarget.style.zIndex = '10';
                       }}
                     >
@@ -500,7 +569,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                                           localStorage.setItem('featureServiceTitle', service.title);
                                           localStorage.setItem('featureSlug', featureSlug);
                                         }}
-                                        className="text-red-500 hover:underline block py-3"
+                                        className="text-red-500 hover:underline block py-3 transition-all duration-300 hover:pl-2"
                                       >
                                         {featureTitle}
                                       </Link>
