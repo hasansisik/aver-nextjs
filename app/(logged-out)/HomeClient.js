@@ -45,7 +45,6 @@ const customStyles = {
     backfaceVisibility: 'hidden'
   },
   '.service-card': {
-    transition: 'all 0.3s ease',
     backgroundColor: '#ffffff',
     position: 'relative',
     boxShadow: '0 0 0 rgba(0,0,0,0)',
@@ -262,7 +261,6 @@ const customStyles = {
       boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
       borderRadius: '0.5rem',
       position: 'relative',
-      transition: 'all 0.3s ease',
       backgroundColor: '#ffffff',
       zIndex: '20'
     },

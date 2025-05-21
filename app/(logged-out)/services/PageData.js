@@ -131,7 +131,6 @@ const useCustomStyles = () => {
       /* Mobile styles - keeping original */
       @media (max-width: 768px) {
         .service-card {
-          transition: all 0.3s ease;
           background-color: #ffffff;
           position: relative;
           box-shadow: 0 4px 6px rgba(0,0,0,0.05);
