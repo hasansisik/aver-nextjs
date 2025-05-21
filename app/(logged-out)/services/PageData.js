@@ -35,15 +35,20 @@ const useCustomStyles = () => {
     const styleElement = document.createElement('style');
     styleElement.textContent = `
       .service-card {
-        transition: all 0.3s ease;
+        transition: all 0.3s ease-out;
         background-color: #ffffff;
         position: relative;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         height: auto;
+        border-radius: 5px;
+        overflow: visible;
+        width: 100%;
+        box-sizing: border-box;
       }
       .service-card:hover {
-        z-index: 10;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        z-index: 100;
+        box-shadow: 15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04);
+        transform: translateY(-2px);
       }
       .service-feature-list {
         transition: all 0.35s ease-in-out;
@@ -52,12 +57,120 @@ const useCustomStyles = () => {
         overflow: hidden;
         visibility: hidden;
         padding: 0;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 5;
       }
       .service-card:hover .service-feature-list {
         opacity: 1;
         height: auto;
         visibility: visible;
         padding: 1rem 0 0;
+        transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      }
+      .service-feature-list li {
+        opacity: 0;
+        transform: translateY(15px);
+        transition: all 0.3s ease-out;
+        transition-property: opacity, transform, visibility;
+        transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        visibility: hidden;
+        position: relative;
+        will-change: opacity, transform, visibility;
+      }
+      .service-feature-list li a {
+        transition: all 0.2s ease-out;
+        display: block;
+      }
+      .service-card:hover .service-feature-list li {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        animation: slideUp 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideUp {
+        0% {
+          opacity: 0;
+          transform: translateY(15px);
+          visibility: hidden;
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+          visibility: visible;
+        }
+      }
+      
+      .service-card:hover .service-feature-list li:nth-child(1) {
+        transition-delay: 0.05s;
+        animation-delay: 0.05s;
+      }
+      .service-card:hover .service-feature-list li:nth-child(2) {
+        transition-delay: 0.1s;
+        animation-delay: 0.1s;
+      }
+      .service-card:hover .service-feature-list li:nth-child(3) {
+        transition-delay: 0.15s;
+        animation-delay: 0.15s;
+      }
+      .service-card:hover .service-feature-list li:nth-child(4) {
+        transition-delay: 0.2s;
+        animation-delay: 0.2s;
+      }
+      .service-card:hover .service-feature-list li:nth-child(5) {
+        transition-delay: 0.25s;
+        animation-delay: 0.25s;
+      }
+      .service-card:hover .service-feature-list li:nth-child(6) {
+        transition-delay: 0.3s;
+        animation-delay: 0.3s;
+      }
+      
+      /* Mobile styles - keeping original */
+      @media (max-width: 768px) {
+        .service-card {
+          transition: all 0.3s ease;
+          background-color: #ffffff;
+          position: relative;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+          height: auto;
+        }
+        .service-card:hover {
+          z-index: 10;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          transform: none;
+        }
+        .service-feature-list {
+          transition: all 0.35s ease-in-out;
+          opacity: 0;
+          height: 0;
+          overflow: hidden;
+          visibility: hidden;
+          padding: 0;
+        }
+        .service-card:hover .service-feature-list {
+          opacity: 1;
+          height: auto;
+          visibility: visible;
+          padding: 1rem 0 0;
+        }
+        .service-feature-list li {
+          opacity: 1;
+          transform: none;
+          transition: none;
+          visibility: visible;
+          animation: none;
+        }
+        .service-card:hover .service-feature-list li {
+          transition: none;
+          animation: none;
+        }
+        .service-card:hover .service-feature-list li:nth-child(n) {
+          transition-delay: 0s;
+          animation-delay: 0s;
+        }
       }
     `;
     document.head.appendChild(styleElement);
@@ -101,27 +214,31 @@ const ServiceCard = ({ service }) => {
           <div className="border-t border-gray-200">
             <ul className="space-y-0 pt-4">
               {service.features && service.features.length > 0 ? 
-                service.features.map((feature, idx) => (
-                  <li key={idx}>
-                    <Link 
-                      href={`/${slugify(feature.title)}`}
-                      onClick={() => {
-                        // Store both the feature and service info
-                        localStorage.setItem('selectedFeature', feature.title);
-                        localStorage.setItem('featureServiceSlug', service.slug);
-                        localStorage.setItem('featureServiceTitle', service.title);
-                        localStorage.setItem('featureSlug', slugify(feature.title));
+                service.features.map((feature, idx) => {
+                  const featureTitle = typeof feature === 'string' ? feature : feature.title;
+                  const featureSlug = slugify(featureTitle);
                   
-                      }}
-                      className="text-red-500 hover:underline block py-3"
-                    >
-                      {feature.title}
-                    </Link>
-                    {idx < (service.features.length - 1) && (
-                      <div className="border-t border-gray-100"></div>
-                    )}
-                  </li>
-                )) : (
+                  return (
+                    <li key={idx} style={{ transitionDelay: `${idx * 0.05 + 0.05}s` }}>
+                      <Link 
+                        href={`/${featureSlug}`}
+                        onClick={(e) => {
+                          // Store both the feature and service info
+                          localStorage.setItem('selectedFeature', featureTitle);
+                          localStorage.setItem('featureServiceSlug', service.slug);
+                          localStorage.setItem('featureServiceTitle', service.title);
+                          localStorage.setItem('featureSlug', featureSlug);
+                        }}
+                        className="text-red-500 hover:underline block py-3 transition-all duration-300 hover:pl-2"
+                      >
+                        {featureTitle}
+                      </Link>
+                      {idx < (service.features.length - 1) && (
+                        <div className="border-t border-gray-100"></div>
+                      )}
+                    </li>
+                  );
+                }) : (
                 <li>
                   <span className="text-red-500 block py-3">
                     Learn more
@@ -168,8 +285,8 @@ const PageData = ({ title, subtitle }) => {
     <>
       <PageHeader title={title} subtitle={subtitle + ` (${totalServices})`} />
 
-      <section className="py-28 bg-white text-dark rounded-b-2xl">
-        <div className="container">
+      <section className="py-28 bg-white text-dark rounded-b-2xl relative" style={{ zIndex: 30 }}>
+        <div className="container" style={{ position: 'relative', zIndex: 25 ,minHeight: "600px",}}>
           <div className="row md:gx-4 gy-5">
             {displayedServices.map((service, index) => (
               <div
