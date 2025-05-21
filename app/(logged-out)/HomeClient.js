@@ -302,7 +302,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                 </button>
               )}
               
-              <div className="row md:gx-4 mx-12 overflow-hidden" ref={serviceSliderRef}>
+              <div className="row md:gx-4 overflow-hidden" ref={serviceSliderRef}>
                 <div 
                   className="services-slider flex transition-transform duration-500 ease-in-out"
                   style={{ transform: `translateX(-${(activeServiceIndex / 3) * 100}%)` }}
