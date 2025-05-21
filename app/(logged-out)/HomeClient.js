@@ -206,49 +206,191 @@ const customStyles = {
     position: 'relative',
     overflow: 'visible',
     height: 'auto',
-    minHeight: '600px'
+    minHeight: '600px',
+    zIndex: '30'
   },
   '.services-container': {
     position: 'relative',
-    zIndex: '1',
+    zIndex: '25',
     overflow: 'visible',
     maxHeight: '800px',
     height: 'auto'
   },
+  // Mobile service card styles
+  '.service-card-mobile': {
+    transition: 'all 0.3s ease-in-out',
+    backgroundColor: '#ffffff',
+    position: 'relative',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+    height: 'auto',
+    cursor: 'pointer',
+    zIndex: '40'
+  },
+  '.service-card-mobile.expanded': {
+    zIndex: '50',
+    boxShadow: '0 12px 30px rgba(0,0,0,0.15)',
+    transform: 'translateY(-2px)'
+  },
+  '.service-card-mobile:hover': {
+    boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+    zIndex: '45'
+  },
+  '.service-feature-list-mobile': {
+    transition: 'all 0.35s ease-in-out',
+    opacity: '0',
+    height: '0',
+    overflow: 'hidden',
+    visibility: 'hidden',
+    padding: '0',
+    position: 'relative',
+    zIndex: '45',
+    transform: 'translateY(-10px)',
+    maxHeight: '0'
+  },
+  '.service-feature-list-mobile.active': {
+    opacity: '1',
+    height: 'auto',
+    visibility: 'visible',
+    padding: '1rem 0 0',
+    zIndex: '50',
+    transform: 'translateY(0)',
+    maxHeight: '500px'
+  },
   '@media (max-width: 768px)': {
     '.service-card': {
-      marginBottom: '1.5rem'
+      marginBottom: '1.5rem',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+      borderRadius: '0.5rem',
+      position: 'relative',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#ffffff',
+      zIndex: '20'
     },
     '.service-feature-list': {
+      transition: 'all 0.35s ease-in-out',
+      opacity: '0',
+      height: '0',
+      overflow: 'hidden',
+      visibility: 'hidden',
+      padding: '0'
+    },
+    '.service-card:hover .service-feature-list': {
       opacity: '1',
       height: 'auto',
-      overflow: 'visible',
       visibility: 'visible',
-      padding: '0',
+      padding: '1rem 0 0'
+    },
+    '.service-card:hover': {
+      zIndex: '10',
+      boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+      position: 'relative',
+      transform: 'none',
+      width: '100%',
+      maxWidth: '100%',
+      left: '0',
+      right: '0'
+    },
+    '.service-feature-list li': {
+      opacity: '1',
+      transform: 'none',
       transition: 'none',
-      pointerEvents: 'auto'
+      visibility: 'visible',
+      position: 'relative'
     },
     '.service-feature-list li a': {
       pointerEvents: 'auto'
     },
-    '.service-feature-list li': {
-      opacity: '1',
-      transform: 'translateY(0)',
-      transition: 'none !important',
-      visibility: 'visible',
-      transitionDelay: '0s !important' 
-    },
-    '.service-feature-list li::before': {
-      transition: 'none !important',
-      width: '0'
-    },
     '.service-card:hover .service-feature-list li': {
-      transition: 'none !important'
+      transition: 'none'
     },
     '.service-card:hover .service-feature-list li::before': {
-      transition: 'none !important'
+      transition: 'none'
     }
   }
+};
+
+// Mobile Service Card component with click behavior
+const MobileServiceCard = ({ service, index, expandedCardId, setExpandedCardId }) => {
+  const isExpanded = expandedCardId === (service._id || index);
+
+  const handleCardClick = () => {
+    // If already expanded, close it. Otherwise, expand it and close any other.
+    if (isExpanded) {
+      setExpandedCardId(null);
+    } else {
+      setExpandedCardId(service._id || index);
+    }
+  };
+
+  return (
+    <div 
+      className={`relative service-card-mobile rounded-lg bg-white shadow-md h-auto transition-all duration-300 ${isExpanded ? 'shadow-lg expanded' : ''}`}
+      onClick={handleCardClick}
+      style={{ position: 'relative', zIndex: isExpanded ? 50 : 20 }}
+    >
+      {/* Card Content */}
+      <div className="p-8 flex flex-col">
+        <div className="flex mb-4">
+          <Image 
+            src={service.icon || "/images/icons/default-service.svg"} 
+            alt={service.title || "Service"}
+            width={60} 
+            height={60}
+          />
+        </div>
+        <h3 className="text-2xl font-medium mb-4 text-gray-800">
+          {service.title || "Service"}
+        </h3>
+        <p className="text-gray-600 mb-4">
+          {service.description || "Service description"}
+        </p>
+        
+        {/* Features List - Visible based on expanded state */}
+        <div className={`service-feature-list-mobile ${isExpanded ? 'active' : ''}`}>
+          <div className="border-t border-gray-200 mt-2">
+            <ul className="space-y-0 pt-4">
+              {service.features && service.features.map ? 
+                service.features.map((feature, idx) => {
+                  const featureTitle = typeof feature === 'string' ? feature : feature.title;
+                  const featureSlug = slugify(featureTitle);
+                  
+                  return (
+                    <li key={idx}>
+                      <Link 
+                        href={`/${featureSlug}`}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent card click event
+                          localStorage.setItem('selectedFeature', featureTitle);
+                          localStorage.setItem('featureServiceSlug', service.slug);
+                          localStorage.setItem('featureServiceTitle', service.title);
+                          localStorage.setItem('featureSlug', featureSlug);
+                        }}
+                        className="text-red-500 hover:underline block py-3"
+                      >
+                        {featureTitle}
+                      </Link>
+                      {idx < (service.features.length - 1) && (
+                        <div className="border-t border-gray-100"></div>
+                      )}
+                    </li>
+                  );
+                }) : (
+                <li>
+                  <Link 
+                    href="/services"
+                    className="text-red-500 hover:underline block py-3"
+                    onClick={(e) => e.stopPropagation()} // Prevent card click event
+                  >
+                    Learn more
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProcess }) => {
@@ -259,6 +401,7 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
   const serviceSliderRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [expandedCardId, setExpandedCardId] = useState(null);
 
   // Calculate total number of slides
   const totalSlides = Math.ceil(services.length / 3);
@@ -413,8 +556,8 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
       <WorkProcess workProcess={workProcess} />
 
       {/* Services Section */}
-      <section className="py-28 pb-4 bg-gray-100 text-dark services-section">
-        <div className="container services-container" style={{minHeight: "500px", overflow: "visible", position: "relative", maxHeight: "800px"}}>
+      <section className="py-28 pb-4 bg-gray-100 text-dark services-section relative" style={{ zIndex: 30 }}>
+        <div className="container services-container" style={{minHeight: "500px", overflow: "visible", position: "relative", maxHeight: "800px", zIndex: 25}}>
           <div className="row mb-16 items-end">
             <div className="sm:col-8 order-2 sm:order-1">
               <h2 className="text-black text-4xl md:text-5xl font-secondary font-medium -mt-[6px] text-center sm:text-left">
@@ -586,99 +729,16 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
 
           {/* Mobile View - Vertical List */}
           {isMobile && (
-            <div className="md:hidden">
-              <div className="space-y-6">
+            <div className="md:hidden relative" style={{ zIndex: 40, position: 'relative' }}>
+              <div className="space-y-6 relative" style={{ zIndex: 45 }}>
                 {services.length > 0 ? services.map((service, index) => (
-                  <div key={service._id || index} className="service-card-wrapper" style={{position: 'relative'}}>
-                    <div 
-                      className="service-card bg-white overflow-hidden" 
-                      style={{
-                        boxShadow: '0 0 0 rgba(0,0,0,0)',
-                        borderRadius: '5px',
-                        width: 'calc(100% - 16px)',
-                        position: 'relative',
-                        left: '8px',
-                        margin: '0'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
-                        e.currentTarget.style.zIndex = '100';
-                        e.currentTarget.style.borderRadius = '5px';
-                        e.currentTarget.style.width = 'calc(100% - 16px)';
-                        e.currentTarget.style.maxWidth = 'calc(100% - 16px)';
-                        e.currentTarget.style.boxSizing = 'border-box';
-                        e.currentTarget.style.left = '8px';
-                        e.currentTarget.style.right = '8px';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                        // Removed transform reset since we're not using transforms
-                        e.currentTarget.style.zIndex = '10';
-                      }}
-                    >
-                      <div className="p-8 flex flex-col service-card-content" style={{width: "100%", boxSizing: "border-box", maxWidth: "100%"}}>
-                        <div className="flex items-center mb-4">
-                          <Image 
-                            src={service.icon || "/images/icons/default-service.svg"} 
-                            alt={service.title || "Service"}
-                            width={60} 
-                            height={60}
-                            className="mr-4"
-                          />
-                          <div>
-                            <h3 className="text-2xl font-medium text-gray-800">
-                              {service.title || "Service"}
-                            </h3>
-                          </div>
-                        </div>
-                        <p className="text-gray-600 mb-4">
-                          {service.description || "Service description"}
-                        </p>
-                        
-                        {/* Features List - Always visible on mobile */}
-                        <div className="service-feature-list">
-                          <div className="border-t border-gray-200">
-                            <ul className="space-y-0 pt-4">
-                              {service.features && service.features.map ? 
-                                service.features.map((feature, idx) => {
-                                  const featureTitle = typeof feature === 'string' ? feature : feature.title;
-                                  const featureSlug = slugify(featureTitle);
-                                  
-                                  return (
-                                    <li key={idx} className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: `${idx * 0.05 + 0.05}s`}}>
-                                      <Link 
-                                        href={`/${featureSlug}`}
-                                        onClick={() => {
-                                          localStorage.setItem('selectedFeature', featureTitle);
-                                          localStorage.setItem('featureServiceSlug', service.slug);
-                                          localStorage.setItem('featureServiceTitle', service.title);
-                                          localStorage.setItem('featureSlug', featureSlug);
-                                        }}
-                                        className="text-red-500 hover:underline block py-3 transition-all duration-300 hover:pl-2"
-                                      >
-                                        {featureTitle}
-                                      </Link>
-                                      {idx < (service.features.length - 1) && (
-                                        <div className="border-t border-gray-100"></div>
-                                      )}
-                                    </li>
-                                  );
-                                }) : (
-                                <li className="transform translate-y-8 opacity-0 animate-slide-up" style={{animationDelay: "0.05s"}}>
-                                  <Link 
-                                    href="/services"
-                                    className="text-red-500 hover:underline block py-3"
-                                  >
-                                    Learn more
-                                  </Link>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <MobileServiceCard 
+                    key={service._id || index} 
+                    service={service} 
+                    index={index}
+                    expandedCardId={expandedCardId}
+                    setExpandedCardId={setExpandedCardId}
+                  />
                 )) : (
                   <div className="text-center py-8">
                     <p>Loading services...</p>
