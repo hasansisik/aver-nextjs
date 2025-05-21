@@ -52,7 +52,8 @@ const customStyles = {
     height: 'auto',
     padding: '0',
     margin: '0',
-    overflow: 'visible'
+    overflow: 'visible',
+    borderRadius: '10px'
   },
   '.service-card-wrapper': {
     margin: '0',
@@ -64,7 +65,7 @@ const customStyles = {
     zIndex: '100 !important',
     backgroundColor: '#ffffff !important',
     boxShadow: '15px 0 35px rgba(0,0,0,0.05) !important, -15px 0 35px rgba(0,0,0,0.05) !important, 0 15px 35px rgba(0,0,0,0.05) !important, 0 -45px 50px rgba(0,0,0,0.04) !important',
-    transform: 'scale(1.02) !important'
+    transform: 'none !important'
   },
   '.service-feature-list': {
     transition: 'all 0.35s ease-in-out',
@@ -319,15 +320,18 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                       <div className="service-card-wrapper">
                         <div 
                           className="relative service-card bg-white h-auto overflow-visible" 
-                          style={{boxShadow: '0 0 0 rgba(0,0,0,0)'}}
+                          style={{
+                            boxShadow: '0 0 0 rgba(0,0,0,0)',
+                            borderRadius: '8px'
+                          }}
                           onMouseOver={(e) => {
                             e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
-                            e.currentTarget.style.transform = 'scale(1.02)';
+                            e.currentTarget.style.transform = 'none';
                             e.currentTarget.style.zIndex = '100';
                           }}
                           onMouseOut={(e) => {
                             e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.transform = 'none';
                             e.currentTarget.style.zIndex = '10';
                           }}
                         >
@@ -443,15 +447,18 @@ const HomeClient = ({ home, projectPage, blogPage, banner, featuredBy, workProce
                   <div key={service._id || index} className="service-card-wrapper">
                     <div 
                       className="service-card bg-white overflow-hidden" 
-                      style={{boxShadow: '0 0 0 rgba(0,0,0,0)'}}
+                      style={{
+                        boxShadow: '0 0 0 rgba(0,0,0,0)',
+                        borderRadius: '15px'
+                      }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.boxShadow = '15px 0 35px rgba(0,0,0,0.05), -15px 0 35px rgba(0,0,0,0.05), 0 15px 35px rgba(0,0,0,0.05), 0 -45px 50px rgba(0,0,0,0.04)';
-                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.transform = 'none';
                         e.currentTarget.style.zIndex = '100';
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.transform = 'none';
                         e.currentTarget.style.zIndex = '10';
                       }}
                     >
